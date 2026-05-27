@@ -17,6 +17,17 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone', 50)->nullable();
+            $table->string('friend_code', 10)->nullable()->unique();
+            $table->string('avatar')->nullable();
+            $table->enum('role', ['user', 'super_admin'])->default('user');
+            $table->string('preferred_role', 50)->nullable();
+            $table->integer('trust_score')->default(100);
+            $table->decimal('skill_rating', 3, 2)->default(0.00);
+            $table->integer('mvp_count')->default(0);
+            $table->integer('matches_played')->default(0);
+            $table->integer('total_goals')->default(0);
+            $table->boolean('is_banned')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
