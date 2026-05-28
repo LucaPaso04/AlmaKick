@@ -52,4 +52,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/friends/{id}/block', [\App\Http\Controllers\FriendController::class, 'blockUser'])->name('friends.block');
     Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'index'])->name('leaderboard');
     Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+
+    Route::middleware('super_admin')->group(function () {
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/admin/ban', [AdminController::class, 'ban'])->name('admin.ban');
+        Route::post('/admin/unban', [AdminController::class, 'unban'])->name('admin.unban');
+        Route::post('/admin/delete-match', [AdminController::class, 'deleteMatch'])->name('admin.deleteMatch');
+        Route::post('/admin/force-cancel', [AdminController::class, 'forceCancel'])->name('admin.forceCancel');
+        
+        Route::post('/admin/reports/{id}/resolve', [ReportController::class, 'resolve'])->name('admin.reports.resolve');
+        Route::post('/admin/reports/{id}/dismiss', [ReportController::class, 'dismiss'])->name('admin.reports.dismiss');
+    });
 });
