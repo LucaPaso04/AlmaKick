@@ -8,7 +8,17 @@ class MatchController extends BaseController {
 
     public function index() {
         $matchModel = new SoccerMatch();
-        $matches = $matchModel->getAllActive();
+        
+        $filters = [
+            'location' => $_GET['location'] ?? null,
+            'date' => $_GET['date'] ?? null,
+            'format' => $_GET['format'] ?? null,
+            'filter' => $_GET['filter'] ?? null,
+            'hide_full' => $_GET['hide_full'] ?? null,
+            'user_id' => $_SESSION['user']['id'] ?? null
+        ];
+
+        $matches = $matchModel->getAllActive($filters);
 
         view('matches/index', [
             'title' => 'Partite Disponibili - AlmaKick',
