@@ -69,11 +69,11 @@ if ($pct >= 100) {
             
             <!-- Etichette Personali -->
             <div class="mb-2 text-center" style="min-height: 24px;">
-                <?php if(isset($_SESSION['user']['id']) && (int)$p['host_id'] === (int)$_SESSION['user']['id']): ?>
+                <?php if(isset($_SESSION['user']['username']) && $p['host_username'] === $_SESSION['user']['username']): ?>
                     <span class="badge bg-success bg-opacity-25 text-success-emphasis rounded-pill border border-success border-opacity-50 px-2">
                         <i class="bi bi-person-badge-fill me-1"></i> La tua partita
                     </span>
-                <?php elseif(isset($friendHostIds) && in_array($p['host_id'], $friendHostIds)): ?>
+                <?php elseif(isset($friendHostUsernames) && in_array($p['host_username'], $friendHostUsernames)): ?>
                     <span class="badge bg-warning bg-opacity-25 text-warning-emphasis rounded-pill border border-warning border-opacity-50 px-2">
                         <i class="bi bi-star-fill me-1"></i> Di un amico
                     </span>

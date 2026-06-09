@@ -15,7 +15,7 @@ class MatchController extends BaseController {
             'format' => $_GET['format'] ?? null,
             'filter' => $_GET['filter'] ?? null,
             'hide_full' => $_GET['hide_full'] ?? null,
-            'user_id' => $_SESSION['user']['id'] ?? null
+            'username' => $_SESSION['user']['username'] ?? null
         ];
 
         // Pagination parameters
@@ -35,9 +35,9 @@ class MatchController extends BaseController {
 
         // If AJAX request, return JSON with matches cards HTML and pagination controls
         if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
-            $friendHostIds = [];
-            if (!empty($_SESSION['user']['id'])) {
-                $friendHostIds = $matchModel->getFriendIds((int)$_SESSION['user']['id']);
+            $friendHostUsernames = [];
+            if (!empty($_SESSION['user']['username'])) {
+                $friendHostUsernames = $matchModel->getFriendUsernames($_SESSION['user']['username']);
             }
             
             ob_start();

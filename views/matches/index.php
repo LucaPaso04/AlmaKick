@@ -3,22 +3,22 @@
 $hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['hide_full']);
 $activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
-$userId = $_SESSION['user']['id'] ?? null;
-$friendHostIds = [];
-if ($userId) {
+$username = $_SESSION['user']['username'] ?? null;
+$friendHostUsernames = [];
+if ($username) {
     $matchModel = new \App\Models\SoccerMatch();
-    $friendHostIds = $matchModel->getFriendIds((int)$userId);
+    $friendHostUsernames = $matchModel->getFriendUsernames($username);
 }
 
 // Filter the matches to find only "My Matches" (where user is host or registered)
 $myMatches = [];
-if ($userId && is_array($matches)) {
-    $myMatches = array_filter($matches, function($p) use ($userId) {
-        $isHost = isset($p['host_id']) && (int)$p['host_id'] === (int)$userId;
+if ($username && is_array($matches)) {
+    $myMatches = array_filter($matches, function($p) use ($username) {
+        $isHost = isset($p['host_username']) && $p['host_username'] === $username;
         $isRegistered = false;
         if (isset($p['registrations']) && is_array($p['registrations'])) {
             foreach ($p['registrations'] as $reg) {
-                if (isset($reg['user_id']) && (int)$reg['user_id'] === (int)$userId && in_array($reg['status'] ?? '', ['registered', 'waitlist'])) {
+                if (isset($reg['username']) && $reg['username'] === $username && in_array($reg['status'] ?? '', ['registered', 'waitlist'])) {
                     $isRegistered = true;
                     break;
                 }
@@ -108,7 +108,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
         <div class="mb-4">
             <h5 class="fw-bold mb-3"><i class="bi bi-calendar-check text-primary me-2"></i>Le tue Prossime Partite</h5>
             
-            <?php if(!$userId): ?>
+            <?php if(!$username): ?>
                 <div class="alert border shadow-sm text-center py-5 rounded-4 d-flex flex-column align-items-center justify-content-center matches-empty-state">
                     <div class="border rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 matches-empty-icon">
                         <i class="bi bi-person-exclamation fs-2"></i>

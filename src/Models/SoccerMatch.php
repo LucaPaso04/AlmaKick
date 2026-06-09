@@ -24,15 +24,165 @@ class SoccerMatch {
         return $match ?: null;
     }
 
-    public function getAllActive(): array {
-        // Ritorna le partite future o aperte
-        $stmt = $this->db->query("
-            SELECT m.*, u.name as host_name 
+    public function getAllActive(array $filters = []): array {
+        $where = [];
+        $params = [];
+
+        $sessionUsername = $filters['username'] ?? null;
+        $params['session_username'] = $sessionUsername ?: '';
+
+        if (!empty($filters['location'])) {
+            $where[] = "m.location LIKE :location";
+            $params['location'] = '%' . $filters['location'] . '%';
+        }
+
+        if (!empty($filters['date'])) {
+            $where[] = "m.date = :date";
+            $params['date'] = $filters['date'];
+        }
+
+        if (!empty($filters['format'])) {
+            $where[] = "m.format = :format";
+            $params['format'] = $filters['format'];
+        }
+
+        if (!empty($filters['hide_full'])) {
+            $where[] = "(SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players AND m.status != 'full'";
+        }
+
+        if (!empty($filters['filter'])) {
+            if ($filters['filter'] === 'friends' && $sessionUsername) {
+                $friends = $this->getFriendUsernames($sessionUsername);
+                if (!empty($friends)) {
+                    $placeholders = [];
+                    foreach ($friends as $idx => $friend) {
+                        $key = 'friend_' . $idx;
+                        $placeholders[] = ':' . $key;
+                        $params[$key] = $friend;
+                    }
+                    $where[] = "m.host_username IN (" . implode(', ', $placeholders) . ")";
+                } else {
+                    $where[] = "1 = 0";
+                }
+            } elseif ($filters['filter'] === 'mine' && $sessionUsername) {
+                $where[] = "(m.host_username = :my_username OR EXISTS (SELECT 1 FROM registrations r WHERE r.match_id = m.id AND r.username = :my_username2 AND r.status IN ('registered', 'waitlist')))";
+                $params['my_username'] = $sessionUsername;
+                $params['my_username2'] = $sessionUsername;
+            }
+        }
+
+        $whereSql = '';
+        if (!empty($where)) {
+            $whereSql = 'WHERE ' . implode(' AND ', $where);
+        }
+
+        $sql = "
+            SELECT m.*, u.name as host_name,
+                   (SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') as posti_occupati,
+                   (SELECT r.status FROM registrations r WHERE r.match_id = m.id AND r.username = :session_username LIMIT 1) as user_registration_status
             FROM matches m 
             JOIN users u ON m.host_username = u.username 
+            $whereSql
             ORDER BY m.date ASC, m.time ASC
-        ");
+        ";
+
+        if (isset($filters['limit']) && isset($filters['offset'])) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val);
+        }
+        if (isset($filters['limit']) && isset($filters['offset'])) {
+            $stmt->bindValue('limit', (int)$filters['limit'], PDO::PARAM_INT);
+            $stmt->bindValue('offset', (int)$filters['offset'], PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function countAllActive(array $filters = []): int {
+        $where = [];
+        $params = [];
+
+        $sessionUsername = $filters['username'] ?? null;
+
+        if (!empty($filters['location'])) {
+            $where[] = "m.location LIKE :location";
+            $params['location'] = '%' . $filters['location'] . '%';
+        }
+
+        if (!empty($filters['date'])) {
+            $where[] = "m.date = :date";
+            $params['date'] = $filters['date'];
+        }
+
+        if (!empty($filters['format'])) {
+            $where[] = "m.format = :format";
+            $params['format'] = $filters['format'];
+        }
+
+        if (!empty($filters['hide_full'])) {
+            $where[] = "(SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players AND m.status != 'full'";
+        }
+
+        if (!empty($filters['filter'])) {
+            if ($filters['filter'] === 'friends' && $sessionUsername) {
+                $friends = $this->getFriendUsernames($sessionUsername);
+                if (!empty($friends)) {
+                    $placeholders = [];
+                    foreach ($friends as $idx => $friend) {
+                        $key = 'friend_' . $idx;
+                        $placeholders[] = ':' . $key;
+                        $params[$key] = $friend;
+                    }
+                    $where[] = "m.host_username IN (" . implode(', ', $placeholders) . ")";
+                } else {
+                    $where[] = "1 = 0";
+                }
+            } elseif ($filters['filter'] === 'mine' && $sessionUsername) {
+                $where[] = "(m.host_username = :my_username OR EXISTS (SELECT 1 FROM registrations r WHERE r.match_id = m.id AND r.username = :my_username2 AND r.status IN ('registered', 'waitlist')))";
+                $params['my_username'] = $sessionUsername;
+                $params['my_username2'] = $sessionUsername;
+            }
+        }
+
+        $whereSql = '';
+        if (!empty($where)) {
+            $whereSql = 'WHERE ' . implode(' AND ', $where);
+        }
+
+        $sql = "
+            SELECT COUNT(*) 
+            FROM matches m 
+            JOIN users u ON m.host_username = u.username 
+            $whereSql
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getFriendUsernames(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT DISTINCT CASE 
+                WHEN sender_username = :username1 THEN recipient_username 
+                ELSE sender_username 
+            END as friend_username
+            FROM friendships 
+            WHERE (sender_username = :username2 OR recipient_username = :username3) 
+              AND status = 'accepted'
+        ");
+        $stmt->execute([
+            'username1' => $username,
+            'username2' => $username,
+            'username3' => $username
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
     }
 
     public function create(array $data): bool {
