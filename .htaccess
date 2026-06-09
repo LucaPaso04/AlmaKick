@@ -1,5 +1,5 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    # Reindirizza tutte le richieste alla cartella public
-    RewriteRule ^(.*)$ public/$1 [L]
+    # Reindirizza tutte le richieste alla cartella public preservando la query string
+    RewriteRule ^(.*)$ public/$1 [QSA,L]
 </IfModule>
