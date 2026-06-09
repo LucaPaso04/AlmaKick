@@ -1,0 +1,84 @@
+/* Header & Navigation */
+header {
+    border-bottom: 1px solid var(--border);
+    background: rgba(14, 22, 38, 0.85);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo span {
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.logo:hover {
+    color: var(--text-primary);
+}
+
+/* Main Content Area */
+main {
+    flex: 1;
+    width: 100%;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    background: rgba(14, 22, 38, 0.5);
+}
+
+/* Logo Image Styling */
+.header-logo-mobile {
+    height: 36px;
+    width: auto;
+}
+
+.header-logo-desktop {
+    height: 42px;
+    width: auto;
+}
+
+.hero-logo {
+    height: 100px;
+    width: auto;
+    filter: drop-shadow(0 0 15px rgba(36, 123, 160, 0.3));
+}
+
+.form-logo {
+    height: 55px;
+    width: auto;
+    filter: drop-shadow(0 0 8px rgba(36, 123, 160, 0.2));
+}
+
+/* Light Backdrop Wrapper for high-contrast accessibility */
+.logo-bg-wrapper {
+    background: #ffffff;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logo-bg-wrapper:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}

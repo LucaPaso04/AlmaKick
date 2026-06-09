@@ -1,0 +1,12 @@
+:root {
+    --bg-primary: #0e1626; /* Dark navy base */
+    --bg-secondary: rgba(29, 52, 97, 0.65); /* Twilight Indigo with opacity */
+    --accent: #247ba0; /* Cerulean (logo highlight) */
+    --accent-glow: rgba(36, 123, 160, 0.4); /* Cerulean glow */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8; /* Muted Slate */
+    --border: rgba(96, 95, 94, 0.35); /* Charcoal border */
+    --font-sans: 'Outfit', sans-serif;
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    --danger: #fb3640; /* Strawberry Red (logo boot) */
+}
