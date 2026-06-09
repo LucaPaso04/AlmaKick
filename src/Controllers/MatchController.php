@@ -63,7 +63,7 @@ class MatchController extends BaseController {
 
         $matchModel = new SoccerMatch();
         $matchData = [
-            'host_id' => $_SESSION['user']['id'],
+            'host_username' => $_SESSION['user']['username'],
             'date' => $date,
             'time' => $time,
             'format' => $format,

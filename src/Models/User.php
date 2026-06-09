@@ -12,9 +12,9 @@ class User {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function find(int $id): ?array {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
-        $stmt->execute(['id' => $id]);
+    public function find(string $username): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->execute(['username' => $username]);
         $user = $stmt->fetch();
         return $user ?: null;
     }
@@ -27,12 +27,14 @@ class User {
     }
 
     public function create(array $data): bool {
-        $sql = "INSERT INTO users (name, email, password, phone, friend_code, role, preferred_role, trust_score, skill_rating, mvp_count, matches_played, total_goals, is_banned, created_at, updated_at) 
-                VALUES (:name, :email, :password, :phone, :friend_code, :role, 'midfielder', 100, 6.0, 0, 0, 0, 0, NOW(), NOW())";
+        $sql = "INSERT INTO users (username, name, last_name, email, password, phone, friend_code, role, preferred_role, trust_score, skill_rating, mvp_count, matches_played, total_goals, is_banned, created_at, updated_at) 
+                VALUES (:username, :name, :last_name, :email, :password, :phone, :friend_code, :role, 'midfielder', 100, 6.0, 0, 0, 0, 0, NOW(), NOW())";
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
+            'username' => $data['username'],
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => $data['password'],
             'phone' => $data['phone'],

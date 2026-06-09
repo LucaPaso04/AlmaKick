@@ -16,7 +16,7 @@ class SoccerMatch {
         $stmt = $this->db->prepare("
             SELECT m.*, u.name as host_name 
             FROM matches m 
-            JOIN users u ON m.host_id = u.id 
+            JOIN users u ON m.host_username = u.username 
             WHERE m.id = :id
         ");
         $stmt->execute(['id' => $id]);
@@ -29,19 +29,19 @@ class SoccerMatch {
         $stmt = $this->db->query("
             SELECT m.*, u.name as host_name 
             FROM matches m 
-            JOIN users u ON m.host_id = u.id 
+            JOIN users u ON m.host_username = u.username 
             ORDER BY m.date ASC, m.time ASC
         ");
         return $stmt->fetchAll();
     }
 
     public function create(array $data): bool {
-        $sql = "INSERT INTO matches (host_id, date, time, format, max_players, location, visibility, total_cost, status, created_at, updated_at) 
-                VALUES (:host_id, :date, :time, :format, :max_players, :location, :visibility, :total_cost, :status, NOW(), NOW())";
+        $sql = "INSERT INTO matches (host_username, date, time, format, max_players, location, visibility, total_cost, status, created_at, updated_at) 
+                VALUES (:host_username, :date, :time, :format, :max_players, :location, :visibility, :total_cost, :status, NOW(), NOW())";
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
-            'host_id' => $data['host_id'],
+            'host_username' => $data['host_username'],
             'date' => $data['date'],
             'time' => $data['time'],
             'format' => $data['format'],

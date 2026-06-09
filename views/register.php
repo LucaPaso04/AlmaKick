@@ -11,8 +11,18 @@
                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
                 
                 <div class="mb-3">
-                    <label for="name" class="form-label fw-semibold text-secondary-custom">Nome Completo</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="es. Mario Rossi" required>
+                    <label for="username" class="form-label fw-semibold text-secondary-custom">Nome Utente</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="es. mario_rossi" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold text-secondary-custom">Nome</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="es. Mario" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="last_name" class="form-label fw-semibold text-secondary-custom">Cognome</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" placeholder="es. Rossi" required>
                 </div>
 
                 <div class="mb-3">

@@ -35,7 +35,7 @@ class AuthController extends BaseController {
 
             // Imposta sessione utente
             $_SESSION['user'] = [
-                'id' => $user['id'],
+                'username' => $user['username'],
                 'name' => $user['name'],
                 'email' => $user['email'],
                 'role' => $user['role'],
@@ -59,13 +59,15 @@ class AuthController extends BaseController {
     public function register() {
         $this->validateCsrf();
 
+        $username = trim($_POST['username'] ?? '');
         $name = trim($_POST['name'] ?? '');
+        $lastName = trim($_POST['last_name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $phone = trim($_POST['phone'] ?? '');
 
-        if (empty($name) || empty($email) || empty($password)) {
-            $_SESSION['error'] = "I campi Nome, Email e Password sono obbligatori.";
+        if (empty($username) || empty($name) || empty($lastName) || empty($email) || empty($password)) {
+            $_SESSION['error'] = "I campi Nome Utente, Nome, Cognome, Email e Password sono obbligatori.";
             $this->redirect('/register');
         }
 
@@ -80,11 +82,18 @@ class AuthController extends BaseController {
             $this->redirect('/register');
         }
 
+        if ($userModel->find($username)) {
+            $_SESSION['error'] = "Questo Nome Utente è già registrato.";
+            $this->redirect('/register');
+        }
+
         // Genera friend code univoco di 6 caratteri alfanumerici
         $friendCode = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 6));
 
         $userData = [
+            'username' => $username,
             'name' => $name,
+            'last_name' => $lastName,
             'email' => $email,
             'password' => password_hash($password, PASSWORD_BCRYPT),
             'phone' => $phone ? $phone : null,
