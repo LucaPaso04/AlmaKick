@@ -18,11 +18,79 @@ class MatchController extends BaseController {
             'user_id' => $_SESSION['user']['id'] ?? null
         ];
 
-        $matches = $matchModel->getAllActive($filters);
+        // Pagination parameters
+        $perPage = 6;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $offset = ($page - 1) * $perPage;
+
+        // Clone filters for total count and add limit/offset to filters for list query
+        $listFilters = array_merge($filters, [
+            'limit' => $perPage,
+            'offset' => $offset
+        ]);
+
+        $matches = $matchModel->getAllActive($listFilters);
+        $totalMatches = $matchModel->countAllActive($filters);
+        $totalPages = ceil($totalMatches / $perPage);
+
+        // If AJAX request, return JSON with matches cards HTML and pagination controls
+        if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
+            $friendHostIds = [];
+            if (!empty($_SESSION['user']['id'])) {
+                $friendHostIds = $matchModel->getFriendIds((int)$_SESSION['user']['id']);
+            }
+            
+            ob_start();
+            if (!empty($matches)) {
+                foreach ($matches as $p) {
+                    require VIEW_PATH . '/matches/partials/match_card.php';
+                }
+            } else {
+                echo '
+                <div class="col-12">
+                    <div class="alert border shadow-sm text-center py-5 rounded-4 d-flex flex-column align-items-center justify-content-center matches-empty-state">
+                        <div class="border rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 matches-empty-icon">
+                            <i class="bi bi-calendar-x fs-2"></i>
+                        </div>
+                        <h5 class="fw-bold">Nessuna partita trovata</h5>
+                        <p class="text-secondary-custom small mb-4 matches-empty-text-wrap-sm">Nessuna partita soddisfa i criteri di ricerca impostati. Prova a modificare i filtri o organizza tu una nuova partita!</p>';
+                if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'super_admin') {
+                    echo '      <a href="' . url('/matches/create') . '" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">Organizza Ora</a>';
+                }
+                echo '
+                    </div>
+                </div>';
+            }
+            $htmlContent = ob_get_clean();
+
+            // Generate pagination HTML
+            $paginationHtml = '';
+            if ($totalPages > 1) {
+                $paginationHtml .= '<nav aria-label="Navigazione pagine"><ul class="pagination pagination-sm justify-content-center mt-4 mb-0">';
+                $prevClass = ($page <= 1) ? 'disabled' : '';
+                $paginationHtml .= '<li class="page-item ' . $prevClass . '"><a class="page-link" href="#" data-page="' . ($page - 1) . '"><i class="bi bi-chevron-left"></i></a></li>';
+                for ($i = 1; $i <= $totalPages; $i++) {
+                    $activeClass = ($i == $page) ? 'active' : '';
+                    $paginationHtml .= '<li class="page-item ' . $activeClass . '"><a class="page-link" href="#" data-page="' . $i . '">' . $i . '</a></li>';
+                }
+                $nextClass = ($page >= $totalPages) ? 'disabled' : '';
+                $paginationHtml .= '<li class="page-item ' . $nextClass . '"><a class="page-link" href="#" data-page="' . ($page + 1) . '"><i class="bi bi-chevron-right"></i></a></li>';
+                $paginationHtml .= '</ul></nav>';
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode([
+                'html' => $htmlContent,
+                'pagination' => $paginationHtml
+            ]);
+            exit;
+        }
 
         view('matches/index', [
             'title' => 'Partite Disponibili - AlmaKick',
-            'matches' => $matches
+            'matches' => $matches,
+            'totalPages' => $totalPages,
+            'page' => $page
         ]);
     }
 

@@ -1,9 +1,14 @@
 <?php
-// Determine which tab should be active by default based on search filters
-$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || !empty($_GET['filter']) || !empty($_GET['hide_full']);
-$activeTab = $hasFilters ? 'explore' : 'bacheca';
+// Determine which tab should be active by default based on search filters or tab parameter
+$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['hide_full']);
+$activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
 $userId = $_SESSION['user']['id'] ?? null;
+$friendHostIds = [];
+if ($userId) {
+    $matchModel = new \App\Models\SoccerMatch();
+    $friendHostIds = $matchModel->getFriendIds((int)$userId);
+}
 
 // Filter the matches to find only "My Matches" (where user is host or registered)
 $myMatches = [];
@@ -126,25 +131,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
             <?php else: ?>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                     <?php foreach($myMatches as $p): ?>
-                        <div class="col-12 col-md-6 col-lg-4 d-flex">
-                            <div class="match-card w-100 d-flex flex-column">
-                                <div class="match-header d-flex justify-content-between align-items-center mb-3">
-                                    <span class="match-format"><i class="bi bi-people-fill me-1"></i><?= e($p['format']) ?></span>
-                                    <span class="status-badge status-<?= e(strtolower($p['status'])) ?>"><?= e($p['status']) ?></span>
-                                </div>
-                                <div class="mb-3">
-                                    <h3 class="h5 mb-2 text-white fw-bold"><i class="bi bi-geo-alt-fill text-accent me-2"></i><?= e($p['location']) ?></h3>
-                                    <div class="d-flex flex-wrap gap-3 small text-secondary-custom mt-2">
-                                        <span><i class="bi bi-calendar-event-fill text-accent me-1"></i><?= e(date('d/m/Y', strtotime($p['date']))) ?></span>
-                                        <span><i class="bi bi-clock-fill text-accent me-1"></i><?= e($p['time']) ?></span>
-                                    </div>
-                                </div>
-                                <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
-                                    <span class="small text-secondary-custom"><i class="bi bi-person-circle text-accent me-1"></i><?= e($p['host_name'] ?? '') ?></span>
-                                    <a href="<?= url('/matches/' . e($p['id'])) ?>" class="btn btn-details btn-sm text-nowrap">Dettagli <i class="bi bi-chevron-right ms-1 small"></i></a>
-                                </div>
-                            </div>
-                        </div>
+                        <?php require VIEW_PATH . '/matches/partials/match_card.php'; ?>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
@@ -165,6 +152,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
             </div>
             <div class="collapse d-md-block" id="filterCollapse">
                 <form action="<?= url('/matches') ?>" method="GET" class="filter-form p-3 rounded-4 shadow-sm d-flex flex-wrap align-items-center gap-3">
+                    <input type="hidden" name="tab" value="explore">
                     <!-- Ricerca Luogo -->
                     <div style="flex: 2 1 200px;">
                         <div class="input-group input-group-sm">
@@ -206,38 +194,22 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                     </div>
 
                     <!-- Pulsante Resetta -->
-                    <div class="ms-md-auto d-flex align-items-center justify-content-center">
-                        <a href="<?= $hasFilters ? url('/matches') : '#' ?>" class="btn btn-sm <?= $hasFilters ? 'btn-outline-danger' : 'btn-outline-secondary disabled opacity-25' ?> rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; padding: 0;" title="Resetta Filtri">
-                            <i class="bi bi-arrow-counterclockwise"></i>
-                        </a>
+                    <div id="resetButtonContainer" class="ms-md-auto d-flex align-items-center justify-content-center">
+                        <?php if($hasFilters): ?>
+                            <a href="<?= url('/matches?tab=explore') ?>" class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; padding: 0;" title="Resetta Filtri">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Lista Partite -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        <div id="matchesContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
             <?php if(!empty($matches)): ?>
                 <?php foreach($matches as $p): ?>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex">
-                        <div class="match-card w-100 d-flex flex-column">
-                            <div class="match-header d-flex justify-content-between align-items-center mb-3">
-                                <span class="match-format"><i class="bi bi-people-fill me-1"></i><?= e($p['format']) ?></span>
-                                <span class="status-badge status-<?= e(strtolower($p['status'])) ?>"><?= e($p['status']) ?></span>
-                            </div>
-                            <div class="mb-3">
-                                <h3 class="h5 mb-2 text-white fw-bold"><i class="bi bi-geo-alt-fill text-accent me-2"></i><?= e($p['location']) ?></h3>
-                                <div class="d-flex flex-wrap gap-3 small text-secondary-custom mt-2">
-                                    <span><i class="bi bi-calendar-event-fill text-accent me-1"></i><?= e(date('d/m/Y', strtotime($p['date']))) ?></span>
-                                    <span><i class="bi bi-clock-fill text-accent me-1"></i><?= e($p['time']) ?></span>
-                                </div>
-                            </div>
-                            <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
-                                <span class="small text-secondary-custom"><i class="bi bi-person-circle text-accent me-1"></i><?= e($p['host_name'] ?? '') ?></span>
-                                <a href="<?= url('/matches/' . e($p['id'])) ?>" class="btn btn-details btn-sm text-nowrap">Dettagli <i class="bi bi-chevron-right ms-1 small"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php require VIEW_PATH . '/matches/partials/match_card.php'; ?>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="col-12">
@@ -252,6 +224,25 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         <?php endif; ?>
                     </div>
                 </div>
+            <?php endif; ?>
+        </div>
+        <div id="paginationContainer">
+            <?php if (isset($totalPages) && $totalPages > 1): ?>
+                <nav aria-label="Navigazione pagine">
+                    <ul class="pagination pagination-sm justify-content-center mt-4 mb-0">
+                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                            <a class="page-link" href="#" data-page="<?= $page - 1 ?>"><i class="bi bi-chevron-left"></i></a>
+                        </li>
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                                <a class="page-link" href="#" data-page="<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                        <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                            <a class="page-link" href="#" data-page="<?= $page + 1 ?>"><i class="bi bi-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
             <?php endif; ?>
         </div>
 
