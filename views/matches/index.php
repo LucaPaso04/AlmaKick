@@ -1,6 +1,6 @@
 <?php
 // Determine which tab should be active by default based on search filters or tab parameter
-$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['hide_full']);
+$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']);
 $activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
 $username = $_SESSION['user']['username'] ?? null;
@@ -215,12 +215,12 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         </select>
                     </div>
 
-                    <!-- Solo Aperte -->
+                    <!-- Partite di Amici -->
                     <div class="d-flex align-items-center py-1">
                         <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" id="hide_full"
-                                name="hide_full" value="1" <?= !empty($_GET['hide_full']) ? 'checked' : '' ?>>
-                            <label class="form-check-label small ms-1 text-nowrap" for="hide_full">Solo aperte</label>
+                            <input class="form-check-input" type="checkbox" role="switch" id="only_friends"
+                                name="only_friends" value="1" <?= !empty($_GET['only_friends']) ? 'checked' : '' ?>>
+                            <label class="form-check-label small ms-1 text-nowrap" for="only_friends">Partite di amici</label>
                         </div>
                     </div>
 
@@ -255,10 +255,8 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         <h5 class="fw-bold">Nessuna partita trovata</h5>
                         <p class="text-body-secondary small mb-4 matches-empty-text-wrap-sm">Nessuna partita soddisfa i
                             criteri di ricerca impostati. Prova a modificare i filtri o organizza tu una nuova partita!</p>
-                        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'super_admin'): ?>
                             <a href="<?= url('/matches/create') ?>"
                                 class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">Organizza Ora</a>
-                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -289,13 +287,11 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
 
 </div>
 
-<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'super_admin'): ?>
     <div class="fab-container">
         <a href="<?= url('/matches/create') ?>" class="btn btn-primary fab-btn shadow-lg" title="Crea Nuova Partita"
             aria-label="Crea Nuova Partita">
             <i class="bi bi-plus-lg fs-2"></i>
         </a>
     </div>
-<?php endif; ?>
 
 <script src="<?= url('/js/matches.js') ?>" defer></script>

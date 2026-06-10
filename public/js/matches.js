@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var date = filterForm.querySelector('input[name="date"]').value;
         var format = filterForm.querySelector('select[name="format"]').value;
         var filter = filterForm.querySelector('select[name="filter"]').value;
-        var hideFull = filterForm.querySelector('input[name="hide_full"]').checked;
+        var onlyFriends = filterForm.querySelector('input[name="only_friends"]').checked;
 
-        return location !== "" || date !== "" || format !== "" || filter !== "all" || hideFull;
+        return location !== "" || date !== "" || format !== "" || filter !== "all" || onlyFriends;
     }
 
     // Function to perform AJAX filter request
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
         filterForm.querySelector('input[name="date"]').value = '';
         filterForm.querySelector('select[name="format"]').value = '';
         filterForm.querySelector('select[name="filter"]').value = 'all';
-        filterForm.querySelector('input[name="hide_full"]').checked = false;
+        filterForm.querySelector('input[name="only_friends"]').checked = false;
 
         // Perform filter with cleared inputs (starts at page 1)
         performFilter(1);
@@ -156,4 +156,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize pagination click listeners on first load
     bindPaginationEvents();
+
+    // Listen for tab changes to update URL
+    var tabs = document.querySelectorAll('#homeTabs button[data-bs-toggle="pill"]');
+    tabs.forEach(function(tabEl) {
+        tabEl.addEventListener('shown.bs.tab', function(event) {
+            var targetId = event.target.id;
+            var tabName = targetId === 'explore-tab' ? 'explore' : 'bacheca';
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('tab', tabName);
+            
+            if (tabName === 'bacheca') {
+                var newUrl = window.location.pathname + '?tab=bacheca';
+                window.history.pushState(null, '', newUrl);
+            } else {
+                var newUrl = window.location.pathname + '?' + urlParams.toString();
+                window.history.pushState(null, '', newUrl);
+            }
+        });
+    });
 });

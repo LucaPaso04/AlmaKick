@@ -110,7 +110,7 @@ if (isset($_SESSION['user'])) {
                     <?php endif; ?>
 
                     <!-- Theme Toggle -->
-                    <button class="btn btn-link text-body p-0 text-decoration-none" id="theme-toggle" aria-label="Cambia tema">
+                    <button class="btn btn-link text-body p-0 text-decoration-none me-3" id="theme-toggle" aria-label="Cambia tema">
                         <i class="bi bi-sun-fill fs-5 transition-transform" id="theme-icon"></i>
                     </button>
 
