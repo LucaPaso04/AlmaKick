@@ -104,7 +104,7 @@
 /* Override Form Controls */
 .form-control, .form-select {
     padding: 0.75rem 1rem;
-    background: rgba(29, 52, 97, 0.4) !important;
+    background: rgba(var(--twilight-rgb), 0.4) !important;
     border: 1px solid var(--border) !important;
     border-radius: 8px !important;
     color: var(--text-primary) !important;
@@ -113,7 +113,7 @@
 }
 
 .form-control:focus, .form-select:focus {
-    background: rgba(29, 52, 97, 0.5) !important;
+    background: rgba(var(--twilight-rgb), 0.5) !important;
     outline: none !important;
     border-color: var(--accent) !important;
     box-shadow: 0 0 8px var(--accent-glow) !important;
@@ -127,7 +127,7 @@
 
 /* Select options dropdown color reset */
 .form-select option {
-    background-color: #0e1626;
+    background-color: var(--option-bg);
     color: var(--text-primary);
 }
 

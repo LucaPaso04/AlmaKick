@@ -82,3 +82,50 @@ footer {
     transform: scale(1.02);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
+
+/* Custom transitions and hover effects matching app.blade.php styling */
+.transition-all {
+    transition: all 0.25s ease-in-out;
+}
+
+.transition-transform {
+    transition: transform 0.25s ease-in-out;
+}
+
+.transition-colors {
+    transition: color 0.25s ease-in-out, background-color 0.25s ease-in-out, border-color 0.25s ease-in-out;
+}
+
+.hover-scale:hover {
+    transform: scale(1.08);
+}
+
+.hover-bg-light:hover {
+    background-color: rgba(var(--bs-body-color-rgb), 0.08) !important;
+}
+
+.hover-text-primary:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Safe Area Utility for Mobile Screens with notch */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+}
+
+/* Dropdown Animation */
+.fade-down {
+    animation: fadeDown 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
