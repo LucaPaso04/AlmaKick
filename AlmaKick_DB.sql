@@ -7,9 +7,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE DATABASE IF NOT EXISTS `almakick` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `almakick`;
 
+DROP TABLE IF EXISTS `friendships`;
+DROP TABLE IF EXISTS `reports`;
+DROP TABLE IF EXISTS `trust_history`;
+DROP TABLE IF EXISTS `evaluations`;
+DROP TABLE IF EXISTS `registrations`;
+DROP TABLE IF EXISTS `matches`;
+DROP TABLE IF EXISTS `users`;
+
 -- --------------------------------------------------------
 -- 1. Tabella `users` (Ora con username come Chiave Primaria e last_name)
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `friend_code` varchar(10) DEFAULT NULL,
@@ -38,7 +45,6 @@ CREATE TABLE `users` (
 
 -- --------------------------------------------------------
 -- 2. Tabella `matches`
-DROP TABLE IF EXISTS `matches`;
 CREATE TABLE `matches` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `host_username` varchar(50) NOT NULL,
@@ -70,7 +76,6 @@ CREATE TABLE `matches` (
 
 -- --------------------------------------------------------
 -- 3. Tabella `registrations`
-DROP TABLE IF EXISTS `registrations`;
 CREATE TABLE `registrations` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `match_id` bigint(20) unsigned NOT NULL,
@@ -91,7 +96,6 @@ CREATE TABLE `registrations` (
 
 -- --------------------------------------------------------
 -- 4. Tabella `evaluations`
-DROP TABLE IF EXISTS `evaluations`;
 CREATE TABLE `evaluations` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `match_id` bigint(20) unsigned NOT NULL,
@@ -111,7 +115,6 @@ CREATE TABLE `evaluations` (
 
 -- --------------------------------------------------------
 -- 5. Tabella `trust_history`
-DROP TABLE IF EXISTS `trust_history`;
 CREATE TABLE `trust_history` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
@@ -128,7 +131,6 @@ CREATE TABLE `trust_history` (
 
 -- --------------------------------------------------------
 -- 6. Tabella `reports`
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE `reports` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `reporter_username` varchar(50) NOT NULL,
@@ -149,7 +151,6 @@ CREATE TABLE `reports` (
 
 -- --------------------------------------------------------
 -- 7. Tabella `friendships`
-DROP TABLE IF EXISTS `friendships`;
 CREATE TABLE `friendships` (
   `sender_username` varchar(50) NOT NULL,
   `recipient_username` varchar(50) NOT NULL,
@@ -166,7 +167,7 @@ CREATE TABLE `friendships` (
 -- INSERIMENTO DATI DI TEST (Adattati alla nuova struttura)
 -- ========================================================
 
--- Utenti
+-- Utenti di base
 INSERT INTO `users` (`username`, `friend_code`, `name`, `last_name`, `email`, `email_verified_at`, `password`, `phone`, `preferred_role`, `role`, `created_at`, `updated_at`) VALUES 
 ('admin_test', 'RWBMYD', 'Admin', 'Test', 'admin@email.it', NOW(), '$2y$12$rMficTvQd3ZLBtPnPjp8VeoPSAs.5W.erlprPs.YbRCGniPyv3gTC', '3331234567', 'Defender', 'super_admin', NOW(), NOW()),
 ('mario_rossi', '5JXTKP', 'Mario', 'Rossi', 'user@email.it', NOW(), '$2y$12$tdivzfJLVFGBbQ1G88qw4ectIDlSoqRP07CnyBr2f1X81FeYR1nuW', '3339876543', 'Striker', 'user', NOW(), NOW()),
@@ -174,18 +175,36 @@ INSERT INTO `users` (`username`, `friend_code`, `name`, `last_name`, `email`, `e
 ('prof_brown', 'CFWPXS', 'Misael', 'Brown', 'brown@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '5179122216', 'Goalkeeper', 'user', NOW(), NOW()),
 ('gertrude_b', 'IR3TMB', 'Gertrude', 'Braun', 'gertrude@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3853907416', 'Goalkeeper', 'user', NOW(), NOW());
 
--- Partite (Host non è più un ID, ma lo username)
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `created_at`, `updated_at`) VALUES 
-(1, 'mario_rossi', 'open', 'public', '2026-06-15', '19:30', 'Bologna Sports Center', '5v5', 10, 50.00, NOW(), NOW()),
-(2, 'thomas_st', 'open', 'private', '2026-06-20', '21:00', 'Centro Sportivo San Siro', '7v7', 14, 70.00, NOW(), NOW());
+-- Elenco Partite (Incluse le due nuove casistiche richieste)
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES 
+(1, 'mario_rossi', 'open', 'public', '2026-06-15', '19:30', 'Bologna Sports Center', '5v5', 10, 50.00, NULL, NULL, 0, NOW(), NOW()),
+(2, 'thomas_st', 'open', 'private', '2026-06-20', '21:00', 'Centro Sportivo San Siro', '7v7', 14, 70.00, NULL, NULL, 0, NOW(), NOW()),
+-- CASISTICA 1: Partita finita, NON creata da admin, admin_test deve VOTARE (risultato c'è, mvp_assigned è 0)
+(3, 'mario_rossi', 'finished', 'public', '2026-06-08', '20:00', 'Bologna Sports Center', '5v5', 10, 50.00, 4, 2, 0, NOW(), NOW()),
+-- CASISTICA 2: Partita finita, creata da admin, admin_test deve AGGIORNARE IL TABELLINO (risultati a NULL)
+(4, 'admin_test', 'finished', 'public', '2026-06-09', '21:00', 'Bologna Center Pitch', '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
 
--- Iscrizioni
-INSERT INTO `registrations` (`match_id`, `username`, `status`, `team`, `created_at`, `updated_at`) VALUES 
-(1, 'mario_rossi', 'registered', 'home', NOW(), NOW()),
-(1, 'prof_brown', 'registered', 'away', NOW(), NOW()),
-(1, 'gertrude_b', 'registered', 'home', NOW(), NOW()),
-(2, 'thomas_st', 'registered', 'home', NOW(), NOW()),
-(2, 'mario_rossi', 'registered', 'away', NOW(), NOW());
+-- Iscrizioni alle Partite
+INSERT INTO `registrations` (`match_id`, `username`, `status`, `team`, `goals_scored`, `created_at`, `updated_at`) VALUES 
+-- Iscrizioni Partita 1
+(1, 'mario_rossi', 'registered', 'home', 0, NOW(), NOW()),
+(1, 'prof_brown', 'registered', 'away', 0, NOW(), NOW()),
+(1, 'gertrude_b', 'registered', 'home', 0, NOW(), NOW()),
+-- Iscrizioni Partita 2
+(2, 'thomas_st', 'registered', 'home', 0, NOW(), NOW()),
+(2, 'mario_rossi', 'registered', 'away', 0, NOW(), NOW()),
+-- Iscrizioni Partita 3 (Admin partecipa e deve votare i compagni di squadra 'home')
+(3, 'mario_rossi', 'registered', 'home', 2, NOW(), NOW()),
+(3, 'admin_test', 'registered', 'home', 1, NOW(), NOW()),
+(3, 'gertrude_b', 'registered', 'home', 1, NOW(), NOW()),
+(3, 'thomas_st', 'registered', 'away', 1, NOW(), NOW()),
+(3, 'prof_brown', 'registered', 'away', 1, NOW(), NOW()),
+-- Iscrizioni Partita 4 (Admin è l'host, i gol dei singoli sono a 0 in attesa di aggiornamento)
+(4, 'admin_test', 'registered', 'home', 0, NOW(), NOW()),
+(4, 'mario_rossi', 'registered', 'home', 0, NOW(), NOW()),
+(4, 'thomas_st', 'registered', 'away', 0, NOW(), NOW()),
+(4, 'prof_brown', 'registered', 'away', 0, NOW(), NOW()),
+(4, 'gertrude_b', 'registered', 'away', 0, NOW(), NOW());
 
 -- Amicizie
 INSERT INTO `friendships` (`sender_username`, `recipient_username`, `status`, `created_at`) VALUES 
