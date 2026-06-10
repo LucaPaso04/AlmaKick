@@ -344,3 +344,55 @@
     color: #fef08a !important;
 }
 
+/* Light mode badge and text color overrides for accessibility */
+html[data-bs-theme="light"] .card-partita .badge.bg-success.bg-opacity-25,
+html[data-bs-theme="light"] .match-card .badge.bg-success.bg-opacity-25,
+html[data-bs-theme="light"] .card-partita .badge.bg-success.bg-opacity-10,
+html[data-bs-theme="light"] .match-card .badge.bg-success.bg-opacity-10 {
+    background-color: rgba(22, 163, 74, 0.12) !important;
+    border-color: rgba(22, 163, 74, 0.25) !important;
+    color: #15803d !important;
+}
+
+html[data-bs-theme="light"] .card-partita .badge.bg-warning.bg-opacity-25,
+html[data-bs-theme="light"] .match-card .badge.bg-warning.bg-opacity-25,
+html[data-bs-theme="light"] .card-partita .badge.bg-warning.bg-opacity-10,
+html[data-bs-theme="light"] .match-card .badge.bg-warning.bg-opacity-10 {
+    background-color: rgba(202, 138, 4, 0.12) !important;
+    border-color: rgba(202, 138, 4, 0.25) !important;
+    color: #854d0e !important;
+}
+
+html[data-bs-theme="light"] .card-partita .badge.bg-info.bg-opacity-10,
+html[data-bs-theme="light"] .match-card .badge.bg-info.bg-opacity-10 {
+    background-color: rgba(8, 145, 178, 0.12) !important;
+    border-color: rgba(8, 145, 178, 0.25) !important;
+    color: #0369a1 !important;
+}
+
+html[data-bs-theme="light"] .card-partita .badge.bg-danger.bg-opacity-10,
+html[data-bs-theme="light"] .match-card .badge.bg-danger.bg-opacity-10 {
+    background-color: rgba(220, 38, 38, 0.12) !important;
+    border-color: rgba(220, 38, 38, 0.25) !important;
+    color: #b91c1c !important;
+}
+
+html[data-bs-theme="light"] .card-partita .text-success-emphasis,
+html[data-bs-theme="light"] .match-card .text-success-emphasis {
+    color: #15803d !important;
+}
+
+html[data-bs-theme="light"] .card-partita .text-warning-emphasis,
+html[data-bs-theme="light"] .match-card .text-warning-emphasis {
+    color: #854d0e !important;
+}
+
+html[data-bs-theme="light"] .card-partita .text-info-emphasis,
+html[data-bs-theme="light"] .match-card .text-info-emphasis {
+    color: #0369a1 !important;
+}
+
+html[data-bs-theme="light"] .card-partita .text-danger-emphasis,
+html[data-bs-theme="light"] .match-card .text-danger-emphasis {
+    color: #b91c1c !important;
+}

@@ -81,12 +81,12 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                 <!-- Da refertare -->
                 <?php if (!empty($matchesToReport)): ?>
                     <?php foreach ($matchesToReport as $mr): ?>
-                        <div class="alert alert-success d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-success border-opacity-25 rounded-4"
+                        <div class="alert alert-success d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-success border-opacity-25 rounded-4 text-success-emphasis"
                             role="alert">
                             <div class="text-truncate me-3">
-                                <i class="bi bi-clipboard-data-fill me-2 fs-5"></i>
+                                <i class="bi bi-clipboard-data-fill me-2 fs-5 text-success"></i>
                                 <span class="fw-bold me-2">Compila Tabellino:</span>
-                                <span class="small text-white-50"><?= e(date('d/m/Y', strtotime($mr['date']))) ?>
+                                <span class="small text-success-emphasis opacity-75"><?= e(date('d/m/Y', strtotime($mr['date']))) ?>
                                     &bull;
                                     <?= e(strlen($mr['location']) > 25 ? substr($mr['location'], 0, 25) . '...' : $mr['location']) ?></span>
                             </div>

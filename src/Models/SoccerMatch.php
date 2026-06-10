@@ -42,12 +42,16 @@ class SoccerMatch {
         }
 
         if (!empty($filters['format'])) {
-            $where[] = "m.format = :format";
-            $params['format'] = $filters['format'];
+            $fmt1 = $filters['format'];
+            $fmt2 = str_replace('vs', 'v', $fmt1);
+            $fmt3 = str_replace('v', 'vs', $fmt1);
+            $where[] = "(m.format = :format_val1 OR m.format = :format_val2)";
+            $params['format_val1'] = $fmt2;
+            $params['format_val2'] = $fmt3;
         }
 
         if (!empty($filters['hide_full'])) {
-            $where[] = "(SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players AND m.status != 'full'";
+            $where[] = "m.status = 'open' AND (SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players";
         }
 
         if (!empty($filters['filter'])) {
@@ -121,12 +125,16 @@ class SoccerMatch {
         }
 
         if (!empty($filters['format'])) {
-            $where[] = "m.format = :format";
-            $params['format'] = $filters['format'];
+            $fmt1 = $filters['format'];
+            $fmt2 = str_replace('vs', 'v', $fmt1);
+            $fmt3 = str_replace('v', 'vs', $fmt1);
+            $where[] = "(m.format = :format_val1 OR m.format = :format_val2)";
+            $params['format_val1'] = $fmt2;
+            $params['format_val2'] = $fmt3;
         }
 
         if (!empty($filters['hide_full'])) {
-            $where[] = "(SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players AND m.status != 'full'";
+            $where[] = "m.status = 'open' AND (SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players";
         }
 
         if (!empty($filters['filter'])) {

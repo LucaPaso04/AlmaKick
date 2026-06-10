@@ -95,7 +95,7 @@ if (isset($_SESSION['user'])) {
                             $isClassificheActive = ($current_path === '/leaderboard');
                         ?>
                         <!-- Desktop only links -->
-                        <ul class="navbar-nav d-none d-lg-flex me-3">
+                        <ul class="navbar-nav d-none d-lg-flex">
                             <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isCercaActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
                                     <i class="bi bi-people-fill <?= $isCercaActive ? 'text-primary' : 'text-secondary' ?> me-1"></i> Cerca Giocatori
