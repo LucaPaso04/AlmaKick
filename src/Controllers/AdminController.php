@@ -50,8 +50,10 @@ class AdminController extends BaseController {
         $paramsUsers = [];
 
         if (!empty($search)) {
-            $whereUsers[] = "(u.username LIKE :search OR u.name LIKE :search OR u.email LIKE :search)";
-            $paramsUsers['search'] = '%' . $search . '%';
+            $whereUsers[] = "(u.username LIKE :search_username OR u.name LIKE :search_name OR u.email LIKE :search_email)";
+            $paramsUsers['search_username'] = '%' . $search . '%';
+            $paramsUsers['search_name'] = '%' . $search . '%';
+            $paramsUsers['search_email'] = '%' . $search . '%';
         }
         if (!empty($roleFilter)) {
             $whereUsers[] = "u.role = :role";
@@ -115,8 +117,11 @@ class AdminController extends BaseController {
         $paramsReports = [];
 
         if (!empty($searchReport)) {
-            $whereReports[] = "(r.reason LIKE :search_rep OR r.description LIKE :search_rep OR r.reporter_username LIKE :search_rep OR r.reported_username LIKE :search_rep)";
-            $paramsReports['search_rep'] = '%' . $searchReport . '%';
+            $whereReports[] = "(r.reason LIKE :search_rep_reason OR r.description LIKE :search_rep_desc OR r.reporter_username LIKE :search_rep_reporter OR r.reported_username LIKE :search_rep_reported)";
+            $paramsReports['search_rep_reason'] = '%' . $searchReport . '%';
+            $paramsReports['search_rep_desc'] = '%' . $searchReport . '%';
+            $paramsReports['search_rep_reporter'] = '%' . $searchReport . '%';
+            $paramsReports['search_rep_reported'] = '%' . $searchReport . '%';
         }
         if (!empty($statusReport)) {
             $whereReports[] = "r.status = :status_rep";
@@ -181,8 +186,9 @@ class AdminController extends BaseController {
         $paramsMatches = [];
 
         if (!empty($searchMatch)) {
-            $whereMatches[] = "(m.location LIKE :search_m OR m.host_username LIKE :search_m)";
-            $paramsMatches['search_m'] = '%' . $searchMatch . '%';
+            $whereMatches[] = "(m.location LIKE :search_m_loc OR m.host_username LIKE :search_m_host)";
+            $paramsMatches['search_m_loc'] = '%' . $searchMatch . '%';
+            $paramsMatches['search_m_host'] = '%' . $searchMatch . '%';
         }
         if (!empty($statusMatch)) {
             $whereMatches[] = "m.status = :status_m";

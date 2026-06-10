@@ -1,6 +1,6 @@
 <?php // Dashboard Amministratore ?>
 
-{{-- =================== HEADER =================== --}}
+<?php // =================== HEADER =================== ?>
 <div class="admin-header mb-4 d-flex align-items-center justify-content-between">
     <div>
         <h1 class="fw-bolder mb-1 text-white admin-header-subtitle">
@@ -13,7 +13,7 @@
     </div>
 </div>
 
-{{-- =================== STATS CARDS =================== --}}
+<?php // =================== STATS CARDS =================== ?>
 <div class="stats-grid mb-5">
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-primary">
@@ -68,16 +68,16 @@
 
 <?php require VIEW_PATH . '/admin/partials/charts.php'; ?>
 
-{{-- =================== USERS TABLE =================== --}}
-<div class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+<?php // =================== USERS TABLE =================== ?>
+<div id="users-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Gestione Utenti</h5>
     </div>
 
-    {{-- =================== FILTERS & SEARCH =================== --}}
+    <?php // =================== FILTERS & SEARCH =================== ?>
     <div class="card-body border-bottom bg-body-tertiary p-3">
-        <form method="GET" action="<?= url('/admin') ?>" class="row g-2">
-            {{-- Search --}}
+        <form method="GET" action="<?= url('/admin') ?>#users-section" class="row g-2">
+            <?php // Search ?>
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            {{-- Role Filter --}}
+            <?php // Role Filter ?>
             <div class="col-md-2">
                 <select name="role" class="form-select">
                     <option value="">Tutti i ruoli</option>
@@ -98,7 +98,7 @@
                 </select>
             </div>
 
-            {{-- Status Filter --}}
+            <?php // Status Filter ?>
             <div class="col-md-2">
                 <select name="status" class="form-select">
                     <option value="">Tutti gli stati</option>
@@ -107,14 +107,14 @@
                 </select>
             </div>
 
-            {{-- Search Button --}}
+            <?php // Search Button ?>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">
                     <i class="bi bi-search me-1"></i>Cerca
                 </button>
             </div>
 
-            {{-- Conserva i filtri delle segnalazioni e partite --}}
+            <?php // Conserva i filtri delle segnalazioni e partite ?>
             <input type="hidden" name="status_report" value="<?= e($statusReport) ?>">
             <input type="hidden" name="search_report" value="<?= e($searchReport) ?>">
             <input type="hidden" name="search_match" value="<?= e($searchMatch) ?>">
@@ -124,7 +124,7 @@
         </form>
         <?php if ($search || $statusFilter || $roleFilter): ?>
             <div class="mt-2">
-                <a href="<?= url('/admin') ?>" class="btn btn-sm btn-outline-secondary">
+                <a href="<?= url('/admin') ?>#users-section" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle me-1"></i>Resetta filtri
                 </a>
             </div>
@@ -136,23 +136,23 @@
             <thead class="table-light">
                 <tr>
                     <th scope="col" class="ps-4">
-                        <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['sort' => 'id', 'order' => ($sortBy === 'username' && $sortOrder === 'asc' ? 'desc' : 'asc')]))) ?>"
+                        <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['sort' => 'id', 'order' => ($sortBy === 'username' && $sortOrder === 'asc' ? 'desc' : 'asc')]))) ?>#users-section"
                             class="text-decoration-none text-dark">
-                            ID <?php if($sortBy === 'username'): ?> <i
+                            Username <?php if($sortBy === 'username'): ?> <i
                             class="bi bi-chevron-<?= $sortOrder === 'asc' ? 'up' : 'down' ?>"></i> <?php endif; ?>
                         </a>
                     </th>
                     <th scope="col">Utente</th>
                     <th scope="col">Ruolo Preferito</th>
                     <th scope="col" class="text-center">
-                        <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['sort' => 'trust_score', 'order' => ($sortBy === 'trust_score' && $sortOrder === 'asc' ? 'desc' : 'asc')]))) ?>"
+                        <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['sort' => 'trust_score', 'order' => ($sortBy === 'trust_score' && $sortOrder === 'asc' ? 'desc' : 'asc')]))) ?>#users-section"
                             class="text-decoration-none text-dark">
                             Trust Score <?php if($sortBy === 'trust_score'): ?> <i
                             class="bi bi-chevron-<?= $sortOrder === 'asc' ? 'up' : 'down' ?>"></i> <?php endif; ?>
                         </a>
                     </th>
                     <th scope="col" class="text-center">
-                        <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['sort' => 'weather_cancels', 'order' => ($sortBy === 'weather_cancels' && $sortOrder === 'asc' ? 'desc' : 'asc')]))) ?>"
+                        <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['sort' => 'weather_cancels', 'order' => ($sortBy === 'weather_cancels' && $sortOrder === 'asc' ? 'desc' : 'asc')]))) ?>#users-section"
                             class="text-decoration-none text-dark">
                             <span title="Numero di partite annullate con motivo 'Meteo avverso'">
                                 ⛈️ Annullate Meteo <?php if($sortBy === 'weather_cancels'): ?> <i
@@ -177,7 +177,7 @@
                             }
                         ?>
                         <tr class="<?= $row_class ?> clickable-row" onclick="window.location.href='<?= url('/profile?username=' . urlencode($u['username'])) ?>';">
-                            <td class="ps-4 text-muted">#<?= e($u['username']) ?></td>
+                            <td class="ps-4 text-muted">@<?= e($u['username']) ?></td>
                             <td>
                                 <div class="fw-bold">
                                     <a href="<?= url('/profile?username=' . urlencode($u['username'])) ?>" class="text-decoration-none text-reset">
@@ -216,7 +216,7 @@
                             <td class="text-end pe-4" onclick="event.stopPropagation();">
                                 <?php if ($u['username'] !== $_SESSION['user']['username']): ?>
                                     <?php if ($u['is_banned']): ?>
-                                        <form action="<?= url('/admin/unban') ?>" method="POST" class="d-inline-block">
+                                        <form action="<?= url('/admin/unban') ?>#users-section" method="POST" class="d-inline-block">
                                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                             <input type="hidden" name="user_id" value="<?= e($u['username']) ?>">
                                             <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold"
@@ -224,7 +224,7 @@
                                                     class="bi bi-unlock-fill me-1"></i>Riattiva</button>
                                         </form>
                                     <?php else: ?>
-                                        <form action="<?= url('/admin/ban') ?>" method="POST" class="d-inline-block">
+                                        <form action="<?= url('/admin/ban') ?>#users-section" method="POST" class="d-inline-block">
                                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                             <input type="hidden" name="user_id" value="<?= e($u['username']) ?>">
                                             <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold"
@@ -245,12 +245,12 @@
         </table>
     </div>
 
-    {{-- =================== PAGINATION =================== --}}
+    <?php // =================== PAGINATION =================== ?>
     <?php if ($totalPagesUsers > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    {{-- Previous Page Link --}}
+                    <?php // Previous Page Link ?>
                     <?php if ($pageUsers <= 1): ?>
                         <li class="page-item disabled">
                             <span class="page-link">← Precedente</span>
@@ -258,13 +258,13 @@
                     <?php else: ?>
                         <li class="page-item">
                             <a class="page-link"
-                                href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $pageUsers - 1]))) ?>">
+                                href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $pageUsers - 1]))) ?>#users-section">
                                 ← Precedente
                             </a>
                         </li>
                     <?php endif; ?>
 
-                    {{-- Pagination Elements --}}
+                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesUsers; $i++): ?>
                         <?php if ($i == $pageUsers): ?>
                             <li class="page-item active">
@@ -273,14 +273,14 @@
                         <?php else: ?>
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $i]))) ?>">
+                                    href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $i]))) ?>#users-section">
                                     <?= $i ?>
                                 </a>
                             </li>
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    {{-- Next Page Link --}}
+                    <?php // Next Page Link ?>
                     <?php if ($pageUsers >= $totalPagesUsers): ?>
                         <li class="page-item disabled">
                             <span class="page-link">Prossima →</span>
@@ -288,7 +288,7 @@
                     <?php else: ?>
                         <li class="page-item">
                             <a class="page-link"
-                                href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $pageUsers + 1]))) ?>">
+                                href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $pageUsers + 1]))) ?>#users-section">
                                 Prossima →
                             </a>
                         </li>
@@ -302,8 +302,7 @@
     <?php endif; ?>
 </div>
 
-{{-- =================== REPORTS TABLE =================== --}}
-<div class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+<div id="reports-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3 d-flex justify-content-between align-items-center">
         <h5 class="fw-bold mb-0"><i class="bi bi-flag-fill me-2 text-danger"></i>Gestione Segnalazioni</h5>
         <?php if($stats['pending_reports'] > 0): ?>
@@ -311,10 +310,10 @@
         <?php endif; ?>
     </div>
 
-    {{-- =================== FILTERS & SEARCH =================== --}}
+    <?php // =================== FILTERS & SEARCH =================== ?>
     <div class="card-body border-bottom bg-body-tertiary p-3">
-        <form method="GET" action="<?= url('/admin') ?>" class="row g-2">
-            {{-- Search --}}
+        <form method="GET" action="<?= url('/admin') ?>#reports-section" class="row g-2">
+            <?php // Search ?>
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
@@ -323,7 +322,7 @@
                 </div>
             </div>
 
-            {{-- Status Filter --}}
+            <?php // Status Filter ?>
             <div class="col-md-3">
                 <select name="status_report" class="form-select">
                     <option value="">Tutti gli stati</option>
@@ -333,14 +332,14 @@
                 </select>
             </div>
 
-            {{-- Search Button --}}
+            <?php // Search Button ?>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-danger w-100 fw-semibold">
                     <i class="bi bi-search me-1"></i>Filtra
                 </button>
             </div>
 
-            {{-- Conserva gli altri filtri --}}
+            <?php // Conserva gli altri filtri ?>
             <input type="hidden" name="search" value="<?= e($search) ?>">
             <input type="hidden" name="status" value="<?= e($statusFilter) ?>">
             <input type="hidden" name="role" value="<?= e($roleFilter) ?>">
@@ -353,7 +352,7 @@
         </form>
         <?php if ($searchReport || $statusReport !== 'pending'): ?>
             <div class="mt-2">
-                <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['status_report' => 'pending', 'search_report' => '']))) ?>" class="btn btn-sm btn-outline-secondary">
+                <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['status_report' => 'pending', 'search_report' => '']))) ?>#reports-section" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle me-1"></i>Resetta filtri segnalazioni
                 </a>
             </div>
@@ -432,19 +431,19 @@
                             <td class="text-end pe-4" onclick="event.stopPropagation();">
                                 <?php if($r['status'] === 'pending'): ?>
                                     <div class="d-flex justify-content-end gap-1">
-                                        {{-- Bottone Risolvi --}}
+                                        <?php // Bottone Risolvi ?>
                                         <button type="button" class="btn btn-sm btn-success rounded-pill fw-bold" 
                                             data-bs-toggle="modal" data-bs-target="#resolveReportModal<?= $r['id'] ?>">
                                             <i class="bi bi-check-lg me-1"></i>Risolvi
                                         </button>
                                         
-                                        {{-- Bottone Ignora --}}
+                                        <?php // Bottone Ignora ?>
                                         <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" 
                                             data-bs-toggle="modal" data-bs-target="#dismissReportModal<?= $r['id'] ?>">
                                             <i class="bi bi-slash-circle me-1"></i>Ignora
                                         </button>
 
-                                        {{-- Bottone Banna Veloce --}}
+                                        <?php // Bottone Banna Veloce ?>
                                         <?php if($r['reported'] && !$r['reported']['is_banned'] && $r['reported']['id'] !== $_SESSION['user']['username']): ?>
                                             <form action="<?= url('/admin/ban') ?>" method="POST" class="d-inline-block"
                                                 onsubmit="return confirm('Bannare l\'utente segnalato? Questa operazione gli impedirà l\'accesso.');">
@@ -457,7 +456,7 @@
                                         <?php endif; ?>
                                     </div>
 
-                                    {{-- Modale Risolvi per questa segnalazione --}}
+                                    <?php // Modale Risolvi per questa segnalazione ?>
                                     <div class="modal fade text-start" id="resolveReportModal<?= $r['id'] ?>" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
@@ -486,7 +485,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- Modale Ignora per questa segnalazione --}}
+                                    <?php // Modale Ignora per questa segnalazione ?>
                                     <div class="modal fade text-start" id="dismissReportModal<?= $r['id'] ?>" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
@@ -529,35 +528,35 @@
         </table>
     </div>
 
-    {{-- =================== PAGINATION (REPORTS) =================== --}}
+    <?php // =================== PAGINATION (REPORTS) =================== ?>
     <?php if ($totalPagesReports > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    {{-- Previous Page Link --}}
+                    <?php // Previous Page Link ?>
                     <?php if ($pageReports <= 1): ?>
                         <li class="page-item disabled"><span class="page-link text-danger">← Precedente</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $pageReports - 1]))) ?>">← Precedente</a>
+                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $pageReports - 1]))) ?>#reports-section">← Precedente</a>
                         </li>
                     <?php endif; ?>
 
-                    {{-- Pagination Elements --}}
+                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesReports; $i++): ?>
                         <?php if ($i == $pageReports): ?>
                             <li class="page-item active"><span class="page-link bg-danger border-danger"><?= $i ?></span></li>
                         <?php else: ?>
-                            <li class="page-item"><a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $i]))) ?>"><?= $i ?></a></li>
+                            <li class="page-item"><a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $i]))) ?>#reports-section"><?= $i ?></a></li>
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    {{-- Next Page Link --}}
+                    <?php // Next Page Link ?>
                     <?php if ($pageReports >= $totalPagesReports): ?>
                         <li class="page-item disabled"><span class="page-link text-danger">Prossima →</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $pageReports + 1]))) ?>">Prossima →</a>
+                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $pageReports + 1]))) ?>#reports-section">Prossima →</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -569,16 +568,16 @@
     <?php endif; ?>
 </div>
 
-{{-- =================== MATCHES TABLE =================== --}}
-<div class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+<?php // =================== MATCHES TABLE =================== ?>
+<div id="matches-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event-fill me-2 text-success"></i>Gestione Partite</h5>
     </div>
 
-    {{-- =================== FILTERS & SEARCH =================== --}}
+    <?php // =================== FILTERS & SEARCH =================== ?>
     <div class="card-body border-bottom bg-body-tertiary p-3">
-        <form method="GET" action="<?= url('/admin') ?>" class="row g-2">
-            {{-- Search --}}
+        <form method="GET" action="<?= url('/admin') ?>#matches-section" class="row g-2">
+            <?php // Search ?>
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
@@ -586,7 +585,7 @@
                 </div>
             </div>
 
-            {{-- Status Filter --}}
+            <?php // Status Filter ?>
             <div class="col-md-2">
                 <select name="status_match" class="form-select">
                     <option value="">Stato</option>
@@ -597,12 +596,12 @@
                 </select>
             </div>
 
-            {{-- Date Filter --}}
+            <?php // Date Filter ?>
             <div class="col-md-3">
                 <input type="date" name="date_match" class="form-control" value="<?= e($dateMatch) ?>" title="Filtra per data">
             </div>
 
-            {{-- Format Filter --}}
+            <?php // Format Filter ?>
             <div class="col-md-2">
                 <select name="format_match" class="form-select">
                     <option value="">Formato</option>
@@ -613,14 +612,14 @@
                 </select>
             </div>
 
-            {{-- Search Button --}}
+            <?php // Search Button ?>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-success w-100">
                     <i class="bi bi-search me-1"></i>Cerca
                 </button>
             </div>
             
-            {{-- Conserva i filtri degli utenti e delle segnalazioni --}}
+            <?php // Conserva i filtri degli utenti e delle segnalazioni ?>
             <input type="hidden" name="search" value="<?= e($search) ?>">
             <input type="hidden" name="status" value="<?= e($statusFilter) ?>">
             <input type="hidden" name="role" value="<?= e($roleFilter) ?>">
@@ -632,7 +631,7 @@
         </form>
         <?php if ($searchMatch || $statusMatch || $dateMatch || $formatMatch): ?>
             <div class="mt-2">
-                <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['search_match' => '', 'status_match' => '', 'date_match' => '', 'format_match' => '']))) ?>" class="btn btn-sm btn-outline-secondary">
+                <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['search_match' => '', 'status_match' => '', 'date_match' => '', 'format_match' => '']))) ?>#matches-section" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle me-1"></i>Resetta filtri partite
                 </a>
             </div>
@@ -719,35 +718,35 @@
         </table>
     </div>
 
-    {{-- =================== PAGINATION (MATCHES) =================== --}}
+    <?php // =================== PAGINATION (MATCHES) =================== ?>
     <?php if ($totalPagesMatches > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    {{-- Previous Page Link --}}
+                    <?php // Previous Page Link ?>
                     <?php if ($pageMatches <= 1): ?>
                         <li class="page-item disabled"><span class="page-link text-success">← Precedente</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $pageMatches - 1]))) ?>">← Precedente</a>
+                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $pageMatches - 1]))) ?>#matches-section">← Precedente</a>
                         </li>
                     <?php endif; ?>
 
-                    {{-- Pagination Elements --}}
+                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesMatches; $i++): ?>
                         <?php if ($i == $pageMatches): ?>
                             <li class="page-item active"><span class="page-link bg-success border-success"><?= $i ?></span></li>
                         <?php else: ?>
-                            <li class="page-item"><a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $i]))) ?>"><?= $i ?></a></li>
+                            <li class="page-item"><a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $i]))) ?>#matches-section"><?= $i ?></a></li>
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    {{-- Next Page Link --}}
+                    <?php // Next Page Link ?>
                     <?php if ($pageMatches >= $totalPagesMatches): ?>
                         <li class="page-item disabled"><span class="page-link text-success">Prossima →</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $pageMatches + 1]))) ?>">Prossima →</a>
+                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $pageMatches + 1]))) ?>#matches-section">Prossima →</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -759,8 +758,8 @@
     <?php endif; ?>
 </div>
 
-{{-- =================== TRUST HISTORY LOG =================== --}}
-<div class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+<?php // =================== TRUST HISTORY LOG =================== ?>
+<div id="trust-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-info"></i>Ultimi Eventi Trust Score</h5>
     </div>
@@ -806,35 +805,35 @@
         </table>
     </div>
     
-    {{-- =================== PAGINATION (TRUST LOGS) =================== --}}
+    <?php // =================== PAGINATION (TRUST LOGS) =================== ?>
     <?php if ($totalPagesTrust > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    {{-- Previous Page Link --}}
+                    <?php // Previous Page Link ?>
                     <?php if ($pageTrust <= 1): ?>
                         <li class="page-item disabled"><span class="page-link text-info">← Precedente</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $pageTrust - 1]))) ?>">← Precedente</a>
+                            <a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $pageTrust - 1]))) ?>#trust-section">← Precedente</a>
                         </li>
                     <?php endif; ?>
 
-                    {{-- Pagination Elements --}}
+                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesTrust; $i++): ?>
                         <?php if ($i == $pageTrust): ?>
                             <li class="page-item active"><span class="page-link bg-info border-info text-dark"><?= $i ?></span></li>
                         <?php else: ?>
-                            <li class="page-item"><a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $i]))) ?>"><?= $i ?></a></li>
+                            <li class="page-item"><a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $i]))) ?>#trust-section"><?= $i ?></a></li>
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    {{-- Next Page Link --}}
+                    <?php // Next Page Link ?>
                     <?php if ($pageTrust >= $totalPagesTrust): ?>
                         <li class="page-item disabled"><span class="page-link text-info">Prossima →</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $pageTrust + 1]))) ?>">Prossima →</a>
+                            <a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $pageTrust + 1]))) ?>#trust-section">Prossima →</a>
                         </li>
                     <?php endif; ?>
                 </ul>
