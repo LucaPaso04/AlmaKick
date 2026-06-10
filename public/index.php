@@ -73,5 +73,14 @@ $router->add('GET', '/matches/create', 'MatchController@create', [\App\Middlewar
 $router->add('POST', '/matches', 'MatchController@store', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/matches/{id}', 'MatchController@show');
 
+// ROTTE AMMINISTRATORE
+$router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/ban', 'AdminController@ban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/unban', 'AdminController@unban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/reports/{id}/resolve', 'AdminController@resolveReport', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/reports/{id}/dismiss', 'AdminController@dismissReport', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/matches/cancel', 'AdminController@forceCancelMatch', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/matches/delete', 'AdminController@deleteMatch', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+
 // Esegui il Router
 $router->handle($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
