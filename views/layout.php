@@ -98,12 +98,12 @@ if (isset($_SESSION['user'])) {
                         <ul class="navbar-nav d-none d-lg-flex">
                             <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isCercaActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
-                                    <i class="bi bi-people-fill <?= $isCercaActive ? 'text-primary' : 'text-secondary' ?> me-1"></i> Cerca Giocatori
+                                    <span class="bi bi-people-fill <?= $isCercaActive ? 'text-primary' : 'text-secondary' ?> me-1"></span> Cerca Giocatori
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isClassificheActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifiche">
-                                    <i class="bi bi-trophy-fill <?= $isClassificheActive ? 'text-primary' : 'text-warning' ?> me-1"></i> Classifiche
+                                    <span class="bi bi-trophy-fill <?= $isClassificheActive ? 'text-primary' : 'text-warning' ?> me-1"></span> Classifiche
                                 </a>
                             </li>
                         </ul>
@@ -111,7 +111,7 @@ if (isset($_SESSION['user'])) {
 
                     <!-- Theme Toggle -->
                     <button class="btn btn-link text-body p-0 text-decoration-none me-3" id="theme-toggle" aria-label="Cambia tema">
-                        <i class="bi bi-sun-fill fs-5 transition-transform" id="theme-icon"></i>
+                        <span class="bi bi-sun-fill fs-5 transition-transform" id="theme-icon"></span>
                     </button>
 
                     <?php if (isset($_SESSION['user'])): ?>
@@ -140,7 +140,7 @@ if (isset($_SESSION['user'])) {
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down" aria-labelledby="userMenuDropdown" style="min-width: 200px; border-radius: 0.75rem;">
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?= url('/profile') ?>">
-                                        <i class="bi bi-person fs-5 text-primary"></i> <span class="fw-medium">Il mio Profilo</span>
+                                        <span class="bi bi-person fs-5 text-primary"></span> <span class="fw-medium">Il mio Profilo</span>
                                         <?php if($pendingRequestsCount > 0): ?>
                                             <span class="badge rounded-pill bg-danger ms-auto">
                                                 <?= $pendingRequestsCount ?>
@@ -151,7 +151,7 @@ if (isset($_SESSION['user'])) {
                                 <?php if($_SESSION['user']['role'] === 'super_admin'): ?>
                                     <li>
                                         <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?= url('/admin') ?>">
-                                            <i class="bi bi-shield-lock fs-5 text-warning"></i> <span class="fw-medium">Dashboard Admin</span>
+                                            <span class="bi bi-shield-lock fs-5 text-warning"></span> <span class="fw-medium">Dashboard Admin</span>
                                             <?php if($pendingReportsCount > 0): ?>
                                                 <span class="badge rounded-pill bg-danger ms-auto">
                                                     <?= $pendingReportsCount ?>
@@ -165,7 +165,7 @@ if (isset($_SESSION['user'])) {
                                     <form action="<?= url('/logout') ?>" method="POST" class="m-0">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                         <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger fw-medium bg-transparent border-0 w-100 text-start">
-                                            <i class="bi bi-box-arrow-right fs-5"></i> Esci
+                                            <span class="bi bi-box-arrow-right fs-5"></span> Esci
                                         </button>
                                     </form>
                                 </li>
@@ -184,7 +184,7 @@ if (isset($_SESSION['user'])) {
         <!-- Messaggi Flash di Successo o Errore -->
         <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 bg-success text-white rounded-4 mb-4 p-3 pe-5" role="alert">
-                <i class="bi bi-check-circle-fill me-2 fs-5"></i> <?= e($_SESSION['success']) ?>
+                <span class="bi bi-check-circle-fill me-2 fs-5"></span> <?= e($_SESSION['success']) ?>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Chiudi avviso"></button>
                 <?php unset($_SESSION['success']); ?>
             </div>
@@ -192,7 +192,7 @@ if (isset($_SESSION['user'])) {
 
         <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 bg-danger text-white rounded-4 mb-4 p-3 pe-5" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i> <?= e($_SESSION['error']) ?>
+                <span class="bi bi-exclamation-triangle-fill me-2 fs-5"></span> <?= e($_SESSION['error']) ?>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Chiudi avviso"></button>
                 <?php unset($_SESSION['error']); ?>
             </div>
@@ -232,8 +232,8 @@ if (isset($_SESSION['user'])) {
                 <div class="col-6 col-md-4">
                     <h3 class="h6 fw-semibold">Contatti</h3>
                     <ul class="list-unstyled small mb-0">
-                        <li class="mb-2 text-body-secondary"><i class="bi bi-envelope me-2"></i>info@almakick.it</li>
-                        <li class="text-body-secondary"><i class="bi bi-instagram me-2"></i>@almakick</li>
+                        <li class="mb-2 text-body-secondary"><span class="bi bi-envelope me-2"></span>info@almakick.it</li>
+                        <li class="text-body-secondary"><span class="bi bi-instagram me-2"></span>@almakick</li>
                     </ul>
                 </div>
             </div>
@@ -258,7 +258,7 @@ if (isset($_SESSION['user'])) {
                     <li class="nav-item">
                         <a href="<?= url('/') ?>" class="nav-link flex-column d-flex align-items-center <?= $isHomeActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isHomeActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isHomeActive ? 'scale-110' : '' ?>">
-                                <i class="bi bi-house-door<?= $isHomeActive ? '-fill' : '' ?> fs-4"></i>
+                                <span class="bi bi-house-door<?= $isHomeActive ? '-fill' : '' ?> fs-4"></span>
                             </div>
                             <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isHomeActive ? '700' : '500' ?>">Home</small>
                         </a>
@@ -267,7 +267,7 @@ if (isset($_SESSION['user'])) {
                     <li class="nav-item">
                         <a href="<?= url('/users') ?>" class="nav-link flex-column d-flex align-items-center <?= $isCercaActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isCercaActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isCercaActive ? 'scale-110' : '' ?>">
-                                <i class="bi bi-people<?= $isCercaActive ? '-fill' : '' ?> fs-4"></i>
+                                <span class="bi bi-people<?= $isCercaActive ? '-fill' : '' ?> fs-4"></span>
                             </div>
                             <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isCercaActive ? '700' : '500' ?>">Cerca</small>
                         </a>
@@ -276,7 +276,7 @@ if (isset($_SESSION['user'])) {
                     <li class="nav-item">
                         <a href="<?= url('/leaderboard') ?>" class="nav-link flex-column d-flex align-items-center <?= $isClassificheActive ? 'text-warning fw-bold' : 'text-secondary' ?>" aria-current="<?= $isClassificheActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
-                                <i class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></i>
+                                <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
                             </div>
                             <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isClassificheActive ? '700' : '500' ?>">Top 10</small>
                         </a>
@@ -287,7 +287,7 @@ if (isset($_SESSION['user'])) {
                                 <?php if($userAvatar): ?>
                                     <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Avatar" class="rounded-circle object-fit-cover <?= $isProfiloActive ? 'border border-2 border-primary shadow-sm' : '' ?>" style="width: 26px; height: 26px;">
                                 <?php else: ?>
-                                    <i class="bi bi-person<?= $isProfiloActive ? '-fill' : '' ?> fs-4"></i>
+                                    <span class="bi bi-person<?= $isProfiloActive ? '-fill' : '' ?> fs-4"></span>
                                 <?php endif; ?>
                                 <?php if($pendingRequestsCount > 0): ?>
                                     <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm" style="width: 12px; height: 12px;">
@@ -350,4 +350,3 @@ if (isset($_SESSION['user'])) {
     </script>
 </body>
 </html>
-
