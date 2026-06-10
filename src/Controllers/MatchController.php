@@ -86,11 +86,21 @@ class MatchController extends BaseController {
             exit;
         }
 
+        $username = $_SESSION['user']['username'] ?? null;
+        $matchesToReport = [];
+        $matchesToVote = [];
+        if ($username) {
+            $matchesToReport = $matchModel->getMatchesToReport($username);
+            $matchesToVote = $matchModel->getMatchesToVote($username);
+        }
+
         view('matches/index', [
             'title' => 'Partite Disponibili - AlmaKick',
             'matches' => $matches,
             'totalPages' => $totalPages,
-            'page' => $page
+            'page' => $page,
+            'matchesToReport' => $matchesToReport,
+            'matchesToVote' => $matchesToVote
         ]);
     }
 

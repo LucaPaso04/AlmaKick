@@ -202,4 +202,40 @@ class SoccerMatch {
             'status' => $data['status']
         ]);
     }
+
+    public function getMatchesToReport(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT * FROM matches 
+            WHERE host_username = :username 
+              AND status = 'finished' 
+              AND (result_home IS NULL OR result_away IS NULL)
+            ORDER BY date DESC, time DESC
+        ");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetchAll() ?: [];
+    }
+
+    public function getMatchesToVote(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT m.* FROM matches m
+            JOIN registrations r ON m.id = r.match_id
+            WHERE r.username = :username1
+              AND r.status = 'registered'
+              AND m.status = 'finished'
+              AND m.result_home IS NOT NULL
+              AND m.result_away IS NOT NULL
+              AND m.mvp_assigned = 0
+              AND NOT EXISTS (
+                  SELECT 1 FROM evaluations e 
+                  WHERE e.match_id = m.id 
+                    AND e.evaluator_username = :username2
+              )
+            ORDER BY m.date DESC, m.time DESC
+        ");
+        $stmt->execute([
+            'username1' => $username,
+            'username2' => $username
+        ]);
+        return $stmt->fetchAll() ?: [];
+    }
 }
