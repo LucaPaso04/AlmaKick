@@ -29,8 +29,7 @@
                         <label for="visibility" class="form-label fw-semibold text-secondary-custom">Visibilità</label>
                         <select id="visibility" name="visibility" class="form-select">
                             <option value="public">Pubblica</option>
-                            <option value="friends_only">Solo Amici</option>
-                            <option value="private">Privata (Solo invito)</option>
+                            <option value="private">Privata (Solo Amici)</option>
                         </select>
                     </div>
                 </div>

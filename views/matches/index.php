@@ -1,6 +1,6 @@
 <?php
 // Determine which tab should be active by default based on search filters or tab parameter
-$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['hide_full']);
+$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']);
 $activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
 $username = $_SESSION['user']['username'] ?? null;
@@ -53,14 +53,14 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
         <button class="nav-link <?= $activeTab === 'bacheca' ? 'active' : '' ?> rounded-pill fw-bold py-2"
             id="bacheca-tab" data-bs-toggle="pill" data-bs-target="#bacheca" type="button" role="tab"
             aria-controls="bacheca" aria-selected="<?= $activeTab === 'bacheca' ? 'true' : 'false' ?>">
-            <i class="bi bi-speedometer2 me-2"></i>La mia Bacheca
+            <span class="bi bi-speedometer2 me-2"></span>La mia Bacheca
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link <?= $activeTab === 'explore' ? 'active' : '' ?> rounded-pill fw-bold py-2"
             id="explore-tab" data-bs-toggle="pill" data-bs-target="#explore" type="button" role="tab"
             aria-controls="explore" aria-selected="<?= $activeTab === 'explore' ? 'true' : 'false' ?>">
-            <i class="bi bi-search me-2"></i>Trova Partite
+            <span class="bi bi-search me-2"></span>Trova Partite
         </button>
     </li>
 </ul>
@@ -75,18 +75,17 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
         <!-- ACTION CENTER (Notifiche urgenti / refertazione / votazione) -->
         <?php if ($hasPendingActions): ?>
             <div class="mb-4">
-                <h5 class="fw-bold mb-3 text-warning"><i class="bi bi-exclamation-circle-fill me-2"></i>Azioni richieste
-                </h5>
+                <h2 class="h5 fw-bold mb-3 text-warning"><span class="bi bi-exclamation-circle-fill me-2"></span>Azioni richieste</h2>
 
                 <!-- Da refertare -->
                 <?php if (!empty($matchesToReport)): ?>
                     <?php foreach ($matchesToReport as $mr): ?>
-                        <div class="alert alert-success d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-success border-opacity-25 rounded-4"
+                        <div class="alert alert-success d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-success border-opacity-25 rounded-4 text-success-emphasis"
                             role="alert">
                             <div class="text-truncate me-3">
-                                <i class="bi bi-clipboard-data-fill me-2 fs-5"></i>
+                                <span class="bi bi-clipboard-data-fill me-2 fs-5 text-success"></span>
                                 <span class="fw-bold me-2">Compila Tabellino:</span>
-                                <span class="small text-white-50"><?= e(date('d/m/Y', strtotime($mr['date']))) ?>
+                                <span class="small text-success-emphasis opacity-75"><?= e(date('d/m/Y', strtotime($mr['date']))) ?>
                                     &bull;
                                     <?= e(strlen($mr['location']) > 25 ? substr($mr['location'], 0, 25) . '...' : $mr['location']) ?></span>
                             </div>
@@ -102,7 +101,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         <div class="alert alert-warning d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-warning border-opacity-25 rounded-4 text-warning-emphasis"
                             role="alert">
                             <div class="text-truncate me-3 text-warning">
-                                <i class="bi bi-star-fill me-2 fs-5"></i>
+                                <span class="bi bi-star-fill me-2 fs-5"></span>
                                 <span class="fw-bold me-2">Vota Compagni:</span>
                                 <span class="small text-body-secondary"><?= e(date('d/m/Y', strtotime($mv['date']))) ?> &bull;
                                     <?= e(strlen($mv['location']) > 25 ? substr($mv['location'], 0, 25) . '...' : $mv['location']) ?></span>
@@ -117,16 +116,16 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
 
         <!-- Le mie Partite in Programma -->
         <div class="mb-4">
-            <h5 class="fw-bold mb-3"><i class="bi bi-calendar-check text-primary me-2"></i>Le tue Prossime Partite</h5>
+            <h2 class="h5 fw-bold mb-3"><span class="bi bi-calendar-check text-primary me-2"></span>Le tue Prossime Partite</h2>
 
             <?php if (!$username): ?>
                 <div
                     class="alert border shadow-sm text-center py-5 rounded-4 d-flex flex-column align-items-center justify-content-center matches-empty-state">
                     <div
                         class="border rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 matches-empty-icon">
-                        <i class="bi bi-person-exclamation fs-2"></i>
+                        <span class="bi bi-person-exclamation fs-2"></span>
                     </div>
-                    <h5 class="fw-bold mb-2">Accedi per vedere le tue partite</h5>
+                    <h2 class="h5 fw-bold mb-2">Accedi per vedere le tue partite</h2>
                     <p class="text-secondary-custom small mb-4 matches-empty-text-wrap">Accedi o registrati per visualizzare
                         le partite a cui partecipi o che organizzi.</p>
                     <a href="<?= url('/login') ?>" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">Accedi</a>
@@ -136,9 +135,9 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                     class="alert border shadow-sm text-center py-5 rounded-4 d-flex flex-column align-items-center justify-content-center matches-empty-state">
                     <div
                         class="border rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 matches-empty-icon">
-                        <i class="bi bi-calendar-x fs-2"></i>
+                        <span class="bi bi-calendar-x fs-2"></span>
                     </div>
-                    <h5 class="fw-bold mb-2">Nessuna partita in programma</h5>
+                    <h2 class="h5 fw-bold mb-2">Nessuna partita in programma</h2>
                     <p class="text-secondary-custom small mb-4 matches-empty-text-wrap">Non sei iscritto a nessuna partita e
                         non ne stai organizzando. Scopri le partite disponibili della community per iniziare a giocare!</p>
                     <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold"
@@ -164,11 +163,11 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
         <!-- MATCH DISCOVERY SECTION CON FILTRI COMPATTI -->
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0"><i class="bi bi-funnel text-primary me-2"></i>Filtra i Risultati</h5>
+                <h2 class="h5 fw-bold mb-0"><span class="bi bi-funnel text-primary me-2"></span>Filtra i Risultati</h2>
                 <button class="btn btn-sm btn-outline-primary d-md-none rounded-pill" type="button"
                     data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false"
                     aria-controls="filterCollapse">
-                    <i class="bi bi-funnel"></i> Filtri
+                    <span class="bi bi-funnel"></span> Filtri
                 </button>
             </div>
             <div class="collapse d-md-block" id="filterCollapse">
@@ -178,21 +177,24 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                     <!-- Ricerca Luogo -->
                     <div style="flex: 2 1 200px;">
                         <div class="input-group input-group-sm">
-                            <span class="input-group-text border-end-0"><i class="bi bi-search text-muted"></i></span>
-                            <input type="text" name="location" class="form-control border-start-0 ps-0"
+                            <span class="input-group-text border-end-0"><span class="bi bi-search text-muted"></span></span>
+                            <label for="filter-location" class="visually-hidden">Cerca città o campo</label>
+                            <input type="text" id="filter-location" name="location" class="form-control border-start-0 ps-0"
                                 placeholder="Cerca città o campo..." value="<?= e($_GET['location'] ?? '') ?>">
                         </div>
                     </div>
 
                     <!-- Data -->
                     <div style="flex: 1 1 120px;">
-                        <input type="date" name="date" class="form-control form-control-sm"
-                            value="<?= e($_GET['date'] ?? '') ?>" aria-label="Data">
+                        <label for="filter-date" class="visually-hidden">Data partita</label>
+                        <input type="date" id="filter-date" name="date" class="form-control form-control-sm"
+                            value="<?= e($_GET['date'] ?? '') ?>">
                     </div>
 
                     <!-- Formato -->
                     <div style="flex: 1 1 120px;">
-                        <select name="format" class="form-select form-select-sm">
+                        <label for="filter-format" class="visually-hidden">Filtra per formato</label>
+                        <select id="filter-format" name="format" class="form-select form-select-sm">
                             <option value="">Tutti i formati</option>
                             <option value="5vs5" <?= (($_GET['format'] ?? '') == '5vs5') ? 'selected' : '' ?>>5 vs 5
                             </option>
@@ -205,7 +207,8 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
 
                     <!-- Tipo -->
                     <div style="flex: 1 1 120px;">
-                        <select name="filter" class="form-select form-select-sm">
+                        <label for="filter-type" class="visually-hidden">Filtra per tipo</label>
+                        <select id="filter-type" name="filter" class="form-select form-select-sm">
                             <option value="all" <?= (($_GET['filter'] ?? 'all') == 'all') ? 'selected' : '' ?>>Tutte le
                                 partite</option>
                             <option value="friends" <?= (($_GET['filter'] ?? '') == 'friends') ? 'selected' : '' ?>>Partite
@@ -215,12 +218,12 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         </select>
                     </div>
 
-                    <!-- Solo Aperte -->
+                    <!-- Partite di Amici -->
                     <div class="d-flex align-items-center py-1">
                         <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" id="hide_full"
-                                name="hide_full" value="1" <?= !empty($_GET['hide_full']) ? 'checked' : '' ?>>
-                            <label class="form-check-label small ms-1 text-nowrap" for="hide_full">Solo aperte</label>
+                            <input class="form-check-input" type="checkbox" role="switch" id="only_friends"
+                                name="only_friends" value="1" <?= !empty($_GET['only_friends']) ? 'checked' : '' ?>>
+                            <label class="form-check-label small ms-1 text-nowrap" for="only_friends">Partite di amici</label>
                         </div>
                     </div>
 
@@ -230,7 +233,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                             <a href="<?= url('/matches?tab=explore') ?>"
                                 class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center"
                                 style="width: 32px; height: 32px; padding: 0;" title="Resetta Filtri">
-                                <i class="bi bi-arrow-counterclockwise"></i>
+                                <span class="bi bi-arrow-counterclockwise"></span>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -250,15 +253,13 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         class="alert border shadow-sm text-center py-5 rounded-4 d-flex flex-column align-items-center justify-content-center matches-empty-state">
                         <div
                             class="border rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 matches-empty-icon">
-                            <i class="bi bi-calendar-x fs-2"></i>
+                            <span class="bi bi-calendar-x fs-2"></span>
                         </div>
-                        <h5 class="fw-bold">Nessuna partita trovata</h5>
+                        <h2 class="h5 fw-bold">Nessuna partita trovata</h2>
                         <p class="text-body-secondary small mb-4 matches-empty-text-wrap-sm">Nessuna partita soddisfa i
                             criteri di ricerca impostati. Prova a modificare i filtri o organizza tu una nuova partita!</p>
-                        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'super_admin'): ?>
                             <a href="<?= url('/matches/create') ?>"
                                 class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">Organizza Ora</a>
-                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -268,8 +269,8 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                 <nav aria-label="Navigazione pagine">
                     <ul class="pagination pagination-sm justify-content-center mt-4 mb-0">
                         <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-                            <a class="page-link" href="#" data-page="<?= $page - 1 ?>"><i
-                                    class="bi bi-chevron-left"></i></a>
+                            <a class="page-link" href="#" data-page="<?= $page - 1 ?>" aria-label="Pagina precedente"><span
+                                    class="bi bi-chevron-left"></span></a>
                         </li>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                             <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
@@ -277,8 +278,8 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                             </li>
                         <?php endfor; ?>
                         <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
-                            <a class="page-link" href="#" data-page="<?= $page + 1 ?>"><i
-                                    class="bi bi-chevron-right"></i></a>
+                            <a class="page-link" href="#" data-page="<?= $page + 1 ?>" aria-label="Pagina successiva"><span
+                                    class="bi bi-chevron-right"></span></a>
                         </li>
                     </ul>
                 </nav>
@@ -289,13 +290,11 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
 
 </div>
 
-<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'super_admin'): ?>
     <div class="fab-container">
         <a href="<?= url('/matches/create') ?>" class="btn btn-primary fab-btn shadow-lg" title="Crea Nuova Partita"
             aria-label="Crea Nuova Partita">
-            <i class="bi bi-plus-lg fs-2"></i>
+            <span class="bi bi-plus-lg fs-2"></span>
         </a>
     </div>
-<?php endif; ?>
 
 <script src="<?= url('/js/matches.js') ?>" defer></script>

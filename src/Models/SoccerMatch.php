@@ -5,14 +5,17 @@ namespace App\Models;
 use App\Database;
 use PDO;
 
-class SoccerMatch {
+class SoccerMatch
+{
     private PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function find(int $id): ?array {
+    public function find(int $id): ?array
+    {
         $stmt = $this->db->prepare("
             SELECT m.*, u.name as host_name 
             FROM matches m 
@@ -24,12 +27,37 @@ class SoccerMatch {
         return $match ?: null;
     }
 
-    public function getAllActive(array $filters = []): array {
+    public function getAllActive(array $filters = []): array
+    {
         $where = [];
+        $where[] = "m.status IN ('open', 'full')";
         $params = [];
 
         $sessionUsername = $filters['username'] ?? null;
         $params['session_username'] = $sessionUsername ?: '';
+
+        // Visibility control
+        $isAdmin = (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'super_admin') ? 1 : 0;
+        if ($sessionUsername) {
+            $where[] = "(m.visibility = 'public' 
+                         OR m.host_username = :session_username_vis 
+                         OR :is_admin = 1 
+                         OR EXISTS (
+                             SELECT 1 FROM friendships f 
+                             WHERE f.status = 'accepted' 
+                               AND (
+                                 (f.sender_username = m.host_username AND f.recipient_username = :session_username_vis2)
+                                 OR 
+                                 (f.recipient_username = m.host_username AND f.sender_username = :session_username_vis3)
+                               )
+                         ))";
+            $params['session_username_vis'] = $sessionUsername;
+            $params['session_username_vis2'] = $sessionUsername;
+            $params['session_username_vis3'] = $sessionUsername;
+            $params['is_admin'] = $isAdmin;
+        } else {
+            $where[] = "m.visibility = 'public'";
+        }
 
         if (!empty($filters['location'])) {
             $where[] = "m.location LIKE :location";
@@ -42,12 +70,27 @@ class SoccerMatch {
         }
 
         if (!empty($filters['format'])) {
-            $where[] = "m.format = :format";
-            $params['format'] = $filters['format'];
+            $fmt1 = $filters['format'];
+            $fmt2 = str_replace('vs', 'v', $fmt1);
+            $fmt3 = str_replace('v', 'vs', $fmt1);
+            $where[] = "(m.format = :format_val1 OR m.format = :format_val2)";
+            $params['format_val1'] = $fmt2;
+            $params['format_val2'] = $fmt3;
         }
 
-        if (!empty($filters['hide_full'])) {
-            $where[] = "(SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players AND m.status != 'full'";
+        if (!empty($filters['only_friends']) && $sessionUsername) {
+            $friends = $this->getFriendUsernames($sessionUsername);
+            if (!empty($friends)) {
+                $placeholders = [];
+                foreach ($friends as $idx => $friend) {
+                    $key = 'friend_toggle_' . $idx;
+                    $placeholders[] = ':' . $key;
+                    $params[$key] = $friend;
+                }
+                $where[] = "m.host_username IN (" . implode(', ', $placeholders) . ")";
+            } else {
+                $where[] = "1 = 0";
+            }
         }
 
         if (!empty($filters['filter'])) {
@@ -91,24 +134,49 @@ class SoccerMatch {
         }
 
         $stmt = $this->db->prepare($sql);
-        
+
         foreach ($params as $key => $val) {
             $stmt->bindValue($key, $val);
         }
         if (isset($filters['limit']) && isset($filters['offset'])) {
-            $stmt->bindValue('limit', (int)$filters['limit'], PDO::PARAM_INT);
-            $stmt->bindValue('offset', (int)$filters['offset'], PDO::PARAM_INT);
+            $stmt->bindValue('limit', (int) $filters['limit'], PDO::PARAM_INT);
+            $stmt->bindValue('offset', (int) $filters['offset'], PDO::PARAM_INT);
         }
 
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public function countAllActive(array $filters = []): int {
+    public function countAllActive(array $filters = []): int
+    {
         $where = [];
+        $where[] = "m.status IN ('open', 'full')";
         $params = [];
 
         $sessionUsername = $filters['username'] ?? null;
+
+        // Visibility control
+        $isAdmin = (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'super_admin') ? 1 : 0;
+        if ($sessionUsername) {
+            $where[] = "(m.visibility = 'public' 
+                         OR m.host_username = :session_username_vis 
+                         OR :is_admin = 1 
+                         OR EXISTS (
+                             SELECT 1 FROM friendships f 
+                             WHERE f.status = 'accepted' 
+                               AND (
+                                 (f.sender_username = m.host_username AND f.recipient_username = :session_username_vis2)
+                                 OR 
+                                 (f.recipient_username = m.host_username AND f.sender_username = :session_username_vis3)
+                               )
+                         ))";
+            $params['session_username_vis'] = $sessionUsername;
+            $params['session_username_vis2'] = $sessionUsername;
+            $params['session_username_vis3'] = $sessionUsername;
+            $params['is_admin'] = $isAdmin;
+        } else {
+            $where[] = "m.visibility = 'public'";
+        }
 
         if (!empty($filters['location'])) {
             $where[] = "m.location LIKE :location";
@@ -121,12 +189,27 @@ class SoccerMatch {
         }
 
         if (!empty($filters['format'])) {
-            $where[] = "m.format = :format";
-            $params['format'] = $filters['format'];
+            $fmt1 = $filters['format'];
+            $fmt2 = str_replace('vs', 'v', $fmt1);
+            $fmt3 = str_replace('v', 'vs', $fmt1);
+            $where[] = "(m.format = :format_val1 OR m.format = :format_val2)";
+            $params['format_val1'] = $fmt2;
+            $params['format_val2'] = $fmt3;
         }
 
-        if (!empty($filters['hide_full'])) {
-            $where[] = "(SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') < m.max_players AND m.status != 'full'";
+        if (!empty($filters['only_friends']) && $sessionUsername) {
+            $friends = $this->getFriendUsernames($sessionUsername);
+            if (!empty($friends)) {
+                $placeholders = [];
+                foreach ($friends as $idx => $friend) {
+                    $key = 'friend_toggle_' . $idx;
+                    $placeholders[] = ':' . $key;
+                    $params[$key] = $friend;
+                }
+                $where[] = "m.host_username IN (" . implode(', ', $placeholders) . ")";
+            } else {
+                $where[] = "1 = 0";
+            }
         }
 
         if (!empty($filters['filter'])) {
@@ -164,10 +247,11 @@ class SoccerMatch {
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
-    public function getFriendUsernames(string $username): array {
+    public function getFriendUsernames(string $username): array
+    {
         $stmt = $this->db->prepare("
             SELECT DISTINCT CASE 
                 WHEN sender_username = :username1 THEN recipient_username 
@@ -185,10 +269,11 @@ class SoccerMatch {
         return $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
     }
 
-    public function create(array $data): bool {
+    public function create(array $data): bool
+    {
         $sql = "INSERT INTO matches (host_username, date, time, format, max_players, location, visibility, total_cost, status, created_at, updated_at) 
                 VALUES (:host_username, :date, :time, :format, :max_players, :location, :visibility, :total_cost, :status, NOW(), NOW())";
-        
+
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             'host_username' => $data['host_username'],
@@ -203,7 +288,8 @@ class SoccerMatch {
         ]);
     }
 
-    public function getMatchesToReport(string $username): array {
+    public function getMatchesToReport(string $username): array
+    {
         $stmt = $this->db->prepare("
             SELECT * FROM matches 
             WHERE host_username = :username 
@@ -215,7 +301,8 @@ class SoccerMatch {
         return $stmt->fetchAll() ?: [];
     }
 
-    public function getMatchesToVote(string $username): array {
+    public function getMatchesToVote(string $username): array
+    {
         $stmt = $this->db->prepare("
             SELECT m.* FROM matches m
             JOIN registrations r ON m.id = r.match_id
