@@ -34,7 +34,7 @@ if ($pct >= 100) {
 
 <div class="col">
     <div class="card h-100 card-partita rounded-4 shadow-sm bg-body overflow-visible mt-3 position-relative d-flex flex-column"
-     <?= $canClick ? 'onclick="window.location.href=\'' . url('/matches/' . $p['id']) . '\';"' : '' ?> 
+     <?= $canClick ? 'onclick="window.location.href=\'' . url('/matches/' . $p['id']) . '?from=matches\';"' : '' ?> 
      style="<?= $canClick ? 'cursor: pointer;' : 'cursor: default;' ?>">
         <div class="match-header rounded-top-4" style="background: <?= $gradient ?>; height: 8px;"></div>
 
@@ -174,7 +174,7 @@ if ($pct >= 100) {
                         <?php endif; ?>
                     <?php else: ?>
                         <?php if (($p['posti_occupati'] ?? 0) >= $p['max_players'] || ($p['status'] ?? '') === 'full'): ?>
-                            <form action="<?= url('/matches/' . $p['id'] . '/join') ?>" method="POST" class="m-0 w-100">
+                            <form action="<?= url('/matches/' . $p['id'] . '/join?from=matches') ?>" method="POST" class="m-0 w-100">
                                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                 <button type="submit"
                                     class="btn btn-sm btn-outline-warning rounded-pill w-100 py-2 shadow-sm fw-bold">
@@ -182,7 +182,7 @@ if ($pct >= 100) {
                                 </button>
                             </form>
                         <?php else: ?>
-                            <form action="<?= url('/matches/' . $p['id'] . '/join') ?>" method="POST" class="m-0 w-100">
+                            <form action="<?= url('/matches/' . $p['id'] . '/join?from=matches') ?>" method="POST" class="m-0 w-100">
                                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                 <button type="submit"
                                     class="btn btn-sm btn-primary rounded-pill w-100 py-2 shadow-sm fw-bold">Unisciti</button>

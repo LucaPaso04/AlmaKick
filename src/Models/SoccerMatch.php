@@ -121,7 +121,7 @@ class SoccerMatch
 
         $sql = "
             SELECT m.*, u.name as host_name,
-                   (SELECT COUNT(*) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') as posti_occupati,
+                    (SELECT COALESCE(SUM(1 + r.has_guest), 0) FROM registrations r WHERE r.match_id = m.id AND r.status = 'registered') as posti_occupati,
                    (SELECT r.status FROM registrations r WHERE r.match_id = m.id AND r.username = :session_username LIMIT 1) as user_registration_status
             FROM matches m 
             JOIN users u ON m.host_username = u.username 

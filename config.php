@@ -23,6 +23,11 @@ define('DB_CHARSET', 'utf8mb4');
 define('APP_NAME', 'AlmaKick');
 define('SESSION_LIFETIME', 3600); // 1 ora
 
+// Servizi Esterni
+define('OPENWEATHER_KEY', 'f0273b985a53c8c146cfaa42d78e084e');
+
+
+
 // Rilevamento automatico della sottocartella per il funzionamento in htdocs
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
 $publicPos = strpos($scriptName, '/public/index.php');

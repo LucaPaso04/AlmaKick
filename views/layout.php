@@ -86,6 +86,15 @@ if (isset($_SESSION['user'])) {
                     </span>
                 </a>
 
+                <ul class="navbar-nav d-none d-md-flex ms-2 ms-lg-3">
+                    <?php $isPartiteActive = ($current_path === '/matches' || $current_path === '/matches/'); ?>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isPartiteActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/matches') ?>" aria-label="Lista Partite">
+                            <span class="bi bi-calendar-event<?= $isPartiteActive ? '-fill text-primary' : '' ?> me-1"></span> Partite
+                        </a>
+                    </li>
+                </ul>
+
                 <!-- Right side -->
                 <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
                     

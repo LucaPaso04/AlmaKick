@@ -89,7 +89,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                                     &bull;
                                     <?= e(strlen($mr['location']) > 25 ? substr($mr['location'], 0, 25) . '...' : $mr['location']) ?></span>
                             </div>
-                            <a href="<?= url('/matches/' . $mr['id']) ?>"
+                            <a href="<?= url('/matches/' . $mr['id'] . '?from=matches') ?>"
                                 class="btn btn-sm btn-success rounded-pill fw-bold px-3 text-nowrap">Gestisci</a>
                         </div>
                     <?php endforeach; ?>
@@ -106,7 +106,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                                 <span class="small text-body-secondary"><?= e(date('d/m/Y', strtotime($mv['date']))) ?> &bull;
                                     <?= e(strlen($mv['location']) > 25 ? substr($mv['location'], 0, 25) . '...' : $mv['location']) ?></span>
                             </div>
-                            <a href="<?= url('/matches/' . $mv['id']) ?>"
+                            <a href="<?= url('/matches/' . $mv['id'] . '?from=matches') ?>"
                                 class="btn btn-sm btn-warning rounded-pill fw-bold px-3 text-dark text-nowrap">Vota</a>
                         </div>
                     <?php endforeach; ?>

@@ -72,6 +72,13 @@ $router->add('GET', '/matches', 'MatchController@index');
 $router->add('GET', '/matches/create', 'MatchController@create', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches', 'MatchController@store', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/matches/{id}', 'MatchController@show');
+$router->add('POST', '/matches/{id}/join', 'MatchController@join', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/leave', 'MatchController@leave', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/generate-teams', 'MatchController@generateTeams', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/close', 'MatchController@close', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/cancel', 'MatchController@cancel', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/set-mvp-deadline', 'MatchController@setMvpDeadline', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/vote', 'MatchController@vote', [\App\Middleware\AuthMiddleware::class]);
 
 // ROTTE AMMINISTRATORE
 $router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
