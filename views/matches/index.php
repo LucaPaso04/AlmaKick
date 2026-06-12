@@ -15,15 +15,7 @@ $myMatches = [];
 if ($username && is_array($matches)) {
     $myMatches = array_filter($matches, function ($p) use ($username) {
         $isHost = isset($p['host_username']) && $p['host_username'] === $username;
-        $isRegistered = false;
-        if (isset($p['registrations']) && is_array($p['registrations'])) {
-            foreach ($p['registrations'] as $reg) {
-                if (isset($reg['username']) && $reg['username'] === $username && in_array($reg['status'] ?? '', ['registered', 'waitlist'])) {
-                    $isRegistered = true;
-                    break;
-                }
-            }
-        }
+        $isRegistered = isset($p['user_registration_status']) && in_array($p['user_registration_status'], ['registered', 'waitlist']);
         return $isHost || $isRegistered;
     });
 }
