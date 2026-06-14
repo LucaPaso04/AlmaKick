@@ -114,6 +114,18 @@ class SoccerMatch
             }
         }
 
+        if (!empty($filters['exclude_my_matches']) && $sessionUsername) {
+            $where[] = "m.host_username != :exclude_username 
+                        AND NOT EXISTS (
+                            SELECT 1 FROM registrations r 
+                            WHERE r.match_id = m.id 
+                              AND r.username = :exclude_username2 
+                              AND r.status IN ('registered', 'waitlist')
+                        )";
+            $params['exclude_username'] = $sessionUsername;
+            $params['exclude_username2'] = $sessionUsername;
+        }
+
         $whereSql = '';
         if (!empty($where)) {
             $whereSql = 'WHERE ' . implode(' AND ', $where);
@@ -231,6 +243,18 @@ class SoccerMatch
                 $params['my_username'] = $sessionUsername;
                 $params['my_username2'] = $sessionUsername;
             }
+        }
+
+        if (!empty($filters['exclude_my_matches']) && $sessionUsername) {
+            $where[] = "m.host_username != :exclude_username 
+                        AND NOT EXISTS (
+                            SELECT 1 FROM registrations r 
+                            WHERE r.match_id = m.id 
+                              AND r.username = :exclude_username2 
+                              AND r.status IN ('registered', 'waitlist')
+                        )";
+            $params['exclude_username'] = $sessionUsername;
+            $params['exclude_username2'] = $sessionUsername;
         }
 
         $whereSql = '';

@@ -1,6 +1,6 @@
 <?php
 // Determine which tab should be active by default based on search filters or tab parameter
-$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']);
+$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']) || !empty($_GET['exclude_my_matches']);
 $activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
 $username = $_SESSION['user']['username'] ?? null;
@@ -218,6 +218,17 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                             <label class="form-check-label small ms-1 text-nowrap" for="only_friends">Partite di amici</label>
                         </div>
                     </div>
+
+                    <?php if ($username): ?>
+                    <!-- Nascondi mie iscrizioni -->
+                    <div class="d-flex align-items-center py-1">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="exclude_my_matches"
+                                name="exclude_my_matches" value="1" <?= !empty($_GET['exclude_my_matches']) ? 'checked' : '' ?>>
+                            <label class="form-check-label small ms-1 text-nowrap" for="exclude_my_matches">Nascondi iscritte</label>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
                     <!-- Pulsante Resetta -->
                     <div id="resetButtonContainer" class="ms-md-auto d-flex align-items-center justify-content-center">

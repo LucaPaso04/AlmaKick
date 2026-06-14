@@ -15,6 +15,7 @@ class MatchController extends BaseController {
             'format' => $_GET['format'] ?? null,
             'filter' => $_GET['filter'] ?? null,
             'only_friends' => $_GET['only_friends'] ?? null,
+            'exclude_my_matches' => $_GET['exclude_my_matches'] ?? null,
             'username' => $_SESSION['user']['username'] ?? null
         ];
 
