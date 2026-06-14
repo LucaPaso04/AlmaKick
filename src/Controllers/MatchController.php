@@ -121,7 +121,7 @@ class MatchController extends BaseController {
 
         // Carica iscrizioni con info utenti
         $stmtReg = $db->prepare("
-            SELECT r.*, u.name, u.avatar, u.preferred_role, u.trust_score 
+            SELECT r.*, u.name, u.avatar, u.preferred_role, u.trust_score, u.skill_rating 
             FROM registrations r
             JOIN users u ON r.username = u.username
             WHERE r.match_id = :match_id

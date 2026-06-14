@@ -9,25 +9,145 @@ $away_team = array_filter($registrations, function($r) {
 });
 $teams_generated = count($home_team) > 0 || count($away_team) > 0;
 
-$groupPlayersByRole = function($team) {
-    $lines = ['GK' => [], 'DEF' => [], 'MID' => [], 'ATT' => []];
-    foreach($team as $reg) {
-        $r = strtolower($reg['preferred_role'] ?? '');
-        if (str_contains($r, 'portiere') || str_contains($r, 'goalkeeper')) {
-            $lines['GK'][] = $reg;
-        } elseif (str_contains($r, 'difensor') || str_contains($r, 'terzino') || str_contains($r, 'defender')) {
-            $lines['DEF'][] = $reg;
-        } elseif (str_contains($r, 'attaccant') || str_contains($r, 'punta') || str_contains($r, 'ala') || str_contains($r, 'avanti') || str_contains($r, 'striker')) {
-            $lines['ATT'][] = $reg;
-        } else {
-            $lines['MID'][] = $reg;
-        }
+$getCanonicalRole = function($preferredRole) {
+    $r = strtolower($preferredRole ?? '');
+    if (str_contains($r, 'portiere') || str_contains($r, 'goalkeeper')) {
+        return 'GK';
+    } elseif (str_contains($r, 'difensor') || str_contains($r, 'terzino') || str_contains($r, 'defender')) {
+        return 'DEF';
+    } elseif (str_contains($r, 'attaccant') || str_contains($r, 'punta') || str_contains($r, 'ala') || str_contains($r, 'avanti') || str_contains($r, 'striker')) {
+        return 'ATT';
+    } else {
+        return 'MID';
     }
-    return $lines;
 };
 
-$home_lines = $groupPlayersByRole($home_team);
-$away_lines = $groupPlayersByRole($away_team);
+$assignPlayersToFormation = function($team) use ($getCanonicalRole) {
+    $N = count($team);
+    if ($N === 0) {
+        return ['GK' => [], 'DEF' => [], 'MID' => [], 'ATT' => []];
+    }
+
+    // Predefined realistic schemas based on number of players N in the team
+    $schemas = [
+        1 => [
+            ['GK' => 1, 'DEF' => 0, 'MID' => 0, 'ATT' => 0]
+        ],
+        2 => [
+            ['GK' => 1, 'DEF' => 1, 'MID' => 0, 'ATT' => 0],
+            ['GK' => 1, 'DEF' => 0, 'MID' => 1, 'ATT' => 0]
+        ],
+        3 => [
+            ['GK' => 1, 'DEF' => 1, 'MID' => 1, 'ATT' => 0],
+            ['GK' => 1, 'DEF' => 1, 'MID' => 0, 'ATT' => 1]
+        ],
+        4 => [
+            ['GK' => 1, 'DEF' => 1, 'MID' => 1, 'ATT' => 1],
+            ['GK' => 1, 'DEF' => 2, 'MID' => 1, 'ATT' => 0],
+            ['GK' => 1, 'DEF' => 1, 'MID' => 2, 'ATT' => 0]
+        ],
+        5 => [
+            ['GK' => 1, 'DEF' => 1, 'MID' => 2, 'ATT' => 1], // 1-2-1
+            ['GK' => 1, 'DEF' => 2, 'MID' => 1, 'ATT' => 1], // 2-1-1
+            ['GK' => 1, 'DEF' => 2, 'MID' => 2, 'ATT' => 0], // 2-2-0
+            ['GK' => 1, 'DEF' => 1, 'MID' => 3, 'ATT' => 0]  // 1-3-0
+        ],
+        6 => [
+            ['GK' => 1, 'DEF' => 2, 'MID' => 2, 'ATT' => 1],
+            ['GK' => 1, 'DEF' => 2, 'MID' => 1, 'ATT' => 2],
+            ['GK' => 1, 'DEF' => 3, 'MID' => 2, 'ATT' => 0]
+        ],
+        7 => [
+            ['GK' => 1, 'DEF' => 2, 'MID' => 3, 'ATT' => 1], // 2-3-1
+            ['GK' => 1, 'DEF' => 3, 'MID' => 2, 'ATT' => 1], // 3-2-1
+            ['GK' => 1, 'DEF' => 3, 'MID' => 1, 'ATT' => 2], // 3-1-2
+            ['GK' => 1, 'DEF' => 2, 'MID' => 2, 'ATT' => 2]  // 2-2-2
+        ],
+        8 => [
+            ['GK' => 1, 'DEF' => 3, 'MID' => 3, 'ATT' => 1], // 3-3-1
+            ['GK' => 1, 'DEF' => 3, 'MID' => 2, 'ATT' => 2], // 3-2-2
+            ['GK' => 1, 'DEF' => 4, 'MID' => 2, 'ATT' => 1], // 4-2-1
+            ['GK' => 1, 'DEF' => 2, 'MID' => 4, 'ATT' => 1]  // 2-4-1
+        ],
+        9 => [
+            ['GK' => 1, 'DEF' => 3, 'MID' => 3, 'ATT' => 2],
+            ['GK' => 1, 'DEF' => 4, 'MID' => 3, 'ATT' => 1],
+            ['GK' => 1, 'DEF' => 3, 'MID' => 4, 'ATT' => 1]
+        ],
+        10 => [
+            ['GK' => 1, 'DEF' => 4, 'MID' => 3, 'ATT' => 2],
+            ['GK' => 1, 'DEF' => 4, 'MID' => 4, 'ATT' => 1],
+            ['GK' => 1, 'DEF' => 3, 'MID' => 4, 'ATT' => 2]
+        ],
+        11 => [
+            ['GK' => 1, 'DEF' => 4, 'MID' => 4, 'ATT' => 2], // 4-4-2
+            ['GK' => 1, 'DEF' => 4, 'MID' => 3, 'ATT' => 3], // 4-3-3
+            ['GK' => 1, 'DEF' => 3, 'MID' => 5, 'ATT' => 2]  // 3-5-2
+        ]
+    ];
+
+    // Sort players by skill_rating descending so strongest get priority
+    usort($team, function($a, $b) {
+        $srA = isset($a['skill_rating']) ? (float)$a['skill_rating'] : 0.0;
+        $srB = isset($b['skill_rating']) ? (float)$b['skill_rating'] : 0.0;
+        return $srB <=> $srA;
+    });
+
+    // Determine candidate schemas
+    if (isset($schemas[$N])) {
+        $candidates = $schemas[$N];
+    } else {
+        // Fallback for larger teams
+        $gk = 1;
+        $def = (int)floor(($N - 1) * 0.35);
+        $att = (int)max(1, floor(($N - 1) * 0.25));
+        $mid = $N - 1 - $def - $att;
+        $candidates = [['GK' => $gk, 'DEF' => $def, 'MID' => $mid, 'ATT' => $att]];
+    }
+
+    $bestAssignments = [];
+    $bestScore = -1;
+
+    foreach ($candidates as $schema) {
+        $assignments = ['GK' => [], 'DEF' => [], 'MID' => [], 'ATT' => []];
+        $slotsLeft = $schema;
+        $score = 0;
+        $unassigned = [];
+
+        // Pass 1: Place players in their preferred role if available
+        foreach ($team as $player) {
+            $pref = $getCanonicalRole($player['preferred_role'] ?? '');
+            if (isset($slotsLeft[$pref]) && $slotsLeft[$pref] > 0) {
+                $assignments[$pref][] = $player;
+                $slotsLeft[$pref]--;
+                $score += 10; // Positive score weight for matching preference
+            } else {
+                $unassigned[] = $player;
+            }
+        }
+
+        // Pass 2: Autocomplete remaining empty slots
+        foreach ($unassigned as $player) {
+            foreach (['GK', 'DEF', 'MID', 'ATT'] as $role) {
+                if (isset($slotsLeft[$role]) && $slotsLeft[$role] > 0) {
+                    $assignments[$role][] = $player;
+                    $slotsLeft[$role]--;
+                    break;
+                }
+            }
+        }
+
+        if ($score > $bestScore) {
+            $bestScore = $score;
+            $bestAssignments = $assignments;
+        }
+    }
+
+    return $bestAssignments;
+};
+
+$home_lines = $assignPlayersToFormation($home_team);
+$away_lines = $assignPlayersToFormation($away_team);
 
 $home_order = ['GK', 'DEF', 'MID', 'ATT'];
 $away_order = ['ATT', 'MID', 'DEF', 'GK'];

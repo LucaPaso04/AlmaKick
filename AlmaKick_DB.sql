@@ -169,11 +169,11 @@ CREATE TABLE `friendships` (
 
 -- Utenti di base
 INSERT INTO `users` (`username`, `friend_code`, `name`, `last_name`, `email`, `email_verified_at`, `password`, `phone`, `preferred_role`, `role`, `created_at`, `updated_at`) VALUES 
-('admin_test', 'RWBMYD', 'Admin', 'Test', 'admin@email.it', NOW(), '$2y$12$rMficTvQd3ZLBtPnPjp8VeoPSAs.5W.erlprPs.YbRCGniPyv3gTC', '3331234567', 'Defender', 'super_admin', NOW(), NOW()),
-('mario_rossi', '5JXTKP', 'Mario', 'Rossi', 'user@email.it', NOW(), '$2y$12$tdivzfJLVFGBbQ1G88qw4ectIDlSoqRP07CnyBr2f1X81FeYR1nuW', '3339876543', 'Striker', 'user', NOW(), NOW()),
-('thomas_st', 'MNCO0P', 'Thomas', 'Steuber', 'thomas@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3102877196', 'Midfielder', 'user', NOW(), NOW()),
-('prof_brown', 'CFWPXS', 'Misael', 'Brown', 'brown@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '5179122216', 'Goalkeeper', 'user', NOW(), NOW()),
-('gertrude_b', 'IR3TMB', 'Gertrude', 'Braun', 'gertrude@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3853907416', 'Goalkeeper', 'user', NOW(), NOW());
+('admin_test', 'RWBMYD', 'Admin', 'Test', 'admin@email.it', NOW(), '$2y$12$rMficTvQd3ZLBtPnPjp8VeoPSAs.5W.erlprPs.YbRCGniPyv3gTC', '3331234567', 'Difensore', 'super_admin', NOW(), NOW()),
+('mario_rossi', '5JXTKP', 'Mario', 'Rossi', 'user@email.it', NOW(), '$2y$12$tdivzfJLVFGBbQ1G88qw4ectIDlSoqRP07CnyBr2f1X81FeYR1nuW', '3339876543', 'Attaccante', 'user', NOW(), NOW()),
+('thomas_st', 'MNCO0P', 'Thomas', 'Steuber', 'thomas@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3102877196', 'Centrocampista', 'user', NOW(), NOW()),
+('prof_brown', 'CFWPXS', 'Misael', 'Brown', 'brown@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '5179122216', 'Portiere', 'user', NOW(), NOW()),
+('gertrude_b', 'IR3TMB', 'Gertrude', 'Braun', 'gertrude@example.org', NULL, '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3853907416', 'Portiere', 'user', NOW(), NOW());
 
 -- Elenco Partite (Incluse le due nuove casistiche richieste)
 INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES 
