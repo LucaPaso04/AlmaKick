@@ -22,17 +22,17 @@ if ($match['status'] === 'finished'):
     <?php if ($is_host): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4 border-start border-4 border-success">
             <div class="card-body p-4">
-                <h2 class="fw-bold fs-5"><i class="bi bi-clipboard-data-fill me-2 text-success"></i>Pannello Host Post-Partita</h2>
+                <h2 class="fw-bold fs-5"><span class="bi bi-clipboard-data-fill me-2 text-success"></span>Pannello Host Post-Partita</h2>
                 <div class="row g-3 mt-2">
                     <div class="col-12 col-md-6">
                         <div class="h-100 d-flex flex-column justify-content-center">
                             <?php if($isWithin24Hours): ?>
                                 <a href="<?= url('/matches/' . $match['id'] . '/report') ?>" class="btn btn-success w-100 rounded-pill fw-bold shadow-sm py-3">
-                                    <i class="bi bi-pencil-square me-2"></i><?= ($match['result_home'] !== null) ? 'Modifica Tabellino' : 'Compila Tabellino' ?>
+                                    <span class="bi bi-pencil-square me-2"></span><?= ($match['result_home'] !== null) ? 'Modifica Tabellino' : 'Compila Tabellino' ?>
                                 </a>
                             <?php else: ?>
                                 <button class="btn btn-secondary w-100 rounded-pill fw-bold shadow-sm py-3" disabled title="Tempo scaduto (24h)">
-                                    <i class="bi bi-lock-fill me-2"></i>Tabellino Chiuso
+                                    <span class="bi bi-lock-fill me-2"></span>Tabellino Chiuso
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -45,7 +45,7 @@ if ($match['status'] === 'finished'):
                                     <label class="form-label small fw-bold mb-0">Scadenza Voti (Assegnaz. MVP):</label>
                                     <input type="datetime-local" name="mvp_deadline" class="form-control form-control-sm rounded-pill border-warning" value="<?= date('Y-m-d\TH:i', time() + 24 * 3600) ?>" required min="<?= date('Y-m-d\TH:i', time() + 300) ?>">
                                     <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold shadow-sm text-dark">
-                                        <i class="bi bi-clock-history me-2"></i>Imposta Scadenza
+                                        <span class="bi bi-clock-history me-2"></span>Imposta Scadenza
                                     </button>
                                 </form>
                             <?php elseif(!$match['mvp_assigned'] && $match['mvp_deadline']): ?>
@@ -56,7 +56,7 @@ if ($match['status'] === 'finished'):
                                 </div>
                             <?php else: ?>
                                 <button class="btn btn-secondary w-100 rounded-pill fw-bold shadow-sm py-3" disabled>
-                                    <i class="bi bi-check-circle-fill me-2"></i>MVP Assegnato 🏆
+                                    <span class="bi bi-check-circle-fill me-2"></span>MVP Assegnato 🏆
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -70,7 +70,7 @@ if ($match['status'] === 'finished'):
     <?php if ($my_reg): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4">
             <div class="card-body p-4">
-                <h2 class="fw-bold mb-3 fs-5"><i class="bi bi-star-fill text-warning me-2"></i>Vota i tuoi Compagni</h2>
+                <h2 class="fw-bold mb-3 fs-5"><span class="bi bi-star-fill text-warning me-2"></span>Vota i tuoi Compagni</h2>
                 <p class="text-muted small mb-4">Assegna da 1 a 5 stelle per la Skill di ogni giocatore. Il Pollice in giù è una segnalazione seria.</p>
 
                 <form action="<?= url('/matches/' . $match['id'] . '/vote?from=' . urlencode($from)) ?>" method="POST">
@@ -120,7 +120,7 @@ if ($match['status'] === 'finished'):
                                 <div>
                                     <?php if($existing_vote): ?>
                                         <span class="badge bg-success rounded-pill px-3 py-2">
-                                            <i class="bi bi-check-lg me-1"></i>Votato: <?= $existing_vote['skill_vote'] ?>⭐
+                                            <span class="bi bi-check-lg me-1"></span>Votato: <?= $existing_vote['skill_vote'] ?>⭐
                                         </span>
                                     <?php else: 
                                         $hasSomeoneToVote = true;
@@ -149,7 +149,7 @@ if ($match['status'] === 'finished'):
                     <?php if($hasSomeoneToVote): ?>
                         <div class="text-end mt-4">
                             <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm py-2">
-                                <i class="bi bi-send-fill me-2"></i>Invia Voti
+                                <span class="bi bi-send-fill me-2"></span>Invia Voti
                             </button>
                         </div>
                     <?php endif; ?>

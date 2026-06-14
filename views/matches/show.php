@@ -4,7 +4,7 @@
 ?>
 <link rel="stylesheet" href="<?= url('/css/matches-show.css') ?>">
 <?php if (!empty($match['latitude']) && !empty($match['longitude'])): ?>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <?php endif; ?>
 

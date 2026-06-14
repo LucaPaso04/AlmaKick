@@ -19,10 +19,10 @@ if (isset($_SESSION['user']['username'])) {
             <?php if ($is_registered && $my_registration): ?>
                 
                 <?php if ($my_registration['status'] === 'waitlist'): ?>
-                    <p class="text-warning fw-bold mb-3"><i class="bi bi-hourglass-split me-2"></i>Sei in Panchina (Lista d'attesa)!</p>
+                    <p class="text-warning fw-bold mb-3"><span class="bi bi-hourglass-split me-2"></span>Sei in Panchina (Lista d'attesa)!</p>
                     <small class="d-block mb-3 text-muted">Subentrerai automaticamente in caso di ritiri.</small>
                 <?php else: ?>
-                    <p class="text-success fw-bold mb-3"><i class="bi bi-check-circle-fill me-2"></i>Sei Iscritto!</p>
+                    <p class="text-success fw-bold mb-3"><span class="bi bi-check-circle-fill me-2"></span>Sei Iscritto!</p>
                     <?php if($my_registration['has_guest']): ?>
                         <div class="badge bg-warning text-dark mb-3 px-3 py-2">Stai portando un Ospite (+1)</div>
                         <p class="text-muted small">Dovrai pagare la quota doppia al campo (€<?= number_format($current_quote * 2, 2) ?>)</p>
@@ -58,7 +58,7 @@ if (isset($_SESSION['user']['username'])) {
                         </div>
                         <button type="submit"
                             class="btn btn-primary btn-lg shadow-sm rounded-pill px-5 fw-bold w-100 w-md-auto">
-                            <i class="bi bi-person-plus-fill me-2"></i><?= $match['status'] === 'open' ? 'Partecipa Ora' : 'Mettiti in Panchina' ?>
+                            <span class="bi bi-person-plus-fill me-2"></span><?= $match['status'] === 'open' ? 'Partecipa Ora' : 'Mettiti in Panchina' ?>
                         </button>
                     </form>
                 <?php endif; ?>
@@ -70,14 +70,14 @@ if (isset($_SESSION['user']['username'])) {
     <?php if ($is_host): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4 border-start border-4 border-warning">
             <div class="card-body p-4">
-                <h2 class="fw-bold mb-3 fs-5"><i class="bi bi-gear-fill me-2 text-warning"></i>Gestione Organizzatore</h2>
+                <h2 class="fw-bold mb-3 fs-5"><span class="bi bi-gear-fill me-2 text-warning"></span>Gestione Organizzatore</h2>
                 <div class="row g-3">
                     <?php // Generate Teams ?>
                     <div class="col-12 col-md-6">
                         <form action="<?= url('/matches/' . $match['id'] . '/generate-teams?from=' . urlencode($from)) ?>" method="POST">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                             <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold shadow-sm">
-                                <i class="bi bi-shuffle me-2"></i>Genera Squadre Equilibrate
+                                <span class="bi bi-shuffle me-2"></span>Genera Squadre Equilibrate
                             </button>
                         </form>
                     </div>
@@ -87,7 +87,7 @@ if (isset($_SESSION['user']['username'])) {
                             onsubmit="return confirm('Vuoi concludere la partita? Non sarà più possibile iscriversi.');">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                             <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold shadow-sm">
-                                <i class="bi bi-flag-fill me-2"></i>Termina Partita
+                                <span class="bi bi-flag-fill me-2"></span>Termina Partita
                             </button>
                         </form>
                     </div>
@@ -103,7 +103,7 @@ if (isset($_SESSION['user']['username'])) {
                         <label class="form-check-label fw-bold" for="motivo_meteo">Annulla per maltempo (Nessuna penalità)</label>
                     </div>
                     <button type="submit" class="btn btn-outline-danger shadow-sm rounded-pill px-4">
-                        <i class="bi bi-x-octagon me-2"></i>Annulla Partita
+                        <span class="bi bi-x-octagon me-2"></span>Annulla Partita
                     </button>
                 </form>
             </div>

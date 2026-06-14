@@ -19,6 +19,6 @@ $wa_text = urlencode($waTextRaw);
 <div class="mb-4">
     <a href="https://wa.me/?text=<?= $wa_text ?>" target="_blank" rel="noopener"
        class="btn btn-success w-100 rounded-pill fw-bold shadow-sm py-3 d-flex align-items-center justify-content-center hover-scale transition-all focus-ring" style="background: #25D366; border-color: #25D366;" aria-label="Condividi i dettagli della partita su WhatsApp">
-        <i class="bi bi-whatsapp me-2 fs-5" aria-hidden="true"></i>Condividi su WhatsApp
+        <span class="bi bi-whatsapp me-2 fs-5" aria-hidden="true"></span>Condividi su WhatsApp
     </a>
 </div>

@@ -40,7 +40,7 @@
                                 <span class="badge bg-warning text-dark shadow-sm">Panchina</span>
                             <?php endif; ?>
                             <?php if($isPlayerHost): ?>
-                                <span class="badge bg-secondary shadow-sm"><i class="bi bi-star-fill text-warning me-1" aria-hidden="true"></i>Host</span>
+                                <span class="badge bg-secondary shadow-sm"><span class="bi bi-star-fill text-warning me-1" aria-hidden="true"></span>Host</span>
                             <?php endif; ?>
                             <?php if($reg['team']): ?>
                                 <span class="badge bg-<?= $reg['team'] === 'home' ? 'danger' : 'primary' ?> shadow-sm"><?= ucfirst($reg['team']) ?></span>
@@ -50,14 +50,14 @@
                             <?php endif; ?>
                         </h3>
                         <small class="text-muted d-flex align-items-center gap-1 mt-1">
-                            <i class="bi bi-person-badge" aria-hidden="true"></i> 
+                            <span class="bi bi-person-badge" aria-hidden="true"></span> 
                             <?= e($reg['preferred_role'] ?: 'Ruolo non specificato') ?>
                         </small>
                     </div>
                 </div>
                 <div class="text-end d-flex flex-column align-items-end">
                     <span class="badge bg-<?= $reg['trust_score'] >= 80 ? 'success' : ($reg['trust_score'] >= 50 ? 'warning' : 'danger') ?> rounded-pill fs-6 px-3 py-1 shadow-sm mb-1" role="img" aria-label="Trust Score: <?= $reg['trust_score'] ?>">
-                        <i class="bi bi-shield-check me-1" aria-hidden="true"></i><?= $reg['trust_score'] ?>
+                        <span class="bi bi-shield-check me-1" aria-hidden="true"></span><?= $reg['trust_score'] ?>
                     </span>
                     <small class="text-muted fw-bold">
                         €<?= number_format($current_quote * ($reg['has_guest'] ? 2 : 1), 2) ?>
@@ -67,7 +67,7 @@
         <?php endforeach; ?>
     <?php else: ?>
         <div class="list-group-item text-center text-muted py-5 border-0 rounded-4">
-            <i class="bi bi-emoji-frown fs-1 mb-2 d-block text-secondary opacity-50" aria-hidden="true"></i>
+            <span class="bi bi-emoji-frown fs-1 mb-2 d-block text-secondary opacity-50" aria-hidden="true"></span>
             Nessun iscritto ancora.
         </div>
     <?php endif; ?>

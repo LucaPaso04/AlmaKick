@@ -4,7 +4,7 @@
 
 <?php if ($match['status'] === 'cancelled'): ?>
     <div class="alert alert-danger mb-4 border-0 rounded-4 shadow-sm d-flex align-items-center" role="alert">
-        <i class="bi bi-exclamation-octagon-fill fs-3 me-3" aria-hidden="true"></i>
+        <span class="bi bi-exclamation-octagon-fill fs-3 me-3" aria-hidden="true"></span>
         <div>
             <strong class="d-block mb-1">Partita Annullata</strong>
             <?= e($match['cancellation_reason'] ?: "Nessun motivo specificato.") ?>
@@ -54,7 +54,7 @@
                     </div>
                 <?php endif; ?>
                 <div class="position-absolute bottom-0 end-0 bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center mvp-badge-wrap" aria-hidden="true">
-                    <i class="bi bi-trophy-fill text-warning fs-6"></i>
+                    <span class="bi bi-trophy-fill text-warning fs-6"></span>
                 </div>
             </div>
             <small class="mvp-title text-uppercase fw-bolder d-block mb-1 tracking-wide" aria-hidden="true">MVP della Partita</small>
