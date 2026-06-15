@@ -73,6 +73,16 @@ $router->add('GET', '/matches/create', 'MatchController@create', [\App\Middlewar
 $router->add('POST', '/matches', 'MatchController@store', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/matches/{id}', 'MatchController@show');
 
+// ROTTE PROFILO E AMICIZIE
+$router->add('GET', '/profile', 'UserController@show', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/profile/avatar', 'UserController@updateAvatar', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/profile/info', 'UserController@updateInfo', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/friends/add', 'UserController@addFriend', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/friends/accept/{username}', 'UserController@acceptFriend', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/friends/reject/{username}', 'UserController@rejectFriend', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/friends/block/{username}', 'UserController@blockFriend', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/friends/remove/{username}', 'UserController@removeFriend', [\App\Middleware\AuthMiddleware::class]);
+
 // ROTTE AMMINISTRATORE
 $router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/ban', 'AdminController@ban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
