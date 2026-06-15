@@ -304,6 +304,7 @@ class AdminController extends BaseController {
 
             // Trust Logs
             'trust_logs' => $trustLogsList,
+            'totalTrust' => $totalTrust,
             'totalPagesTrust' => $totalPagesTrust,
             'pageTrust' => $trustPage
         ]);

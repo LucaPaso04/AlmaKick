@@ -42,4 +42,146 @@ class User {
             'role' => $data['role'] ?? 'user'
         ]);
     }
+
+    public function findByFriendCode(string $friendCode): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE friend_code = :friend_code");
+        $stmt->execute(['friend_code' => $friendCode]);
+        $user = $stmt->fetch();
+        return $user ?: null;
+    }
+
+    public function updateAvatar(string $username, string $avatarPath): bool {
+        $stmt = $this->db->prepare("UPDATE users SET avatar = :avatar, updated_at = NOW() WHERE username = :username");
+        return $stmt->execute(['avatar' => $avatarPath, 'username' => $username]);
+    }
+
+    public function updateInfo(string $username, array $data): bool {
+        $stmt = $this->db->prepare("UPDATE users SET name = :name, phone = :phone, preferred_role = :preferred_role, updated_at = NOW() WHERE username = :username");
+        return $stmt->execute([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'preferred_role' => $data['preferred_role'],
+            'username' => $username
+        ]);
+    }
+
+    public function updateEmail(string $username, string $email): bool {
+        $stmt = $this->db->prepare("UPDATE users SET email = :email, updated_at = NOW() WHERE username = :username");
+        return $stmt->execute(['email' => $email, 'username' => $username]);
+    }
+
+    public function updatePassword(string $username, string $passwordHash): bool {
+        $stmt = $this->db->prepare("UPDATE users SET password = :password, updated_at = NOW() WHERE username = :username");
+        return $stmt->execute(['password' => $passwordHash, 'username' => $username]);
+    }
+
+    public function getMatchHistory(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT r.*, m.date, m.time, m.location, m.format, m.result_home, m.result_away, m.id as match_id
+            FROM registrations r
+            JOIN matches m ON r.match_id = m.id
+            WHERE r.username = :username 
+              AND r.status = 'registered' 
+              AND m.status = 'finished'
+            ORDER BY m.date DESC, m.time DESC
+        ");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getMatchesHostedCount(string $username): int {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM matches WHERE host_username = :username AND status != 'cancelled'");
+        $stmt->execute(['username' => $username]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getPendingRequests(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* 
+            FROM friendships f 
+            JOIN users u ON f.sender_username = u.username 
+            WHERE f.recipient_username = :username AND f.status = 'pending'
+            ORDER BY f.created_at DESC
+        ");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getFriends(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* 
+            FROM users u
+            JOIN friendships f ON (
+                (f.sender_username = :username1 AND f.recipient_username = u.username)
+                OR (f.recipient_username = :username2 AND f.sender_username = u.username)
+            )
+            WHERE f.status = 'accepted'
+            ORDER BY u.name ASC
+        ");
+        $stmt->execute([
+            'username1' => $username,
+            'username2' => $username
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getFriendshipStatus(string $user1, string $user2): ?array {
+        $stmt = $this->db->prepare("
+            SELECT * FROM friendships 
+            WHERE (sender_username = :u1 AND recipient_username = :u2)
+               OR (sender_username = :u3 AND recipient_username = :u4)
+        ");
+        $stmt->execute([
+            'u1' => $user1, 'u2' => $user2,
+            'u3' => $user2, 'u4' => $user1
+        ]);
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $res ?: null;
+    }
+
+    public function addFriendRequest(string $sender, string $recipient): bool {
+        $stmt = $this->db->prepare("
+            INSERT INTO friendships (sender_username, recipient_username, status, created_at)
+            VALUES (:sender, :recipient, 'pending', NOW())
+            ON DUPLICATE KEY UPDATE status = 'pending', sender_username = :sender2, recipient_username = :recipient2, created_at = NOW()
+        ");
+        return $stmt->execute([
+            'sender' => $sender,
+            'recipient' => $recipient,
+            'sender2' => $sender,
+            'recipient2' => $recipient
+        ]);
+    }
+
+    public function acceptFriendRequest(string $sender, string $recipient): bool {
+        $stmt = $this->db->prepare("
+            UPDATE friendships SET status = 'accepted', created_at = NOW()
+            WHERE sender_username = :sender AND recipient_username = :recipient
+        ");
+        return $stmt->execute(['sender' => $sender, 'recipient' => $recipient]);
+    }
+
+    public function deleteFriendship(string $user1, string $user2): bool {
+        $stmt = $this->db->prepare("
+            DELETE FROM friendships 
+            WHERE (sender_username = :u1 AND recipient_username = :u2)
+               OR (sender_username = :u3 AND recipient_username = :u4)
+        ");
+        return $stmt->execute([
+            'u1' => $user1, 'u2' => $user2,
+            'u3' => $user2, 'u4' => $user1
+        ]);
+    }
+
+    public function blockUser(string $user1, string $user2): bool {
+        $stmt = $this->db->prepare("
+            INSERT INTO friendships (sender_username, recipient_username, status, created_at)
+            VALUES (:u1, :u2, 'blocked', NOW())
+            ON DUPLICATE KEY UPDATE status = 'blocked', sender_username = :u3, recipient_username = :u4, created_at = NOW()
+        ");
+        return $stmt->execute([
+            'u1' => $user1, 'u2' => $user2,
+            'u3' => $user1, 'u4' => $user2
+        ]);
+    }
 }

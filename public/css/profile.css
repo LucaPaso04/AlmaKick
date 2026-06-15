@@ -1,0 +1,187 @@
+/* Profile Page Custom Styles */
+
+.profile-banner {
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--accent));
+    height: 140px;
+    position: relative;
+}
+
+.profile-avatar-wrap {
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    z-index: 10;
+}
+
+.avatar-upload-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    transition: transform 0.2s ease;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem auto;
+    font-size: 1.25rem;
+}
+
+.icon-primary {
+    background: rgba(36, 123, 160, 0.15);
+    color: var(--accent);
+}
+
+.icon-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.icon-danger {
+    background: rgba(251, 54, 64, 0.15);
+    color: var(--danger);
+}
+
+.icon-warning {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.icon-info {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+}
+
+.stat-card-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+/* Trust Score Circle */
+.profile-trust-score {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: 3.5px solid;
+}
+
+/* Scrollable Lists */
+.profile-scrollable-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.profile-scrollable-list-large {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Custom Scrollbar for scrollable lists */
+.profile-scrollable-list::-webkit-scrollbar,
+.profile-scrollable-list-large::-webkit-scrollbar {
+    width: 6px;
+}
+
+.profile-scrollable-list::-webkit-scrollbar-track,
+.profile-scrollable-list-large::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.profile-scrollable-list::-webkit-scrollbar-thumb,
+.profile-scrollable-list-large::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 20px;
+}
+
+.profile-list-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.15rem;
+}
+
+/* Settings styling */
+.settings-section-header {
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+/* Badges section styling */
+.badge-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.badge-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow);
+}
+
+.badge-card-locked {
+    opacity: 0.55;
+    background: rgba(var(--twilight-rgb), 0.15);
+}
+
+.badge-card-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+}
+
+.badge-modal-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 2.2rem;
+}
+
+.font-size-2xs {
+    font-size: 0.7rem;
+}
+
+.height-6px {
+    height: 6px;
+}
+
+.height-8px {
+    height: 8px;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+.animate-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.animate-hover:hover {
+    transform: scale(1.05);
+}
+
+.badge-modal-btn-close {
+    filter: var(--bs-theme-filter-close-btn);
+}
