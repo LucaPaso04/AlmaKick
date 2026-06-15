@@ -62,6 +62,7 @@ $router = new \App\Router();
 
 // DEFINIZIONE DELLE ROTTE
 $router->add('GET', '/', 'HomeController@index');
+$router->add('GET', '/welcome', 'WelcomeController@index');
 $router->add('GET', '/login', 'AuthController@showLogin');
 $router->add('POST', '/login', 'AuthController@login');
 $router->add('GET', '/register', 'AuthController@showRegister');

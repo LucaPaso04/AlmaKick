@@ -70,6 +70,10 @@ if (isset($_SESSION['user'])) {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom Modular Stylesheet -->
     <link rel="stylesheet" href="<?= url('/css/style.css') ?>">
+    <!-- Page-specific Styles -->
+    <?php if ($current_path === '/welcome'): ?>
+        <link rel="stylesheet" href="<?= url('/css/welcome.css') ?>">
+    <?php endif; ?>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
