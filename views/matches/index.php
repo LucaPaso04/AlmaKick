@@ -1,6 +1,6 @@
 <?php
 // Determine which tab should be active by default based on search filters or tab parameter
-$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']);
+$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']) || !empty($_GET['exclude_my_matches']);
 $activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
 $username = $_SESSION['user']['username'] ?? null;
@@ -15,15 +15,7 @@ $myMatches = [];
 if ($username && is_array($matches)) {
     $myMatches = array_filter($matches, function ($p) use ($username) {
         $isHost = isset($p['host_username']) && $p['host_username'] === $username;
-        $isRegistered = false;
-        if (isset($p['registrations']) && is_array($p['registrations'])) {
-            foreach ($p['registrations'] as $reg) {
-                if (isset($reg['username']) && $reg['username'] === $username && in_array($reg['status'] ?? '', ['registered', 'waitlist'])) {
-                    $isRegistered = true;
-                    break;
-                }
-            }
-        }
+        $isRegistered = isset($p['user_registration_status']) && in_array($p['user_registration_status'], ['registered', 'waitlist']);
         return $isHost || $isRegistered;
     });
 }
@@ -89,7 +81,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                                     &bull;
                                     <?= e(strlen($mr['location']) > 25 ? substr($mr['location'], 0, 25) . '...' : $mr['location']) ?></span>
                             </div>
-                            <a href="<?= url('/matches/' . $mr['id']) ?>"
+                            <a href="<?= url('/matches/' . $mr['id'] . '?from=matches') ?>"
                                 class="btn btn-sm btn-success rounded-pill fw-bold px-3 text-nowrap">Gestisci</a>
                         </div>
                     <?php endforeach; ?>
@@ -106,7 +98,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                                 <span class="small text-body-secondary"><?= e(date('d/m/Y', strtotime($mv['date']))) ?> &bull;
                                     <?= e(strlen($mv['location']) > 25 ? substr($mv['location'], 0, 25) . '...' : $mv['location']) ?></span>
                             </div>
-                            <a href="<?= url('/matches/' . $mv['id']) ?>"
+                            <a href="<?= url('/matches/' . $mv['id'] . '?from=matches') ?>"
                                 class="btn btn-sm btn-warning rounded-pill fw-bold px-3 text-dark text-nowrap">Vota</a>
                         </div>
                     <?php endforeach; ?>
@@ -226,6 +218,17 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                             <label class="form-check-label small ms-1 text-nowrap" for="only_friends">Partite di amici</label>
                         </div>
                     </div>
+
+                    <?php if ($username): ?>
+                    <!-- Nascondi mie iscrizioni -->
+                    <div class="d-flex align-items-center py-1">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="exclude_my_matches"
+                                name="exclude_my_matches" value="1" <?= !empty($_GET['exclude_my_matches']) ? 'checked' : '' ?>>
+                            <label class="form-check-label small ms-1 text-nowrap" for="exclude_my_matches">Nascondi iscritte</label>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
                     <!-- Pulsante Resetta -->
                     <div id="resetButtonContainer" class="ms-md-auto d-flex align-items-center justify-content-center">
