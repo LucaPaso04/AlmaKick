@@ -354,7 +354,9 @@
 
 @media (max-width: 991.98px) {
     #back-to-top {
-        bottom: 80px; /* Float above bottom navigation bar */
-        right: 16px;
+        bottom: calc(155px + env(safe-area-inset-bottom, 0px)) !important;
+        right: 16px !important;
+        left: auto !important;
+        z-index: 1040 !important;
     }
 }
