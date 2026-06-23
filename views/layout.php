@@ -73,6 +73,11 @@ if (isset($_SESSION['user'])) {
 </head>
 <body class="d-flex flex-column min-vh-100">
 
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 10000; pointer-events: none;">
+        <div id="scroll-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(to right, var(--accent), #38bdf8); transition: width 0.05s linear;"></div>
+    </div>
+
     <!-- Toast Container per notifiche fluttuanti -->
     <div class="custom-toast-container" id="toast-container">
         <?php if (isset($_SESSION['success'])): ?>
@@ -112,14 +117,7 @@ if (isset($_SESSION['user'])) {
                     </span>
                 </a>
 
-                <ul class="navbar-nav d-none d-md-flex ms-2 ms-lg-3">
-                    <?php $isPartiteActive = ($current_path === '/matches' || $current_path === '/matches/'); ?>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isPartiteActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/matches') ?>" aria-label="Lista Partite">
-                            <span class="bi bi-calendar-event<?= $isPartiteActive ? '-fill text-primary' : '' ?> me-1"></span> Partite
-                        </a>
-                    </li>
-                </ul>
+
 
                 <!-- Right side -->
                 <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
@@ -238,7 +236,7 @@ if (isset($_SESSION['user'])) {
                 <div class="col-6 col-md-4">
                     <h3 class="h6 fw-semibold">Link Utili</h3>
                     <ul class="list-unstyled small mb-0">
-                        <li class="mb-2"><a href="<?= url('/') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
+                        <li class="mb-2"><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
                         <li class="mb-2"><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
                         <?php if (isset($_SESSION['user'])): ?>
                             <li><a href="<?= url('/profile') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Il mio Profilo</a></li>
@@ -264,7 +262,7 @@ if (isset($_SESSION['user'])) {
 
     <?php if (isset($_SESSION['user'])): ?>
         <?php 
-            $isHomeActive = ($current_path === '/' || strpos($current_path, '/matches') === 0);
+            $isHomeActive = ($current_path === '/' || $current_path === '' || strpos($current_path, '/matches') === 0);
             $isCercaActive = ($current_path === '/users');
             $isClassificheActive = ($current_path === '/leaderboard');
             $isProfiloActive = ($current_path === '/profile');
@@ -283,6 +281,15 @@ if (isset($_SESSION['user'])) {
                     </li>
 
                     <li class="nav-item">
+                        <a href="<?= url('/leaderboard') ?>" class="nav-link flex-column d-flex align-items-center <?= $isClassificheActive ? 'text-warning fw-bold' : 'text-secondary' ?>" aria-current="<?= $isClassificheActive ? 'page' : 'false' ?>">
+                            <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
+                                <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
+                            </div>
+                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isClassificheActive ? '700' : '500' ?>">Top 10</small>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a href="<?= url('/users') ?>" class="nav-link flex-column d-flex align-items-center <?= $isCercaActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isCercaActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isCercaActive ? 'scale-110' : '' ?>">
                                 <span class="bi bi-people<?= $isCercaActive ? '-fill' : '' ?> fs-4"></span>
@@ -291,14 +298,6 @@ if (isset($_SESSION['user'])) {
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="<?= url('/leaderboard') ?>" class="nav-link flex-column d-flex align-items-center <?= $isClassificheActive ? 'text-warning fw-bold' : 'text-secondary' ?>" aria-current="<?= $isClassificheActive ? 'page' : 'false' ?>">
-                            <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
-                                <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
-                            </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isClassificheActive ? '700' : '500' ?>">Top 10</small>
-                        </a>
-                    </li>
                     <li class="nav-item">
                         <a href="<?= url('/profile') ?>" class="nav-link flex-column d-flex align-items-center <?= $isProfiloActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isProfiloActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isProfiloActive ? 'scale-110' : '' ?>">
@@ -498,6 +497,17 @@ if (isset($_SESSION['user'])) {
                         top: 0,
                         behavior: 'smooth'
                     });
+                });
+            }
+
+            // Scroll Progress Bar logic
+            const scrollProgressBar = document.getElementById('scroll-progress-bar');
+            if (scrollProgressBar) {
+                window.addEventListener('scroll', function() {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+                    scrollProgressBar.style.width = scrolled + '%';
                 });
             }
         });

@@ -135,7 +135,9 @@
 .match-card:hover, .card-partita:hover {
     transform: translateY(-6px) scale(1.015);
     border-color: var(--accent) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), var(--accent-glow) 0 0 20px !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 
+                0 0 20px var(--accent-glow),
+                0 0 40px rgba(56, 189, 248, 0.15) !important;
     background: var(--card-hover-bg) !important; /* Solid hover background */
 }
 
