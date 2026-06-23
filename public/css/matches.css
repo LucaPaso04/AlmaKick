@@ -35,6 +35,14 @@
     z-index: 1030;
 }
 
+@media (max-width: 991.98px) {
+    .fab-container {
+        bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
+        right: 16px !important;
+        z-index: 1040 !important;
+    }
+}
+
 .fab-btn {
     width: 60px;
     height: 60px;
@@ -121,13 +129,15 @@
     border: 1px solid var(--border) !important;
     border-radius: 16px;
     padding: 1.5rem;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .match-card:hover, .card-partita:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) scale(1.015);
     border-color: var(--accent) !important;
-    box-shadow: 0 12px 30px var(--accent-glow) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 
+                0 0 20px var(--accent-glow),
+                0 0 40px rgba(56, 189, 248, 0.15) !important;
     background: var(--card-hover-bg) !important; /* Solid hover background */
 }
 

@@ -73,6 +73,37 @@ if (isset($_SESSION['user'])) {
 </head>
 <body class="d-flex flex-column min-vh-100">
 
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 10000; pointer-events: none;">
+        <div id="scroll-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(to right, var(--accent), #38bdf8); transition: width 0.05s linear;"></div>
+    </div>
+
+    <!-- Toast Container per notifiche fluttuanti -->
+    <div class="custom-toast-container" id="toast-container">
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="custom-toast toast-success" role="alert" data-duration="4500">
+                <div class="custom-toast-content">
+                    <span class="bi bi-check-circle-fill fs-5"></span>
+                    <span><?= e($_SESSION['success']) ?></span>
+                </div>
+                <button type="button" class="btn-close-toast" aria-label="Chiudi avviso">&times;</button>
+                <div class="custom-toast-progress"></div>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="custom-toast toast-danger" role="alert">
+                <div class="custom-toast-content">
+                    <span class="bi bi-exclamation-triangle-fill fs-5"></span>
+                    <span><?= e($_SESSION['error']) ?></span>
+                </div>
+                <button type="button" class="btn-close-toast" aria-label="Chiudi avviso">&times;</button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </div>
+
     <header>
         <nav class="navbar navbar-expand sticky-top border-bottom" style="background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
             <div class="container-fluid px-3 px-md-4">
@@ -86,14 +117,7 @@ if (isset($_SESSION['user'])) {
                     </span>
                 </a>
 
-                <ul class="navbar-nav d-none d-md-flex ms-2 ms-lg-3">
-                    <?php $isPartiteActive = ($current_path === '/matches' || $current_path === '/matches/'); ?>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isPartiteActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/matches') ?>" aria-label="Lista Partite">
-                            <span class="bi bi-calendar-event<?= $isPartiteActive ? '-fill text-primary' : '' ?> me-1"></span> Partite
-                        </a>
-                    </li>
-                </ul>
+
 
                 <!-- Right side -->
                 <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
@@ -190,23 +214,6 @@ if (isset($_SESSION['user'])) {
     </header>
 
     <main class="container py-4 mb-5 pb-5">
-        <!-- Messaggi Flash di Successo o Errore -->
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 bg-success text-white rounded-4 mb-4 p-3 pe-5" role="alert">
-                <span class="bi bi-check-circle-fill me-2 fs-5"></span> <?= e($_SESSION['success']) ?>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Chiudi avviso"></button>
-                <?php unset($_SESSION['success']); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 bg-danger text-white rounded-4 mb-4 p-3 pe-5" role="alert">
-                <span class="bi bi-exclamation-triangle-fill me-2 fs-5"></span> <?= e($_SESSION['error']) ?>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Chiudi avviso"></button>
-                <?php unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
-
         <!-- Contenuto dinamico della pagina -->
         <?= $content ?>
     </main>
@@ -229,7 +236,7 @@ if (isset($_SESSION['user'])) {
                 <div class="col-6 col-md-4">
                     <h3 class="h6 fw-semibold">Link Utili</h3>
                     <ul class="list-unstyled small mb-0">
-                        <li class="mb-2"><a href="<?= url('/') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
+                        <li class="mb-2"><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
                         <li class="mb-2"><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
                         <?php if (isset($_SESSION['user'])): ?>
                             <li><a href="<?= url('/profile') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Il mio Profilo</a></li>
@@ -255,7 +262,7 @@ if (isset($_SESSION['user'])) {
 
     <?php if (isset($_SESSION['user'])): ?>
         <?php 
-            $isHomeActive = ($current_path === '/' || strpos($current_path, '/matches') === 0);
+            $isHomeActive = ($current_path === '/' || $current_path === '' || strpos($current_path, '/matches') === 0);
             $isCercaActive = ($current_path === '/users');
             $isClassificheActive = ($current_path === '/leaderboard');
             $isProfiloActive = ($current_path === '/profile');
@@ -267,9 +274,18 @@ if (isset($_SESSION['user'])) {
                     <li class="nav-item">
                         <a href="<?= url('/') ?>" class="nav-link flex-column d-flex align-items-center <?= $isHomeActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isHomeActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isHomeActive ? 'scale-110' : '' ?>">
-                                <span class="bi bi-house-door<?= $isHomeActive ? '-fill' : '' ?> fs-4"></span>
+                                <span class="bi bi-calendar-event<?= $isHomeActive ? '-fill text-primary' : '' ?> fs-4"></span>
                             </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isHomeActive ? '700' : '500' ?>">Home</small>
+                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isHomeActive ? '700' : '500' ?>">Partite</small>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="<?= url('/leaderboard') ?>" class="nav-link flex-column d-flex align-items-center <?= $isClassificheActive ? 'text-warning fw-bold' : 'text-secondary' ?>" aria-current="<?= $isClassificheActive ? 'page' : 'false' ?>">
+                            <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
+                                <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
+                            </div>
+                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isClassificheActive ? '700' : '500' ?>">Top 10</small>
                         </a>
                     </li>
 
@@ -282,14 +298,6 @@ if (isset($_SESSION['user'])) {
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="<?= url('/leaderboard') ?>" class="nav-link flex-column d-flex align-items-center <?= $isClassificheActive ? 'text-warning fw-bold' : 'text-secondary' ?>" aria-current="<?= $isClassificheActive ? 'page' : 'false' ?>">
-                            <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
-                                <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
-                            </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isClassificheActive ? '700' : '500' ?>">Top 10</small>
-                        </a>
-                    </li>
                     <li class="nav-item">
                         <a href="<?= url('/profile') ?>" class="nav-link flex-column d-flex align-items-center <?= $isProfiloActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isProfiloActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isProfiloActive ? 'scale-110' : '' ?>">
@@ -345,17 +353,169 @@ if (isset($_SESSION['user'])) {
                 }
             }
 
-            // Auto-dismiss alerts after 4.5 seconds with smooth fade out
-            setTimeout(function() {
-                let alerts = document.querySelectorAll('.alert-dismissible');
-                alerts.forEach(function(alert) {
-                    let bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                    if (bsAlert) {
-                        bsAlert.close();
+            // Custom dynamic toast logic
+            function initToast(toast) {
+                const isError = toast.classList.contains('toast-danger') || toast.getAttribute('data-duration') === '0';
+                const progressBar = toast.querySelector('.custom-toast-progress');
+                const closeBtn = toast.querySelector('.btn-close-toast');
+                
+                let animationFrameId = null;
+
+                function dismissToast(el) {
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                    el.classList.add('hide');
+                    el.addEventListener('animationend', function() {
+                        el.remove();
+                    });
+                }
+
+                // Close button click
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        dismissToast(toast);
+                    });
+                }
+
+                if (isError) {
+                    if (progressBar) progressBar.remove();
+                    return; // Error/Sticky toasts do not auto-dismiss and have no progress countdown
+                }
+
+                const duration = parseInt(toast.getAttribute('data-duration')) || 4500;
+                let remainingTime = duration;
+                let lastFrameTime = performance.now();
+                let isPaused = false;
+
+                function updateProgress(timestamp) {
+                    if (isPaused) {
+                        lastFrameTime = timestamp;
+                        animationFrameId = requestAnimationFrame(updateProgress);
+                        return;
+                    }
+
+                    const delta = timestamp - lastFrameTime;
+                    lastFrameTime = timestamp;
+                    remainingTime -= delta;
+
+                    if (remainingTime <= 0) {
+                        if (progressBar) progressBar.style.width = '0%';
+                        dismissToast(toast);
+                    } else {
+                        const percent = (remainingTime / duration) * 100;
+                        if (progressBar) progressBar.style.width = percent + '%';
+                        animationFrameId = requestAnimationFrame(updateProgress);
+                    }
+                }
+
+                // Pause on hover
+                toast.addEventListener('mouseenter', () => { isPaused = true; });
+                toast.addEventListener('mouseleave', () => { isPaused = false; });
+
+                // Start countdown
+                animationFrameId = requestAnimationFrame(updateProgress);
+            }
+
+            // Init toasts loaded on start
+            document.querySelectorAll('.custom-toast').forEach(initToast);
+
+            // Global function to show toast dynamically
+            window.showToast = function(message, type = 'success', duration = 4500) {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = `custom-toast toast-${type}`;
+                if (type !== 'danger' && duration > 0) {
+                    toast.setAttribute('data-duration', duration);
+                } else {
+                    toast.setAttribute('data-duration', '0');
+                }
+                toast.setAttribute('role', 'alert');
+
+                const iconClass = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+                const progressHtml = (type !== 'danger' && duration > 0) ? '<div class="custom-toast-progress"></div>' : '';
+                
+                toast.innerHTML = `
+                    <div class="custom-toast-content">
+                        <span class="bi ${iconClass} fs-5"></span>
+                        <span>${escapeHtml(message)}</span>
+                    </div>
+                    <button type="button" class="btn-close-toast" aria-label="Chiudi avviso">&times;</button>
+                    ${progressHtml}
+                `;
+
+                container.appendChild(toast);
+                initToast(toast);
+            };
+
+            function escapeHtml(text) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            }
+
+            // Form submit loading states
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn && !form.classList.contains('no-spinner')) {
+                        // Avoid triggering on simple buttons that shouldn't lock
+                        if (submitBtn.classList.contains('no-loading-state')) return;
+
+                        // Inject spinner
+                        submitBtn.innerHTML = `
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Caricamento...
+                        `;
+                        
+                        // Disable the button on the next tick so the form submits successfully
+                        setTimeout(() => {
+                            submitBtn.disabled = true;
+                        }, 0);
                     }
                 });
-            }, 4500);
+            });
+
+            // Back to Top button logic
+            const backToTopBtn = document.getElementById('back-to-top');
+            if (backToTopBtn) {
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 400) {
+                        backToTopBtn.classList.add('show');
+                    } else {
+                        backToTopBtn.classList.remove('show');
+                    }
+                });
+
+                backToTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // Scroll Progress Bar logic
+            const scrollProgressBar = document.getElementById('scroll-progress-bar');
+            if (scrollProgressBar) {
+                window.addEventListener('scroll', function() {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+                    scrollProgressBar.style.width = scrolled + '%';
+                });
+            }
         });
     </script>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" class="btn" aria-label="Torna in alto">
+        <span class="bi bi-arrow-up fs-5"></span>
+    </button>
 </body>
 </html>

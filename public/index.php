@@ -68,10 +68,10 @@ $router->add('GET', '/register', 'AuthController@showRegister');
 $router->add('POST', '/register', 'AuthController@register');
 $router->add('POST', '/logout', 'AuthController@logout');
 
-$router->add('GET', '/matches', 'MatchController@index');
+$router->add('GET', '/matches', 'MatchController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/matches/create', 'MatchController@create', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches', 'MatchController@store', [\App\Middleware\AuthMiddleware::class]);
-$router->add('GET', '/matches/{id}', 'MatchController@show');
+$router->add('GET', '/matches/{id}', 'MatchController@show', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches/{id}/join', 'MatchController@join', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches/{id}/leave', 'MatchController@leave', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches/{id}/generate-teams', 'MatchController@generateTeams', [\App\Middleware\AuthMiddleware::class]);
