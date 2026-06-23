@@ -274,9 +274,9 @@ if (isset($_SESSION['user'])) {
                     <li class="nav-item">
                         <a href="<?= url('/') ?>" class="nav-link flex-column d-flex align-items-center <?= $isHomeActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isHomeActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isHomeActive ? 'scale-110' : '' ?>">
-                                <span class="bi bi-house-door<?= $isHomeActive ? '-fill' : '' ?> fs-4"></span>
+                                <span class="bi bi-calendar-event<?= $isHomeActive ? '-fill text-primary' : '' ?> fs-4"></span>
                             </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isHomeActive ? '700' : '500' ?>">Home</small>
+                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isHomeActive ? '700' : '500' ?>">Partite</small>
                         </a>
                     </li>
 
