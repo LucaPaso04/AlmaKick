@@ -23,9 +23,9 @@
     <div class="col-6 col-md-3">
         <div class="p-4 bg-body rounded-4 shadow-sm border-0 h-100 d-flex flex-column justify-content-center hover-scale transition-all" tabindex="0" role="region" aria-label="Meteo previsto">
             <div class="rounded-circle bg-warning bg-opacity-10 mx-auto d-flex align-items-center justify-content-center mb-3 icon-wrap-50" aria-hidden="true">
-                <span class="bi bi-cloud-sun-fill fs-3 text-warning"></span>
+                <span class="bi bi-cloud-sun-fill fs-3 text-warning" id="weather-icon"></span>
             </div>
-            <span class="fw-bolder d-block fs-5 mb-1 lh-sm" id="weather-display"
+            <span class="d-block mb-1 lh-sm" id="weather-display"
                   data-lat="<?= e($match['latitude'] ?? '') ?>"
                   data-lng="<?= e($match['longitude'] ?? '') ?>"
                   data-api-key="<?= defined('OPENWEATHER_KEY') ? e(OPENWEATHER_KEY) : '' ?>"

@@ -22,40 +22,58 @@ if ($match['status'] === 'finished'):
     <?php if ($is_host): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4 border-start border-4 border-success">
             <div class="card-body p-4">
-                <h2 class="fw-bold fs-5"><span class="bi bi-clipboard-data-fill me-2 text-success"></span>Pannello Host Post-Partita</h2>
-                <div class="row g-3 mt-2">
-                    <div class="col-12 col-md-6">
-                        <div class="h-100 d-flex flex-column justify-content-center">
-                            <?php if($isWithin24Hours): ?>
-                                <a href="<?= url('/matches/' . $match['id'] . '/report') ?>" class="btn btn-success w-100 rounded-pill fw-bold shadow-sm py-3">
+                <h2 class="fw-bold fs-5 mb-4"><span class="bi bi-clipboard-data-fill me-2 text-success"></span>Pannello Host Post-Partita</h2>
+                
+                <div class="d-flex flex-column gap-4">
+                    <!-- Tabellino Row -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 border-bottom">
+                        <div class="flex-grow-1">
+                            <h3 class="h6 fw-bold mb-1"><i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i>Tabellino e Gol</h3>
+                            <p class="text-muted small mb-0">Inserisci o modifica il punteggio finale e i marcatori della partita.</p>
+                        </div>
+                        <div style="min-width: 220px;">
+                            <?php if(($match['result_home'] === null) || $isWithin24Hours): ?>
+                                <a href="<?= url('/matches/' . $match['id'] . '/report') ?>" class="btn btn-success w-100 rounded-pill fw-bold shadow-sm py-2">
                                     <span class="bi bi-pencil-square me-2"></span><?= ($match['result_home'] !== null) ? 'Modifica Tabellino' : 'Compila Tabellino' ?>
                                 </a>
                             <?php else: ?>
-                                <button class="btn btn-secondary w-100 rounded-pill fw-bold shadow-sm py-3" disabled title="Tempo scaduto (24h)">
+                                <button class="btn btn-secondary w-100 rounded-pill fw-bold shadow-sm py-2" disabled title="Tempo scaduto (24h)">
                                     <span class="bi bi-lock-fill me-2"></span>Tabellino Chiuso
                                 </button>
                             <?php endif; ?>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="h-100 d-flex flex-column justify-content-center">
+
+                    <!-- MVP Row -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div class="flex-grow-1">
+                            <h3 class="h6 fw-bold mb-1"><i class="bi bi-trophy-fill me-2 text-warning"></i>Gestione MVP</h3>
                             <?php if(!$match['mvp_assigned'] && !$match['mvp_deadline']): ?>
-                                <form action="<?= url('/matches/' . $match['id'] . '/set-mvp-deadline?from=' . urlencode($from)) ?>" method="POST" class="d-flex flex-column gap-2">
+                                <p class="text-muted small mb-0">Imposta una scadenza per consentire ai giocatori di votare l'MVP della partita.</p>
+                            <?php elseif(!$match['mvp_assigned'] && $match['mvp_deadline']): ?>
+                                <p class="text-muted small mb-0">Le votazioni sono in corso. L'MVP verrà calcolato e assegnato automaticamente alla scadenza.</p>
+                            <?php else: ?>
+                                <p class="text-muted small mb-0">Le votazioni si sono concluse e l'MVP è stato assegnato.</p>
+                            <?php endif; ?>
+                        </div>
+                        <div style="min-width: 240px;">
+                            <?php if(!$match['mvp_assigned'] && !$match['mvp_deadline']): ?>
+                                <form action="<?= url('/matches/' . $match['id'] . '/set-mvp-deadline?from=' . urlencode($from)) ?>" method="POST" class="d-flex gap-2 align-items-center mb-0">
                                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                    <label class="form-label small fw-bold mb-0">Scadenza Voti (Assegnaz. MVP):</label>
-                                    <input type="datetime-local" name="mvp_deadline" class="form-control form-control-sm rounded-pill border-warning" value="<?= date('Y-m-d\TH:i', time() + 24 * 3600) ?>" required min="<?= date('Y-m-d\TH:i', time() + 300) ?>">
-                                    <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold shadow-sm text-dark">
-                                        <span class="bi bi-clock-history me-2"></span>Imposta Scadenza
+                                    <div class="flex-grow-1">
+                                        <input type="datetime-local" name="mvp_deadline" class="form-control form-control-sm rounded-pill border-warning" value="<?= date('Y-m-d\TH:i', time() + 24 * 3600) ?>" required min="<?= date('Y-m-d\TH:i', time() + 300) ?>">
+                                    </div>
+                                    <button type="submit" class="btn btn-warning btn-sm rounded-pill fw-bold shadow-sm text-dark px-3 py-1.5">
+                                        Imposta
                                     </button>
                                 </form>
                             <?php elseif(!$match['mvp_assigned'] && $match['mvp_deadline']): ?>
-                                <div class="text-center p-3 rounded-4 bg-warning bg-opacity-25 border border-warning shadow-sm">
-                                    <small class="fw-bold d-block text-dark mb-1">Scadenza Voti impostata al:</small>
+                                <div class="text-center py-2 px-3 rounded-4 bg-warning bg-opacity-25 border border-warning shadow-sm">
+                                    <small class="fw-bold d-block text-dark mb-1">Scadenza Voti:</small>
                                     <span class="badge bg-warning text-dark fs-6"><?= date('d/m/Y H:i', strtotime($match['mvp_deadline'])) ?></span>
-                                    <small class="d-block mt-2 text-muted" style="font-size: 0.75rem;">L'MVP verrà assegnato in automatico allo scadere.</small>
                                 </div>
                             <?php else: ?>
-                                <button class="btn btn-secondary w-100 rounded-pill fw-bold shadow-sm py-3" disabled>
+                                <button class="btn btn-secondary w-100 rounded-pill fw-bold shadow-sm py-2" disabled>
                                     <span class="bi bi-check-circle-fill me-2"></span>MVP Assegnato 🏆
                                 </button>
                             <?php endif; ?>

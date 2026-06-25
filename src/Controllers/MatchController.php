@@ -575,6 +575,164 @@ class MatchController extends BaseController {
         }
     }
 
+    public function showReport($id) {
+        $matchModel = new SoccerMatch();
+        $match = $matchModel->find($id);
+
+        if (!$match) {
+            http_response_code(404);
+            echo "Partita non trovata.";
+            return;
+        }
+
+        $username = $_SESSION['user']['username'] ?? null;
+        if ($match['host_username'] !== $username) {
+            $_SESSION['error'] = "Non sei l'organizzatore di questa partita.";
+            $this->redirectToMatch($id);
+        }
+
+        if ($match['status'] !== 'finished') {
+            $_SESSION['error'] = "La partita deve essere conclusa per poterne compilare il tabellino.";
+            $this->redirectToMatch($id);
+        }
+
+        $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
+        $isWithin24Hours = (time() < $matchDateTime + 24 * 3600);
+        $canCompileOrEdit = ($match['result_home'] === null) || $isWithin24Hours;
+        if (!$canCompileOrEdit) {
+            $_SESSION['error'] = "Tempo scaduto per compilare il tabellino (limite 24 ore).";
+            $this->redirectToMatch($id);
+        }
+
+        $db = \App\Database::getInstance()->getConnection();
+        $stmtReg = $db->prepare("
+            SELECT r.*, u.name, u.avatar, u.preferred_role, u.trust_score, u.skill_rating 
+            FROM registrations r
+            JOIN users u ON r.username = u.username
+            WHERE r.match_id = :match_id
+            ORDER BY r.created_at ASC
+        ");
+        $stmtReg->execute(['match_id' => $id]);
+        $registrations = $stmtReg->fetchAll(\PDO::FETCH_ASSOC);
+
+        $home_team = array_filter($registrations, function($reg) {
+            return $reg['team'] === 'home' && $reg['status'] === 'registered';
+        });
+        $away_team = array_filter($registrations, function($reg) {
+            return $reg['team'] === 'away' && $reg['status'] === 'registered';
+        });
+        $unassigned = array_filter($registrations, function($reg) {
+            return empty($reg['team']) && $reg['status'] === 'registered';
+        });
+
+        $oldInput = $_SESSION['old_report_input'] ?? null;
+        unset($_SESSION['old_report_input']);
+
+        view('matches/report', [
+            'title' => 'Compila Tabellino - AlmaKick',
+            'match' => $match,
+            'home_team' => $home_team,
+            'away_team' => $away_team,
+            'unassigned' => $unassigned,
+            'oldInput' => $oldInput
+        ]);
+    }
+
+    public function storeReport($id) {
+        $this->validateCsrf();
+        $matchModel = new SoccerMatch();
+        $match = $matchModel->find($id);
+
+        if (!$match) {
+            http_response_code(404);
+            echo "Partita non trovata.";
+            return;
+        }
+
+        $username = $_SESSION['user']['username'] ?? null;
+        if ($match['host_username'] !== $username) {
+            $_SESSION['error'] = "Non sei l'organizzatore di questa partita.";
+            $this->redirectToMatch($id);
+        }
+
+        if ($match['status'] !== 'finished') {
+            $_SESSION['error'] = "La partita deve essere conclusa per poterne compilare il tabellino.";
+            $this->redirectToMatch($id);
+        }
+
+        $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
+        $isWithin24Hours = (time() < $matchDateTime + 24 * 3600);
+        $canCompileOrEdit = ($match['result_home'] === null) || $isWithin24Hours;
+        if (!$canCompileOrEdit) {
+            $_SESSION['error'] = "Tempo scaduto per compilare il tabellino (limite 24 ore).";
+            $this->redirectToMatch($id);
+        }
+
+        $result_home = isset($_POST['result_home']) ? max(0, (int)$_POST['result_home']) : 0;
+        $result_away = isset($_POST['result_away']) ? max(0, (int)$_POST['result_away']) : 0;
+        $goals = $_POST['goals'] ?? [];
+
+        $db = \App\Database::getInstance()->getConnection();
+
+        // Validazione corrispondenza gol dei singoli rispetto al risultato finale
+        $stmtCheckReg = $db->prepare("SELECT id, team FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        $stmtCheckReg->execute(['match_id' => $id]);
+        $allRegs = $stmtCheckReg->fetchAll(\PDO::FETCH_ASSOC);
+
+        $sumHomeGoals = 0;
+        $sumAwayGoals = 0;
+        foreach ($allRegs as $reg) {
+            $regId = $reg['id'];
+            $playerGoals = isset($goals[$regId]) ? max(0, (int)$goals[$regId]) : 0;
+            if ($reg['team'] === 'home') {
+                $sumHomeGoals += $playerGoals;
+            } elseif ($reg['team'] === 'away') {
+                $sumAwayGoals += $playerGoals;
+            }
+        }
+
+        if ($sumHomeGoals !== $result_home || $sumAwayGoals !== $result_away) {
+            $_SESSION['old_report_input'] = [
+                'result_home' => $result_home,
+                'result_away' => $result_away,
+                'goals' => $goals
+            ];
+            $_SESSION['error'] = "La somma dei gol individuali dei giocatori (Home: $sumHomeGoals, Away: $sumAwayGoals) non corrisponde al risultato finale (Home: $result_home, Away: $result_away).";
+            $this->redirect(url('/matches/' . $id . '/report'));
+        }
+
+        try {
+            $db->beginTransaction();
+
+            $stmtUpdateMatch = $db->prepare("UPDATE matches SET result_home = :home, result_away = :away, updated_at = NOW() WHERE id = :id");
+            $stmtUpdateMatch->execute([
+                'home' => $result_home,
+                'away' => $result_away,
+                'id' => $id
+            ]);
+
+            $stmtUpdateReg = $db->prepare("UPDATE registrations SET goals_scored = :goals, updated_at = NOW() WHERE id = :id AND match_id = :match_id");
+            foreach ($goals as $regId => $goalsCount) {
+                $goalsCount = max(0, (int)$goalsCount);
+                $stmtUpdateReg->execute([
+                    'goals' => $goalsCount,
+                    'id' => $regId,
+                    'match_id' => $id
+                ]);
+            }
+
+            $db->commit();
+            $_SESSION['success'] = "Tabellino salvato con successo!";
+        } catch (\Exception $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            $_SESSION['error'] = "Errore durante il salvataggio del tabellino: " . $e->getMessage();
+        }
+
+        $this->redirectToMatch($id);
+    }
+
     private function redirectToMatch($id) {
         $from = $_GET['from'] ?? $_POST['from'] ?? '';
         $redirectUrl = '/matches/' . $id;

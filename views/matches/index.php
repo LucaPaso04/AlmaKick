@@ -248,6 +248,7 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
         <div id="matchesContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
             <?php if (!empty($matches)): ?>
                 <?php foreach ($matches as $p): ?>
+                    <?php $fromTab = 'explore'; ?>
                     <?php require VIEW_PATH . '/matches/partials/match_card.php'; ?>
                 <?php endforeach; ?>
             <?php else: ?>
