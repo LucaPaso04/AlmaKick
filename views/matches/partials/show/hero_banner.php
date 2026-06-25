@@ -4,23 +4,26 @@
 <div class="card border-0 mb-4 rounded-4 overflow-hidden shadow-sm position-relative match-hero-banner">
     <div class="card-body p-4 p-md-5 text-white position-relative z-1">
         <div class="d-flex align-items-center mb-4 flex-wrap gap-2">
-            <?php if ($from === 'admin'): ?>
-                <a href="<?= url('/admin') ?>" class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small" aria-label="Torna al pannello admin">
-                    <span class="bi bi-arrow-left" aria-hidden="true"></span>
-                </a>
-            <?php elseif ($from === 'profile'): ?>
-                <a href="<?= url('/profile') ?>" class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small" aria-label="Torna al profilo">
-                    <span class="bi bi-arrow-left" aria-hidden="true"></span>
-                </a>
-            <?php elseif ($from === 'matches'): ?>
-                <a href="<?= url('/matches') ?>" class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small" aria-label="Torna alle partite">
-                    <span class="bi bi-arrow-left" aria-hidden="true"></span>
-                </a>
-            <?php else: ?>
-                <a href="<?= url('/') ?>" class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small" aria-label="Torna alla home">
-                    <span class="bi bi-arrow-left" aria-hidden="true"></span>
-                </a>
-            <?php endif; ?>
+            <?php
+            $backUrl = url('/');
+            if (!empty($from)) {
+                // Se $from contiene parametri di query o è un percorso relativo locale
+                if (strpos($from, '/') === 0 || strpos($from, 'matches') === 0 || strpos($from, 'admin') === 0 || strpos($from, 'profile') === 0) {
+                    $backUrl = url($from);
+                } elseif ($from === 'admin') {
+                    $backUrl = url('/admin');
+                } elseif ($from === 'profile') {
+                    $backUrl = url('/profile');
+                } elseif ($from === 'matches') {
+                    $backUrl = url('/matches');
+                } elseif ($from === 'explore') {
+                    $backUrl = url('/matches?tab=explore');
+                }
+            }
+            ?>
+            <a href="<?= $backUrl ?>" class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small" aria-label="Torna indietro">
+                <span class="bi bi-arrow-left" aria-hidden="true"></span>
+            </a>
             
             <span class="badge bg-light text-dark bg-opacity-75 fs-6 rounded-pill backdrop-blur shadow-sm" role="img" aria-label="Data e ora della partita">
                 <span class="bi bi-calendar-event me-1" aria-hidden="true"></span>
