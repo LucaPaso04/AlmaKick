@@ -18,7 +18,7 @@
                         <div class="col-5 text-center">
                             <label class="form-label fw-bold text-danger fs-5">🔴 Home</label>
                             <input type="number" name="result_home" class="form-control form-control-lg text-center fw-bold fs-3 rounded-3"
-                                value="<?= e($match['result_home'] ?? 0) ?>" min="0" required>
+                                value="<?= e(isset($oldInput['result_home']) ? $oldInput['result_home'] : ($match['result_home'] ?? 0)) ?>" min="0" required>
                         </div>
                         <div class="col-2 text-center">
                             <span class="fs-2 fw-bold text-muted">vs</span>
@@ -26,7 +26,7 @@
                         <div class="col-5 text-center">
                             <label class="form-label fw-bold text-primary fs-5">🔵 Away</label>
                             <input type="number" name="result_away" class="form-control form-control-lg text-center fw-bold fs-3 rounded-3"
-                                value="<?= e($match['result_away'] ?? 0) ?>" min="0" required>
+                                value="<?= e(isset($oldInput['result_away']) ? $oldInput['result_away'] : ($match['result_away'] ?? 0)) ?>" min="0" required>
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div style="width: 80px;">
                                 <input type="number" name="goals[<?= e($reg['id']) ?>]" class="form-control text-center fw-bold rounded-3"
-                                    value="<?= e($reg['goals_scored'] ?? 0) ?>" min="0">
+                                    value="<?= e(isset($oldInput['goals'][$reg['id']]) ? $oldInput['goals'][$reg['id']] : ($reg['goals_scored'] ?? 0)) ?>" min="0">
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -78,7 +78,7 @@
                             </div>
                             <div style="width: 80px;">
                                 <input type="number" name="goals[<?= e($reg['id']) ?>]" class="form-control text-center fw-bold rounded-3"
-                                    value="<?= e($reg['goals_scored'] ?? 0) ?>" min="0">
+                                    value="<?= e(isset($oldInput['goals'][$reg['id']]) ? $oldInput['goals'][$reg['id']] : ($reg['goals_scored'] ?? 0)) ?>" min="0">
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -105,7 +105,7 @@
                             </div>
                             <div style="width: 80px;">
                                 <input type="number" name="goals[<?= e($reg['id']) ?>]" class="form-control text-center fw-bold rounded-3"
-                                    value="<?= e($reg['goals_scored'] ?? 0) ?>" min="0">
+                                    value="<?= e(isset($oldInput['goals'][$reg['id']]) ? $oldInput['goals'][$reg['id']] : ($reg['goals_scored'] ?? 0)) ?>" min="0">
                             </div>
                         </div>
                     <?php endforeach; ?>

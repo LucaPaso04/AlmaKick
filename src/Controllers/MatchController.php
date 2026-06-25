@@ -625,12 +625,16 @@ class MatchController extends BaseController {
             return empty($reg['team']) && $reg['status'] === 'registered';
         });
 
+        $oldInput = $_SESSION['old_report_input'] ?? null;
+        unset($_SESSION['old_report_input']);
+
         view('matches/report', [
             'title' => 'Compila Tabellino - AlmaKick',
             'match' => $match,
             'home_team' => $home_team,
             'away_team' => $away_team,
-            'unassigned' => $unassigned
+            'unassigned' => $unassigned,
+            'oldInput' => $oldInput
         ]);
     }
 
@@ -669,6 +673,34 @@ class MatchController extends BaseController {
         $goals = $_POST['goals'] ?? [];
 
         $db = \App\Database::getInstance()->getConnection();
+
+        // Validazione corrispondenza gol dei singoli rispetto al risultato finale
+        $stmtCheckReg = $db->prepare("SELECT id, team FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        $stmtCheckReg->execute(['match_id' => $id]);
+        $allRegs = $stmtCheckReg->fetchAll(\PDO::FETCH_ASSOC);
+
+        $sumHomeGoals = 0;
+        $sumAwayGoals = 0;
+        foreach ($allRegs as $reg) {
+            $regId = $reg['id'];
+            $playerGoals = isset($goals[$regId]) ? max(0, (int)$goals[$regId]) : 0;
+            if ($reg['team'] === 'home') {
+                $sumHomeGoals += $playerGoals;
+            } elseif ($reg['team'] === 'away') {
+                $sumAwayGoals += $playerGoals;
+            }
+        }
+
+        if ($sumHomeGoals !== $result_home || $sumAwayGoals !== $result_away) {
+            $_SESSION['old_report_input'] = [
+                'result_home' => $result_home,
+                'result_away' => $result_away,
+                'goals' => $goals
+            ];
+            $_SESSION['error'] = "La somma dei gol individuali dei giocatori (Home: $sumHomeGoals, Away: $sumAwayGoals) non corrisponde al risultato finale (Home: $result_home, Away: $result_away).";
+            $this->redirect(url('/matches/' . $id . '/report'));
+        }
+
         try {
             $db->beginTransaction();
 
