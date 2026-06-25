@@ -26,7 +26,7 @@ if ($match['status'] === 'finished'):
                 <div class="row g-3 mt-2">
                     <div class="col-12 col-md-6">
                         <div class="h-100 d-flex flex-column justify-content-center">
-                            <?php if($isWithin24Hours): ?>
+                            <?php if(($match['result_home'] === null) || $isWithin24Hours): ?>
                                 <a href="<?= url('/matches/' . $match['id'] . '/report') ?>" class="btn btn-success w-100 rounded-pill fw-bold shadow-sm py-3">
                                     <span class="bi bi-pencil-square me-2"></span><?= ($match['result_home'] !== null) ? 'Modifica Tabellino' : 'Compila Tabellino' ?>
                                 </a>

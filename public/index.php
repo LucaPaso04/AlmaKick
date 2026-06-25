@@ -79,6 +79,8 @@ $router->add('POST', '/matches/{id}/close', 'MatchController@close', [\App\Middl
 $router->add('POST', '/matches/{id}/cancel', 'MatchController@cancel', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches/{id}/set-mvp-deadline', 'MatchController@setMvpDeadline', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches/{id}/vote', 'MatchController@vote', [\App\Middleware\AuthMiddleware::class]);
+$router->add('GET', '/matches/{id}/report', 'MatchController@showReport', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/matches/{id}/report', 'MatchController@storeReport', [\App\Middleware\AuthMiddleware::class]);
 
 // ROTTE PROFILO E AMICIZIE
 $router->add('GET', '/profile', 'UserController@show', [\App\Middleware\AuthMiddleware::class]);
