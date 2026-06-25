@@ -266,6 +266,11 @@
     z-index: 5;
 }
 
+html[data-bs-theme="dark"] .leaflet-layer,
+html[data-bs-theme="dark"] .leaflet-control-attribution {
+    filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+
 /* Utility Animations */
 .transition-all {
     transition: all 0.25s ease-in-out;
