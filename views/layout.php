@@ -75,6 +75,8 @@ if (isset($_SESSION['user'])) {
         <link rel="stylesheet" href="<?= url('/css/welcome.css') ?>">
     <?php elseif ($current_path === '/login'): ?>
         <link rel="stylesheet" href="<?= url('/css/login.css') ?>">
+    <?php elseif ($current_path === '/register'): ?>
+        <link rel="stylesheet" href="<?= url('/css/register.css') ?>">
     <?php endif; ?>
 </head>
 <body class="d-flex flex-column min-vh-100">

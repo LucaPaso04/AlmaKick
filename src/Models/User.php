@@ -43,6 +43,24 @@ class User {
         ]);
     }
 
+    public function createWithRole(array $data): bool {
+        $sql = "INSERT INTO users (username, name, last_name, email, password, phone, friend_code, role, preferred_role, trust_score, skill_rating, mvp_count, matches_played, total_goals, is_banned, created_at, updated_at) 
+                VALUES (:username, :name, :last_name, :email, :password, :phone, :friend_code, :role, :preferred_role, 100, 6.0, 0, 0, 0, 0, NOW(), NOW())";
+        
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'username' => $data['username'],
+            'name' => $data['name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'phone' => $data['phone'],
+            'friend_code' => $data['friend_code'],
+            'role' => $data['role'] ?? 'user',
+            'preferred_role' => $data['preferred_role'] ?? 'Jolly'
+        ]);
+    }
+
     public function findByFriendCode(string $friendCode): ?array {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE friend_code = :friend_code");
         $stmt->execute(['friend_code' => $friendCode]);

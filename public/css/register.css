@@ -1,0 +1,236 @@
+/* Register Page Styles */
+
+.register-container {
+    min-height: calc(100vh - 200px);
+}
+
+/* Card Styling */
+.register-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bs-card-bg);
+    backdrop-filter: blur(10px);
+    animation: slideUp 0.6s ease-out;
+}
+
+.register-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Form Styling */
+.register-form {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.form-floating .form-control,
+.form-floating .form-select {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem;
+}
+
+.form-floating .form-control:focus,
+.form-floating .form-select:focus {
+    background-color: rgba(13, 110, 253, 0.05) !important;
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.form-floating > label {
+    color: var(--bs-body-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.form-floating .form-control:focus ~ label,
+.form-floating .form-control:not(:placeholder-shown) ~ label,
+.form-floating .form-select:focus ~ label,
+.form-floating .form-select:not(:invalid) ~ label {
+    color: var(--bs-primary);
+}
+
+/* Select Box Specific */
+.form-floating .form-select {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+}
+
+.form-select option {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
+/* Register Button */
+.register-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.1rem;
+    letter-spacing: 0.3px;
+}
+
+.register-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3) !important;
+}
+
+.register-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Link Styling */
+.link-primary {
+    transition: all 0.3s ease;
+    color: var(--bs-primary) !important;
+}
+
+.link-primary:hover {
+    filter: brightness(1.2);
+    text-decoration: underline !important;
+}
+
+/* Form Text */
+.form-text {
+    font-size: 0.85rem;
+    color: var(--bs-secondary) !important;
+}
+
+/* Heading Styles */
+.register-card h2 {
+    transition: color 0.3s ease;
+    letter-spacing: -0.5px;
+}
+
+.register-card p {
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+}
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .register-card {
+        margin-top: 2rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .register-card h2 {
+        font-size: 1.75rem;
+    }
+
+    .form-floating .form-control,
+    .form-floating .form-select {
+        font-size: 0.95rem;
+    }
+
+    .register-btn {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        padding: 1rem;
+    }
+
+    .register-card {
+        margin-top: 1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .register-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .register-card p {
+        font-size: 0.9rem;
+    }
+
+    .form-floating .form-control,
+    .form-floating .form-select {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.75rem !important;
+    }
+
+    .register-btn {
+        padding: 0.65rem !important;
+        font-size: 0.95rem;
+    }
+
+    .form-floating > label {
+        font-size: 0.9rem;
+    }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    .register-card {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .form-floating .form-control,
+    .form-floating .form-select {
+        color: var(--bs-body-color);
+    }
+
+    .form-floating .form-control::placeholder,
+    .form-select option {
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .register-card,
+    .register-form,
+    .form-floating .form-control,
+    .form-floating .form-select,
+    .register-btn,
+    .link-primary {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* Focus Visible for Accessibility */
+.form-floating .form-control:focus-visible,
+.form-floating .form-select:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.register-btn:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.link-primary:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
