@@ -10,16 +10,7 @@ if ($username) {
     $friendHostUsernames = $matchModel->getFriendUsernames($username);
 }
 
-// Filter the matches to find only "My Matches" (where user is host or registered)
-$myMatches = [];
-if ($username && is_array($matches)) {
-    $myMatches = array_filter($matches, function ($p) use ($username) {
-        $isHost = isset($p['host_username']) && $p['host_username'] === $username;
-        $isRegistered = isset($p['user_registration_status']) && in_array($p['user_registration_status'], ['registered', 'waitlist']);
-        return $isHost || $isRegistered;
-    });
-}
-
+// $myMatches is loaded cleanly and fully from the controller to avoid issues with pagination or search filters
 $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
 ?>
 

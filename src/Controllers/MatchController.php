@@ -90,9 +90,14 @@ class MatchController extends BaseController {
         $username = $_SESSION['user']['username'] ?? null;
         $matchesToReport = [];
         $matchesToVote = [];
+        $myMatches = [];
         if ($username) {
             $matchesToReport = $matchModel->getMatchesToReport($username);
             $matchesToVote = $matchModel->getMatchesToVote($username);
+            $myMatches = $matchModel->getAllActive([
+                'username' => $username,
+                'filter' => 'mine'
+            ]);
         }
 
         view('matches/index', [
@@ -101,7 +106,8 @@ class MatchController extends BaseController {
             'totalPages' => $totalPages,
             'page' => $page,
             'matchesToReport' => $matchesToReport,
-            'matchesToVote' => $matchesToVote
+            'matchesToVote' => $matchesToVote,
+            'myMatches' => $myMatches
         ]);
     }
 

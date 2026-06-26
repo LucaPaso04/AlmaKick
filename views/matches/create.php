@@ -9,10 +9,6 @@
         margin-top: 10px;
         z-index: 1;
     }
-    html[data-bs-theme="dark"] #create-map .leaflet-layer,
-    html[data-bs-theme="dark"] #create-map .leaflet-control-attribution {
-        filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
-    }
 </style>
 
 <div class="row justify-content-center">
@@ -26,7 +22,7 @@
 
         <div class="card shadow border-0 rounded-4">
             <div class="card-body p-4 p-md-5">
-                <form action="<?= url('/matches') ?>" method="POST" id="createMatchForm" class="needs-validation" novalidate>
+                <form action="<?= url('/matches') ?>" method="POST" id="createMatchForm" class="needs-validation no-spinner" novalidate>
                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                     
                     <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-geo-alt-fill me-2"></i>Dettagli Evento</h5>
@@ -36,16 +32,19 @@
                             <label for="date" class="form-label fw-semibold">Data</label>
                             <input type="date" class="form-control bg-body-tertiary border-0" id="date"
                                 name="date" required min="<?= date('Y-m-d') ?>">
+                            <div class="invalid-feedback">Inserisci una data valida (oggi o successiva).</div>
                         </div>
                         <div class="col-md-4">
                             <label for="time" class="form-label fw-semibold">Ora</label>
                             <input type="time" class="form-control bg-body-tertiary border-0" id="time"
                                 name="time" required>
+                            <div class="invalid-feedback">Inserisci un'ora valida per la partita.</div>
                         </div>
                         <div class="col-md-4">
                             <label for="location" class="form-label fw-semibold">Nome Campo / Impianto</label>
                             <input type="text" class="form-control bg-body-tertiary border-0" id="location"
                                 name="location" placeholder="Es. Campus CUS" required>
+                            <div class="invalid-feedback">Inserisci il nome del campo o dell'impianto.</div>
                         </div>
                     </div>
 
@@ -85,6 +84,7 @@
                             <span class="input-group-text border-0 bg-primary text-white">€</span>
                             <input type="number" step="0.5" class="form-control bg-body-tertiary border-0"
                                 id="total_cost" name="total_cost" placeholder="60.00" required>
+                            <div class="invalid-feedback">Inserisci un costo valido per il campo.</div>
                         </div>
                         <div id="quota_preview" class="text-muted small mt-2"></div>
                     </div>
@@ -175,5 +175,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     formatSelect.addEventListener('change', updateQuotaPreview);
     costInput.addEventListener('input', updateQuotaPreview);
+
+    // 3. Validation Logic that keeps values loaded and displays validation UI
+    var form = document.getElementById('createMatchForm');
+    var submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            
+            // Scroll to the first invalid input
+            var firstInvalid = form.querySelector(':invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+        } else {
+            // Form is valid: show loading state
+            submitBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Caricamento...
+            `;
+            setTimeout(function() {
+                submitBtn.disabled = true;
+            }, 0);
+        }
+    }, false);
 });
 </script>
