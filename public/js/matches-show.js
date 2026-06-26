@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     scrollWheelZoom: false
                 }).setView([lat, lng], 15);
 
-                // Add OpenStreetMap tiles
+                // Add OpenStreetMap tiles (always white/light as requested)
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(map);

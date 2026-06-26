@@ -76,11 +76,64 @@
 .pitch-container {
     width: 100%;
     height: 380px;
-    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
     border: 2px solid rgba(255, 255, 255, 0.35);
     border-radius: 16px;
     margin-top: 15px;
     box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.pitch-container.pattern-circles {
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.18) 100%),
+        repeating-radial-gradient(
+            circle at 50% 50%,
+            #1b5e20 0px,
+            #1b5e20 35px,
+            #227527 35px,
+            #227527 70px
+        );
+}
+
+.pitch-container.pattern-vertical {
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.18) 100%),
+        repeating-linear-gradient(
+            90deg,
+            #1b5e20 0px,
+            #1b5e20 35px,
+            #227527 35px,
+            #227527 70px
+        );
+}
+
+.pitch-container.pattern-horizontal {
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.18) 100%),
+        repeating-linear-gradient(
+            0deg,
+            #1b5e20 0px,
+            #1b5e20 35px,
+            #227527 35px,
+            #227527 70px
+        );
+}
+
+.pitch-container.pattern-diagonal {
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.18) 100%),
+        repeating-linear-gradient(
+            45deg,
+            #1b5e20 0px,
+            #1b5e20 35px,
+            #227527 35px,
+            #227527 70px
+        );
+}
+
+.pitch-container.pattern-checkerboard {
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.18) 100%),
+        conic-gradient(#1b5e20 25%, #227527 0 50%, #1b5e20 0 75%, #227527 0) 0 0 / 80px 80px;
 }
 
 .pitch-center-line {
@@ -264,6 +317,11 @@
     border-radius: 16px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     z-index: 5;
+}
+
+html[data-bs-theme="dark"] .leaflet-layer,
+html[data-bs-theme="dark"] .leaflet-control-attribution {
+    filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
 }
 
 /* Utility Animations */

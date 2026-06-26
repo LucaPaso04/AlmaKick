@@ -151,6 +151,10 @@ $away_lines = $assignPlayersToFormation($away_team);
 
 $home_order = ['GK', 'DEF', 'MID', 'ATT'];
 $away_order = ['ATT', 'MID', 'DEF', 'GK'];
+
+// Selezione casuale del pattern d'erba per il campo
+$pitch_patterns = ['pattern-circles', 'pattern-vertical', 'pattern-horizontal', 'pattern-diagonal', 'pattern-checkerboard'];
+$random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
 ?>
 
 <?php if($teams_generated): ?>
@@ -158,7 +162,7 @@ $away_order = ['ATT', 'MID', 'DEF', 'GK'];
     <div class="card-body p-0">
         <h2 class="fw-bold text-center py-3 mb-0 bg-body-tertiary border-bottom fs-5"><span class="bi bi-people-fill me-2 text-primary" aria-hidden="true"></span>Formazioni in Campo</h2>
         
-        <div class="pitch-container position-relative overflow-hidden">
+        <div class="pitch-container position-relative overflow-hidden <?= $random_pitch_pattern ?>">
             <?php // PITCH GRAPHICS ?>
             <!-- Center Line -->
             <div class="pitch-center-line"></div>
