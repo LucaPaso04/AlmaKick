@@ -1,0 +1,231 @@
+/* Login Page Styles */
+
+.login-container {
+    min-height: calc(100vh - 200px);
+}
+
+/* Card Styling */
+.login-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bs-card-bg);
+    backdrop-filter: blur(10px);
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Icon Background */
+.login-icon-bg {
+    transition: all 0.3s ease;
+    animation: slideDown 0.6s ease-out;
+}
+
+.login-icon-bg:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Form Styling */
+.login-form {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.form-floating .form-control {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem;
+}
+
+.form-floating .form-control:focus {
+    background-color: rgba(13, 110, 253, 0.05) !important;
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.form-floating > label {
+    color: var(--bs-body-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.form-floating .form-control:focus ~ label,
+.form-floating .form-control:not(:placeholder-shown) ~ label {
+    color: var(--bs-primary);
+}
+
+/* Login Button */
+.login-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.1rem;
+    letter-spacing: 0.3px;
+}
+
+.login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3) !important;
+}
+
+.login-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Link Styling */
+.link-primary {
+    transition: all 0.3s ease;
+    color: var(--bs-primary) !important;
+}
+
+.link-primary:hover {
+    filter: brightness(1.2);
+    text-decoration: underline !important;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Heading Styles */
+.login-card h2 {
+    transition: color 0.3s ease;
+    letter-spacing: -0.5px;
+}
+
+.login-card p {
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-card {
+        margin-top: 2rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .login-card h2 {
+        font-size: 1.75rem;
+    }
+
+    .form-floating .form-control {
+        font-size: 0.95rem;
+    }
+
+    .login-btn {
+        font-size: 1rem;
+    }
+
+    .login-icon-bg {
+        padding: 0.75rem !important;
+    }
+
+    .login-icon-bg i {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1rem;
+    }
+
+    .login-card {
+        margin-top: 1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .login-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .login-card p {
+        font-size: 0.9rem;
+    }
+
+    .form-floating .form-control {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.75rem !important;
+    }
+
+    .login-btn {
+        padding: 0.65rem !important;
+        font-size: 0.95rem;
+    }
+
+    .login-icon-bg {
+        padding: 0.6rem !important;
+    }
+
+    .login-icon-bg i {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    .login-card {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .form-floating .form-control {
+        color: var(--bs-body-color);
+    }
+
+    .form-floating .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .login-card,
+    .login-icon-bg,
+    .login-form,
+    .form-floating .form-control,
+    .login-btn,
+    .link-primary {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* Focus Visible for Accessibility */
+.form-floating .form-control:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.login-btn:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.link-primary:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}

@@ -21,6 +21,7 @@ class AuthController extends BaseController {
 
         if (empty($email) || empty($password)) {
             $_SESSION['error'] = "Tutti i campi sono obbligatori.";
+            $_SESSION['old_email'] = $email;
             $this->redirect('/login');
         }
 
@@ -30,10 +31,12 @@ class AuthController extends BaseController {
         if ($user && password_verify($password, $user['password'])) {
             if ($user['is_banned']) {
                 $_SESSION['error'] = "Questo account è stato sospeso o bannato.";
+                $_SESSION['old_email'] = $email;
                 $this->redirect('/login');
             }
 
-            // Imposta sessione utente
+            // Pulisci i vecchi valori e imposta sessione utente
+            unset($_SESSION['old_email']);
             $_SESSION['user'] = [
                 'username' => $user['username'],
                 'name' => $user['name'],
@@ -45,6 +48,7 @@ class AuthController extends BaseController {
             $this->redirect('/');
         } else {
             $_SESSION['error'] = "Credenziali non valide.";
+            $_SESSION['old_email'] = $email;
             $this->redirect('/login');
         }
     }
