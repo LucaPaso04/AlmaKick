@@ -1,0 +1,31 @@
+/* CSS Styles for AlmaKick Match Creation Page */
+
+#create-map {
+    height: 350px;
+    width: 100%;
+    margin-top: 10px;
+    z-index: 1;
+}
+
+/* Visual Formats (Radio Cards) Styles */
+.btn-check:checked + .btn-outline-primary {
+    background-color: var(--bs-primary);
+    color: #fff;
+    border-color: var(--bs-primary);
+    box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.btn-outline-primary {
+    transition: all 0.2s ease-in-out;
+    border-color: rgba(var(--bs-primary-rgb), 0.35);
+}
+
+.btn-outline-primary:hover {
+    border-color: var(--bs-primary);
+    transform: translateY(-2px);
+}
+
+.small-text {
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
