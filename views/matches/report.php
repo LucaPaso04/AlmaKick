@@ -7,9 +7,16 @@
             <h1 class="h3 fw-bold mb-0">📋 Tabellino Post-Partita</h1>
         </div>
 
+        <!-- Real-time Validation Alert -->
+        <div id="validation-alert" class="alert alert-danger d-none rounded-4 mb-4 shadow-sm border-0" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                <div id="validation-alert-msg"></div>
+            </div>
+        </div>
+
         <form action="<?= url('/matches/' . $match['id'] . '/report') ?>" method="POST">
             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-
 
             <div class="card shadow-sm border-0 mb-4 rounded-4">
                 <div class="card-body p-4">
@@ -32,7 +39,6 @@
                 </div>
             </div>
 
-
             <?php if(count($home_team) > 0): ?>
             <div class="card shadow-sm border-0 mb-4 rounded-4">
                 <div class="card-body p-4">
@@ -50,7 +56,7 @@
                                 </div>
                             </div>
                             <div style="width: 80px;">
-                                <input type="number" name="goals[<?= e($reg['id']) ?>]" class="form-control text-center fw-bold rounded-3"
+                                <input type="number" name="goals[<?= e($reg['id']) ?>]" data-team="home" class="form-control text-center fw-bold rounded-3"
                                     value="<?= e(isset($oldInput['goals'][$reg['id']]) ? $oldInput['goals'][$reg['id']] : ($reg['goals_scored'] ?? 0)) ?>" min="0">
                             </div>
                         </div>
@@ -58,7 +64,6 @@
                 </div>
             </div>
             <?php endif; ?>
-
 
             <?php if(count($away_team) > 0): ?>
             <div class="card shadow-sm border-0 mb-4 rounded-4">
@@ -77,7 +82,7 @@
                                 </div>
                             </div>
                             <div style="width: 80px;">
-                                <input type="number" name="goals[<?= e($reg['id']) ?>]" class="form-control text-center fw-bold rounded-3"
+                                <input type="number" name="goals[<?= e($reg['id']) ?>]" data-team="away" class="form-control text-center fw-bold rounded-3"
                                     value="<?= e(isset($oldInput['goals'][$reg['id']]) ? $oldInput['goals'][$reg['id']] : ($reg['goals_scored'] ?? 0)) ?>" min="0">
                             </div>
                         </div>
@@ -85,7 +90,6 @@
                 </div>
             </div>
             <?php endif; ?>
-
 
             <?php if(count($unassigned) > 0): ?>
             <div class="card shadow-sm border-0 mb-4 rounded-4">
@@ -104,7 +108,7 @@
                                 </div>
                             </div>
                             <div style="width: 80px;">
-                                <input type="number" name="goals[<?= e($reg['id']) ?>]" class="form-control text-center fw-bold rounded-3"
+                                <input type="number" name="goals[<?= e($reg['id']) ?>]" data-team="unassigned" class="form-control text-center fw-bold rounded-3"
                                     value="<?= e(isset($oldInput['goals'][$reg['id']]) ? $oldInput['goals'][$reg['id']] : ($reg['goals_scored'] ?? 0)) ?>" min="0">
                             </div>
                         </div>
@@ -119,3 +123,75 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.querySelector('form');
+    var resultHomeInput = document.querySelector('input[name="result_home"]');
+    var resultAwayInput = document.querySelector('input[name="result_away"]');
+    var validationAlert = document.getElementById('validation-alert');
+    var validationAlertMsg = document.getElementById('validation-alert-msg');
+    var submitBtn = form.querySelector('button[type="submit"]');
+    
+    function validateForm(e) {
+        var resultHome = parseInt(resultHomeInput.value) || 0;
+        var resultAway = parseInt(resultAwayInput.value) || 0;
+        
+        var sumHome = 0;
+        var sumAway = 0;
+        
+        document.querySelectorAll('input[data-team="home"]').forEach(function(input) {
+            sumHome += parseInt(input.value) || 0;
+        });
+        
+        document.querySelectorAll('input[data-team="away"]').forEach(function(input) {
+            sumAway += parseInt(input.value) || 0;
+        });
+        
+        var errors = [];
+        if (sumHome !== resultHome) {
+            errors.push('La somma dei gol dei singoli giocatori <strong>Home</strong> (' + sumHome + ') non corrisponde al risultato finale inserito (' + resultHome + ').');
+        }
+        if (sumAway !== resultAway) {
+            errors.push('La somma dei gol dei singoli giocatori <strong>Away</strong> (' + sumAway + ') non corrisponde al risultato finale inserito (' + resultAway + ').');
+        }
+        
+        if (errors.length > 0) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            validationAlertMsg.innerHTML = errors.join('<br>');
+            validationAlert.classList.remove('d-none');
+            if (e) {
+                validationAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return false;
+        } else {
+            validationAlert.classList.add('d-none');
+            return true;
+        }
+    }
+    
+    form.addEventListener('submit', function(e) {
+        var isValid = validateForm(e);
+        if (isValid && submitBtn) {
+            submitBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Salvataggio in corso...
+            `;
+            setTimeout(function() {
+                submitBtn.disabled = true;
+            }, 0);
+        }
+    });
+    
+    // Attiva controllo dinamico al variare dei valori
+    resultHomeInput.addEventListener('input', function() { validateForm(); });
+    resultAwayInput.addEventListener('input', function() { validateForm(); });
+    
+    document.querySelectorAll('input[data-team="home"], input[data-team="away"]').forEach(function(input) {
+        input.addEventListener('input', function() { validateForm(); });
+    });
+});
+</script>
