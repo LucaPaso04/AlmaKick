@@ -539,10 +539,12 @@ class MatchController extends BaseController {
         $location = trim($_POST['location'] ?? '');
         $totalCost = $_POST['total_cost'] ?? 0;
         $visibility = $_POST['visibility'] ?? 'public';
+        $latitude = isset($_POST['latitude']) && $_POST['latitude'] !== '' ? (float)$_POST['latitude'] : null;
+        $longitude = isset($_POST['longitude']) && $_POST['longitude'] !== '' ? (float)$_POST['longitude'] : null;
 
         if (empty($date) || empty($time) || empty($location)) {
             $_SESSION['error'] = "Tutti i campi obbligatori devono essere compilati.";
-            $this->redirect('/matches/create');
+            $this->redirect(url('/matches/create'));
         }
 
         // Determina il numero massimo di giocatori in base al formato
@@ -551,6 +553,8 @@ class MatchController extends BaseController {
             $maxPlayers = 14;
         } elseif ($format === '8vs8') {
             $maxPlayers = 16;
+        } elseif ($format === '11vs11') {
+            $maxPlayers = 22;
         }
 
         $matchModel = new SoccerMatch();
@@ -561,6 +565,8 @@ class MatchController extends BaseController {
             'format' => $format,
             'max_players' => $maxPlayers,
             'location' => $location,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
             'visibility' => $visibility,
             'total_cost' => $totalCost,
             'status' => 'open'

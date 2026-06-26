@@ -295,8 +295,8 @@ class SoccerMatch
 
     public function create(array $data): bool
     {
-        $sql = "INSERT INTO matches (host_username, date, time, format, max_players, location, visibility, total_cost, status, created_at, updated_at) 
-                VALUES (:host_username, :date, :time, :format, :max_players, :location, :visibility, :total_cost, :status, NOW(), NOW())";
+        $sql = "INSERT INTO matches (host_username, date, time, format, max_players, location, latitude, longitude, visibility, total_cost, status, created_at, updated_at) 
+                VALUES (:host_username, :date, :time, :format, :max_players, :location, :latitude, :longitude, :visibility, :total_cost, :status, NOW(), NOW())";
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -306,6 +306,8 @@ class SoccerMatch
             'format' => $data['format'],
             'max_players' => $data['max_players'],
             'location' => $data['location'],
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
             'visibility' => $data['visibility'],
             'total_cost' => $data['total_cost'],
             'status' => $data['status']
