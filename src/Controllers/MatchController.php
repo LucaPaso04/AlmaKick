@@ -214,6 +214,32 @@ class MatchController extends BaseController {
 
         $db = \App\Database::getInstance()->getConnection();
 
+        // Controlla se l'utente ha già una partita lo stesso giorno ad un orario sovrapposto (entro 2 ore)
+        $stmtConflict = $db->prepare("
+            SELECT m.id, m.time, m.location 
+            FROM registrations r
+            JOIN matches m ON r.match_id = m.id
+            WHERE r.username = :username 
+              AND r.status IN ('registered', 'waitlist')
+              AND m.status IN ('open', 'full')
+              AND m.date = :date
+              AND m.id != :match_id
+              AND ABS(TIME_TO_SEC(m.time) - TIME_TO_SEC(:time)) < 7200
+        ");
+        $stmtConflict->execute([
+            'username' => $username,
+            'date' => $match['date'],
+            'match_id' => $id,
+            'time' => $match['time']
+        ]);
+        $conflict = $stmtConflict->fetch(\PDO::FETCH_ASSOC);
+
+        if ($conflict) {
+            $conflictTime = date('H:i', strtotime($conflict['time']));
+            $_SESSION['error'] = "Conflitto orario! Sei già iscritto a un'altra partita in questa giornata alle ore " . $conflictTime . " presso \"" . $conflict['location'] . "\".";
+            $this->redirectToMatch($id);
+        }
+
         // Controlla se l'utente è già iscritto
         $stmtCheck = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND username = :username");
         $stmtCheck->execute(['match_id' => $id, 'username' => $username]);
