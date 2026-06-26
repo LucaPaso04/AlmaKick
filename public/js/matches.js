@@ -24,8 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var format = filterForm.querySelector('select[name="format"]').value;
         var filter = filterForm.querySelector('select[name="filter"]').value;
         var onlyFriends = filterForm.querySelector('input[name="only_friends"]').checked;
+        var excludeMyMatches = filterForm.querySelector('input[name="exclude_my_matches"]');
+        var excludeChecked = excludeMyMatches ? excludeMyMatches.checked : false;
 
-        return location !== "" || date !== "" || format !== "" || filter !== "all" || onlyFriends;
+        return location !== "" || date !== "" || format !== "" || filter !== "all" || onlyFriends || excludeChecked;
     }
 
     // Function to perform AJAX filter request
@@ -38,6 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
         searchParams.set('ajax', '1');
         searchParams.set('page', page.toString());
 
+        // Visual loading feedback: dim container and add smooth transition
+        matchesContainer.style.transition = 'opacity 0.2s ease-in-out';
+        matchesContainer.style.opacity = '0.5';
+
         // Fetch filtered matches (returns JSON with html & pagination fields)
         fetch(filterForm.action + '?' + searchParams.toString(), {
             headers: {
@@ -48,8 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(function(res) {
-            // Update matches list container
+            // Update matches list container with smooth fade-in
             matchesContainer.innerHTML = res.html;
+            matchesContainer.style.opacity = '1';
 
             // Update pagination container
             if (paginationContainer) {
@@ -67,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateResetButton();
         })
         .catch(function(err) {
+            matchesContainer.style.opacity = '1';
             console.error('Filtering error:', err);
         });
     }
@@ -117,6 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
         filterForm.querySelector('select[name="format"]').value = '';
         filterForm.querySelector('select[name="filter"]').value = 'all';
         filterForm.querySelector('input[name="only_friends"]').checked = false;
+        
+        var excludeMyMatches = filterForm.querySelector('input[name="exclude_my_matches"]');
+        if (excludeMyMatches) excludeMyMatches.checked = false;
 
         // Perform filter with cleared inputs (starts at page 1)
         performFilter(1);
