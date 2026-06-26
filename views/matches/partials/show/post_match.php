@@ -88,8 +88,8 @@ if ($match['status'] === 'finished'):
     <?php if ($my_reg): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4">
             <div class="card-body p-4">
-                <h2 class="fw-bold mb-3 fs-5"><span class="bi bi-star-fill text-warning me-2"></span>Vota i tuoi Compagni</h2>
-                <p class="text-muted small mb-4">Assegna da 1 a 5 stelle per la Skill di ogni giocatore. Il Pollice in giù è una segnalazione seria.</p>
+                <h2 class="fw-bold mb-1 fs-5"><span class="bi bi-star-fill text-warning me-2"></span>Vota i tuoi Compagni</h2>
+                <p class="text-muted small mb-4">Assegna una valutazione per la Skill di ogni giocatore cliccando sulle stelle. Usa il pollice in giù in caso di comportamenti antisportivi.</p>
 
                 <form action="<?= url('/matches/' . $match['id'] . '/vote?from=' . urlencode($from)) ?>" method="POST">
                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -137,24 +137,28 @@ if ($match['status'] === 'finished'):
 
                                 <div>
                                     <?php if($existing_vote): ?>
-                                        <span class="badge bg-success rounded-pill px-3 py-2">
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-2">
                                             <span class="bi bi-check-lg me-1"></span>Votato: <?= $existing_vote['skill_vote'] ?>⭐
                                         </span>
                                     <?php else: 
                                         $hasSomeoneToVote = true;
                                         ?>
-                                        <div class="d-flex align-items-center gap-2">
+                                        <div class="d-flex align-items-center gap-3">
                                             <input type="hidden" name="votes[<?= e($reg['username']) ?>][evaluated_username]" value="<?= e($reg['username']) ?>">
-                                            <select name="votes[<?= e($reg['username']) ?>][skill_vote]" class="form-select form-select-sm rounded-pill border-primary" style="width: 75px;">
-                                                <option value="">⭐</option>
+                                            
+                                            <!-- Interactive Star Rating -->
+                                            <input type="hidden" name="votes[<?= e($reg['username']) ?>][skill_vote]" id="vote_val_<?= e($reg['username']) ?>" value="">
+                                            <div class="star-rating d-flex gap-1" data-username="<?= e($reg['username']) ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                    <option value="<?= $i ?>"><?= $i ?>⭐</option>
+                                                    <span class="bi bi-star text-warning fs-5 star-item" data-value="<?= $i ?>" style="cursor: pointer;"></span>
                                                 <?php endfor; ?>
-                                            </select>
-                                            <div class="form-check form-check-inline mb-0" title="Segnala comportamento grave">
-                                                <input class="form-check-input" type="checkbox" name="votes[<?= e($reg['username']) ?>][thumb_down]" value="1" id="td_<?= e($reg['username']) ?>">
-                                                <label class="form-check-label" for="td_<?= e($reg['username']) ?>">👎</label>
                                             </div>
+
+                                            <!-- Styled Thumb Down Checkbox -->
+                                            <input type="checkbox" name="votes[<?= e($reg['username']) ?>][thumb_down]" value="1" id="td_<?= e($reg['username']) ?>" class="d-none thumb-down-check">
+                                            <label class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center p-0 thumb-down-btn" for="td_<?= e($reg['username']) ?>" style="width: 32px; height: 32px;" title="Segnala comportamento grave">
+                                                <i class="bi bi-hand-thumbs-down"></i>
+                                            </label>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -174,5 +178,66 @@ if ($match['status'] === 'finished'):
                 </form>
             </div>
         </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Interactive Star Rating Logic
+            document.querySelectorAll('.star-rating').forEach(function(ratingEl) {
+                var username = ratingEl.getAttribute('data-username');
+                var hiddenInput = document.getElementById('vote_val_' + username);
+                var stars = ratingEl.querySelectorAll('.star-item');
+
+                stars.forEach(function(star) {
+                    star.addEventListener('mouseenter', function() {
+                        var hoverVal = parseInt(this.getAttribute('data-value'));
+                        stars.forEach(function(s, idx) {
+                            if (idx < hoverVal) {
+                                s.classList.replace('bi-star', 'bi-star-fill');
+                            } else {
+                                s.classList.replace('bi-star-fill', 'bi-star');
+                            }
+                        });
+                    });
+
+                    star.addEventListener('mouseleave', function() {
+                        var currentVal = parseInt(hiddenInput.value) || 0;
+                        stars.forEach(function(s, idx) {
+                            if (idx < currentVal) {
+                                s.classList.replace('bi-star', 'bi-star-fill');
+                            } else {
+                                s.classList.replace('bi-star-fill', 'bi-star');
+                            }
+                        });
+                    });
+
+                    star.addEventListener('click', function() {
+                        var clickVal = this.getAttribute('data-value');
+                        hiddenInput.value = clickVal;
+                        stars.forEach(function(s, idx) {
+                            if (idx < clickVal) {
+                                s.classList.replace('bi-star', 'bi-star-fill');
+                            } else {
+                                s.classList.replace('bi-star-fill', 'bi-star');
+                            }
+                        });
+                    });
+                });
+            });
+
+            // Thumb Down Styled Button Logic
+            document.querySelectorAll('.thumb-down-check').forEach(function(checkbox) {
+                var label = document.querySelector('label[for="' + checkbox.id + '"]');
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        label.classList.replace('btn-outline-danger', 'btn-danger');
+                        label.querySelector('.bi').classList.replace('bi-hand-thumbs-down', 'bi-hand-thumbs-down-fill');
+                    } else {
+                        label.classList.replace('btn-danger', 'btn-outline-danger');
+                        label.querySelector('.bi').classList.replace('bi-hand-thumbs-down-fill', 'bi-hand-thumbs-down');
+                    }
+                });
+            });
+        });
+        </script>
     <?php endif; ?>
 <?php endif; ?>
