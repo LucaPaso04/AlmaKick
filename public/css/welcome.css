@@ -29,7 +29,7 @@
 
 .welcome-container .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.3) !important;
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.3);
 }
 
 .welcome-container .btn-outline-secondary:hover {
@@ -46,7 +46,7 @@
 
 .welcome-container .card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .welcome-hero-img {
@@ -88,7 +88,7 @@
 
 .welcome-container .bg-body-tertiary:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .welcome-container .bg-body-tertiary i {
@@ -118,7 +118,7 @@
     }
 
     .welcome-container h1 {
-        font-size: 2rem !important;
+        font-size: 2rem;
     }
 
     .welcome-container .lead {
@@ -128,7 +128,7 @@
     .welcome-container .btn-primary,
     .welcome-container .btn-outline-secondary {
         font-size: 0.95rem;
-        padding: 0.6rem 1.5rem !important;
+        padding: 0.6rem 1.5rem;
     }
 
     .welcome-container .card {
@@ -138,23 +138,23 @@
     .welcome-floating-badge {
         bottom: -10px;
         right: 10px;
-        font-size: 0.9rem !important;
-        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
     }
 
     .welcome-container .bg-body-tertiary {
-        padding: 2rem 1rem !important;
+        padding: 2rem 1rem;
     }
 }
 
 /* Dark Theme Support */
 @media (prefers-color-scheme: dark) {
     .welcome-container .text-muted {
-        color: #adb5bd !important;
+        color: #adb5bd;
     }
 
     .welcome-container .bg-body-tertiary {
-        background-color: rgba(255, 255, 255, 0.05) !important;
+        background-color: rgba(255, 255, 255, 0.05);
     }
 }
 

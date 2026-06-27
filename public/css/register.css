@@ -14,7 +14,7 @@
 
 .register-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
 /* Form Styling */
@@ -30,9 +30,9 @@
 
 .form-floating .form-control:focus,
 .form-floating .form-select:focus {
-    background-color: rgba(13, 110, 253, 0.05) !important;
-    border-color: var(--bs-primary) !important;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
+    background-color: rgba(13, 110, 253, 0.05);
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
     transform: translateY(-2px);
 }
 
@@ -69,7 +69,7 @@
 
 .register-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3) !important;
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3);
 }
 
 .register-btn:active {
@@ -133,8 +133,8 @@
         margin-top: 2rem;
     }
 
-    .card-body {
-        padding: 1.5rem !important;
+    .register-card .card-body {
+        padding: 1.5rem;
     }
 
     .register-card h2 {
@@ -160,8 +160,8 @@
         margin-top: 1rem;
     }
 
-    .card-body {
-        padding: 1.25rem !important;
+    .register-card .card-body {
+        padding: 1.25rem;
     }
 
     .register-card h2 {
@@ -175,11 +175,11 @@
     .form-floating .form-control,
     .form-floating .form-select {
         font-size: 0.9rem;
-        padding: 0.6rem 0.75rem !important;
+        padding: 0.6rem 0.75rem;
     }
 
     .register-btn {
-        padding: 0.65rem !important;
+        padding: 0.65rem;
         font-size: 0.95rem;
     }
 
