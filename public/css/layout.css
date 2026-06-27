@@ -75,7 +75,8 @@ footer {
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .logo-bg-wrapper:hover {
@@ -128,4 +129,41 @@ footer {
         transform: translateY(0);
     }
 }
+
+/* Search Hover Reveal Effect */
+.search-hover-reveal {
+    overflow: hidden;
+    max-width: 32px;
+    transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+.search-hover-reveal:hover {
+    max-width: 120px;
+}
+
+.search-text-reveal {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.3s ease 0.05s, transform 0.3s ease 0.05s;
+    font-size: 0.95rem;
+    margin-left: 6px;
+}
+
+.search-hover-reveal:hover .search-text-reveal {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Active Logo/Home Styling */
+.logo-active {
+    box-shadow: 0 0 15px rgba(var(--bs-primary-rgb), 0.5) !important;
+    border-color: var(--bs-primary) !important;
+    transform: scale(1.05);
+}
+
 
