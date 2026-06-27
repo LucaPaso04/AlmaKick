@@ -416,6 +416,12 @@ class MatchController extends BaseController {
             $this->redirect(url('/matches/' . $id));
         }
 
+        $matchStart = strtotime($match['date'] . ' ' . $match['time']);
+        if (time() < $matchStart + 3600) {
+            $_SESSION['error'] = "Non puoi terminare la partita prima che sia trascorsa almeno un'ora dal fischio d'inizio.";
+            $this->redirectToMatch($id);
+        }
+
         $db = \App\Database::getInstance()->getConnection();
         $db->prepare("UPDATE matches SET status = 'finished', updated_at = NOW() WHERE id = :id")->execute(['id' => $id]);
         
@@ -436,14 +442,34 @@ class MatchController extends BaseController {
 
         $db = \App\Database::getInstance()->getConnection();
         $motivoMeteo = (isset($_POST['motivo_meteo']) && $_POST['motivo_meteo'] == 1) ? 1 : 0;
-        $reason = $motivoMeteo ? "Meteo avverso" : "Annullata dall'organizzatore";
+        $motivoGiocatori = (isset($_POST['motivo_giocatori']) && $_POST['motivo_giocatori'] == 1) ? 1 : 0;
 
-        // Penalità di Trust Score se manca meno di 24h all'inizio e non è per maltempo
+        // Recupera iscritti attivi
+        $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        $stmtCount->execute(['match_id' => $id]);
+        $occupied = (int)$stmtCount->fetchColumn();
+
         $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
         $timeDiff = $matchDateTime - time();
-        $scorePenalty = 0;
 
-        if (!$motivoMeteo && $timeDiff < 24 * 3600) {
+        // Controllo validità motivo giocatori per evitare manipolazioni html
+        if ($motivoGiocatori && ($timeDiff > 3600 || $occupied >= (int)$match['max_players'])) {
+            $_SESSION['error'] = "Non puoi annullare per giocatori insufficienti prima di un'ora dalla partita o se la partita è piena.";
+            $this->redirectToMatch($id);
+        }
+
+        $reason = "Annullata dall'organizzatore";
+        if ($motivoMeteo) {
+            $reason = "Meteo avverso";
+        } elseif ($motivoGiocatori) {
+            $reason = "Numero giocatori insufficiente";
+        }
+
+        // Penalità di Trust Score se manca meno di 24h all'inizio e non è per maltempo / giocatori insufficienti
+        $scorePenalty = 0;
+        $esentePenalita = $motivoMeteo || $motivoGiocatori;
+
+        if (!$esentePenalita && $timeDiff < 24 * 3600) {
             $scorePenalty = -40;
             $stmtPenalty = $db->prepare("UPDATE users SET trust_score = GREATEST(0, trust_score + :penalty) WHERE username = :username");
             $stmtPenalty->execute(['penalty' => $scorePenalty, 'username' => $username]);

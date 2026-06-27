@@ -52,3 +52,19 @@ function e($value)
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+// Funzione di utility per formattare i ruoli preferiti con le emoji
+function getRoleBadge($role)
+{
+    $roleClean = strtolower(trim($role ?? ''));
+    if (str_contains($roleClean, 'portiere')) {
+        return '🧤 Portiere';
+    } elseif (str_contains($roleClean, 'difensore')) {
+        return '🛡️ Difensore';
+    } elseif (str_contains($roleClean, 'centrocampista')) {
+        return '🛡️⚔️ Centrocampista';
+    } elseif (str_contains($roleClean, 'attaccante')) {
+        return '⚔️ Attaccante';
+    }
+    return '⚽ ' . ($role ?: 'Giocatore');
+}
+

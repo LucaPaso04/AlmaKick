@@ -11,6 +11,18 @@ if (isset($_SESSION['user']['username'])) {
         }
     }
 }
+
+$matchStart = strtotime($match['date'] . ' ' . $match['time']);
+$canClose = time() >= ($matchStart + 3600);
+
+$timeDiff = $matchStart - time();
+$occupied = 0;
+foreach ($registrations as $r) {
+    if ($r['status'] === 'registered') {
+        $occupied += 1 + (int)$r['has_guest'];
+    }
+}
+$canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_players']);
 ?>
 
 <?php if ($match['status'] === 'open' || $match['status'] === 'full'): ?>
@@ -83,13 +95,21 @@ if (isset($_SESSION['user']['username'])) {
                     </div>
                     <?php // Close Match ?>
                     <div class="col-12 col-md-6">
-                        <form action="<?= url('/matches/' . $match['id'] . '/close?from=' . urlencode($from)) ?>" method="POST"
-                            onsubmit="return confirm('Vuoi concludere la partita? Non sarà più possibile iscriversi.');">
-                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                            <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold shadow-sm">
+                        <?php if ($canClose): ?>
+                            <form action="<?= url('/matches/' . $match['id'] . '/close?from=' . urlencode($from)) ?>" method="POST"
+                                onsubmit="return confirm('Vuoi concludere la partita? Non sarà più possibile iscriversi.');">
+                                <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold shadow-sm">
+                                    <span class="bi bi-flag-fill me-2"></span>Termina Partita
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <button type="button" class="btn btn-dark w-100 rounded-pill fw-bold shadow-sm opacity-50" disabled
+                                title="Potrai terminare la partita un'ora dopo il fischio d'inizio (dal <?= date('d/m \a\l\l\e H:i', $matchStart + 3600) ?>)">
                                 <span class="bi bi-flag-fill me-2"></span>Termina Partita
                             </button>
-                        </form>
+                            <small class="text-muted d-block text-center mt-1" style="font-size: 0.75rem;">Disponibile dal <?= date('d/m \a\l\l\e H:i', $matchStart + 3600) ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -102,6 +122,12 @@ if (isset($_SESSION['user']['username'])) {
                         <input class="form-check-input" type="checkbox" value="1" id="motivo_meteo" name="motivo_meteo">
                         <label class="form-check-label fw-bold" for="motivo_meteo">Annulla per maltempo (Nessuna penalità)</label>
                     </div>
+                    <?php if ($canCancelNoPenaltyPlayers): ?>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" value="1" id="motivo_giocatori" name="motivo_giocatori">
+                            <label class="form-check-label fw-bold text-success" for="motivo_giocatori">Annulla per giocatori insufficienti (Nessuna penalità)</label>
+                        </div>
+                    <?php endif; ?>
                     <button type="submit" class="btn btn-outline-danger shadow-sm rounded-pill px-4">
                         <span class="bi bi-x-octagon me-2"></span>Annulla Partita
                     </button>

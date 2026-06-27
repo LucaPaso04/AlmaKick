@@ -9,6 +9,13 @@ $away_team = array_filter($registrations, function($r) {
 });
 $teams_generated = count($home_team) > 0 || count($away_team) > 0;
 
+$roleEmojiMap = [
+    'GK' => '🧤',
+    'DEF' => '🛡️',
+    'MID' => '🛡️⚔️',
+    'ATT' => '⚔️'
+];
+
 $getCanonicalRole = function($preferredRole) {
     $r = strtolower($preferredRole ?? '');
     if (str_contains($r, 'portiere') || str_contains($r, 'goalkeeper')) {
@@ -226,8 +233,8 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                             <span class="badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 backdrop-blur pitch-player-label">
                                                 <?= e($displayName) ?>
                                             </span>
-                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role">
-                                                <?= $roleKey ?>
+                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role" style="font-size: 0.8rem;">
+                                                <?= $roleEmojiMap[$roleKey] ?? $roleKey ?>
                                             </small>
                                         </div>
                                     </div>
@@ -277,8 +284,8 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                             <span class="badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 backdrop-blur pitch-player-label">
                                                 <?= e($displayName) ?>
                                             </span>
-                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role">
-                                                <?= $roleKey ?>
+                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role" style="font-size: 0.8rem;">
+                                                <?= $roleEmojiMap[$roleKey] ?? $roleKey ?>
                                             </small>
                                         </div>
                                     </div>

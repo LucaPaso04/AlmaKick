@@ -80,7 +80,7 @@ foreach ($registrations as $reg) {
                         </h3>
                         <small class="text-muted d-flex align-items-center gap-1 mt-1">
                             <span class="bi bi-person-badge" aria-hidden="true"></span> 
-                            <?= e($reg['preferred_role'] ?: 'Ruolo non specificato') ?>
+                            <?= e(getRoleBadge($reg['preferred_role'])) ?>
                         </small>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ foreach ($registrations as $reg) {
                         </h3>
                         <small class="text-muted d-flex align-items-center gap-1 mt-1">
                             <span class="bi bi-person-badge" aria-hidden="true"></span> 
-                            <?= e($reg['preferred_role'] ?: 'Ruolo non specificato') ?>
+                            <?= e(getRoleBadge($reg['preferred_role'])) ?>
                         </small>
                     </div>
                 </div>
