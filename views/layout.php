@@ -229,12 +229,12 @@ if (isset($_SESSION['user'])) {
         <?= $content ?>
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-body-tertiary border-top py-4 mt-auto pb-5 pb-lg-4">
         <div class="container">
-            <div class="row gy-4">
-                <div class="col-12 col-md-4">
-                    <div class="mb-3">
+            <div class="row align-items-center gy-4">
+                <!-- Left Column: Logo & Tagline -->
+                <div class="col-12 col-md-8 text-center text-md-start">
+                    <div class="mb-3 d-inline-flex">
                         <span class="logo-bg-wrapper">
                             <!-- Logo monogramma per mobile -->
                             <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none">
@@ -242,25 +242,19 @@ if (isset($_SESSION['user'])) {
                             <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
                         </span>
                     </div>
-                    <p class="text-body-secondary small mb-0">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
+                    <p class="text-body-secondary small mb-0" style="max-width: 500px;">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
                 </div>
-                <div class="col-6 col-md-4">
-                    <h3 class="h6 fw-semibold">Link Utili</h3>
-                    <ul class="list-unstyled small mb-0">
-                        <li class="mb-2"><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
-                        <li class="mb-2"><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
+                <!-- Right Column: Links aligned horizontally on desktop -->
+                <div class="col-12 col-md-4 text-center text-md-end">
+                    <h3 class="h6 fw-semibold mb-3">Link Utili</h3>
+                    <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
+                        <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
+                        <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
                         <?php if (isset($_SESSION['user'])): ?>
                             <li><a href="<?= url('/profile') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Il mio Profilo</a></li>
                         <?php else: ?>
                             <li><a href="<?= url('/login') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Accedi</a></li>
                         <?php endif; ?>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-4">
-                    <h3 class="h6 fw-semibold">Contatti</h3>
-                    <ul class="list-unstyled small mb-0">
-                        <li class="mb-2 text-body-secondary"><span class="bi bi-envelope me-2"></span>info@almakick.it</li>
-                        <li class="text-body-secondary"><span class="bi bi-instagram me-2"></span>@almakick</li>
                     </ul>
                 </div>
             </div>
