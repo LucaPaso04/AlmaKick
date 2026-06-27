@@ -202,4 +202,109 @@ class User {
             'u3' => $user1, 'u4' => $user2
         ]);
     }
+
+    public function getTopScorers(int $limit = 10): array {
+        $stmt = $this->db->prepare("
+            SELECT * FROM users
+            WHERE is_banned = 0 AND total_goals > 0
+            ORDER BY total_goals DESC, name ASC, last_name ASC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getTopMVPs(int $limit = 10): array {
+        $stmt = $this->db->prepare("
+            SELECT * FROM users
+            WHERE is_banned = 0 AND mvp_count > 0
+            ORDER BY mvp_count DESC, name ASC, last_name ASC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getTopRated(int $limit = 10): array {
+        $stmt = $this->db->prepare("
+            SELECT * FROM users
+            WHERE is_banned = 0 AND matches_played >= 3
+            ORDER BY skill_rating DESC, name ASC, last_name ASC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getFriendsScorers(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* FROM users u
+            WHERE u.is_banned = 0 AND u.total_goals > 0 AND (u.username = :my_username OR u.username IN (
+                SELECT CASE 
+                    WHEN sender_username = :my_username1 THEN recipient_username
+                    ELSE sender_username
+                END
+                FROM friendships
+                WHERE (sender_username = :my_username2 OR recipient_username = :my_username3)
+                  AND status = 'accepted'
+            ))
+            ORDER BY u.total_goals DESC, u.name ASC, u.last_name ASC
+        ");
+        $stmt->execute([
+            'my_username' => $username,
+            'my_username1' => $username,
+            'my_username2' => $username,
+            'my_username3' => $username
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getFriendsMVPs(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* FROM users u
+            WHERE u.is_banned = 0 AND u.mvp_count > 0 AND (u.username = :my_username OR u.username IN (
+                SELECT CASE 
+                    WHEN sender_username = :my_username1 THEN recipient_username
+                    ELSE sender_username
+                END
+                FROM friendships
+                WHERE (sender_username = :my_username2 OR recipient_username = :my_username3)
+                  AND status = 'accepted'
+            ))
+            ORDER BY u.mvp_count DESC, u.name ASC, u.last_name ASC
+        ");
+        $stmt->execute([
+            'my_username' => $username,
+            'my_username1' => $username,
+            'my_username2' => $username,
+            'my_username3' => $username
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getFriendsRated(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* FROM users u
+            WHERE u.is_banned = 0 AND u.matches_played >= 3 AND (u.username = :my_username OR u.username IN (
+                SELECT CASE 
+                    WHEN sender_username = :my_username1 THEN recipient_username
+                    ELSE sender_username
+                END
+                FROM friendships
+                WHERE (sender_username = :my_username2 OR recipient_username = :my_username3)
+                  AND status = 'accepted'
+            ))
+            ORDER BY u.skill_rating DESC, u.name ASC, u.last_name ASC
+        ");
+        $stmt->execute([
+            'my_username' => $username,
+            'my_username1' => $username,
+            'my_username2' => $username,
+            'my_username3' => $username
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
 }

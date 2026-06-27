@@ -68,6 +68,7 @@ $router->add('POST', '/login', 'AuthController@login');
 $router->add('GET', '/register', 'AuthController@showRegister');
 $router->add('POST', '/register', 'AuthController@register');
 $router->add('POST', '/logout', 'AuthController@logout');
+$router->add('GET', '/leaderboard', 'LeaderboardController@index');
 
 $router->add('GET', '/matches', 'MatchController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/matches/create', 'MatchController@create', [\App\Middleware\AuthMiddleware::class]);
