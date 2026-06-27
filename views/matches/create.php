@@ -60,9 +60,17 @@
                         <div id="create-map" class="rounded-4 border shadow-sm" aria-label="Mappa interattiva" aria-describedby="map-description" role="region" tabindex="0"></div>
                         
                         <!-- Reverse Geocoding Address Alert -->
-                        <div id="detected-address-alert" class="alert alert-secondary d-none py-2 px-3 mt-2 rounded-3 border-0 small d-flex justify-content-between align-items-center">
-                            <span id="detected-address-text"></span>
-                            <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold text-nowrap" id="apply-address-btn">Usa indirizzo</button>
+                        <div id="detected-address-alert" class="d-none mt-3 p-3 bg-body-tertiary border rounded-4 shadow-sm d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                            <div class="d-flex flex-column align-items-center gap-1">
+                                <span class="bi bi-geo-alt-fill text-danger fs-4" aria-hidden="true"></span>
+                                <div>
+                                    <small class="text-muted d-block fw-bold" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Indirizzo Rilevato</small>
+                                    <span id="detected-address-text" class="text-body fw-medium small"></span>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-2 fw-bold text-nowrap hover-scale shadow-sm mt-1" id="apply-address-btn">
+                                <i class="bi bi-check2-circle me-1"></i>Usa Indirizzo
+                            </button>
                         </div>
 
                         <input type="hidden" name="latitude" id="latitude" value="">

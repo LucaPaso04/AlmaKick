@@ -11,7 +11,8 @@ class MatchController extends BaseController {
         
         $filters = [
             'location' => $_GET['location'] ?? null,
-            'date' => $_GET['date'] ?? null,
+            'date_from' => $_GET['date_from'] ?? null,
+            'date_to' => $_GET['date_to'] ?? null,
             'format' => $_GET['format'] ?? null,
             'filter' => $_GET['filter'] ?? null,
             'only_friends' => $_GET['only_friends'] ?? null,

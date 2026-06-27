@@ -20,14 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Helper to check if form has active filters
     function hasActiveFilters() {
         var location = filterForm.querySelector('input[name="location"]').value.trim();
-        var date = filterForm.querySelector('input[name="date"]').value;
+        var dateFromInput = filterForm.querySelector('input[name="date_from"]');
+        var dateToInput = filterForm.querySelector('input[name="date_to"]');
+        var dateFrom = dateFromInput ? dateFromInput.value : '';
+        var dateTo = dateToInput ? dateToInput.value : '';
         var format = filterForm.querySelector('select[name="format"]').value;
-        var filter = filterForm.querySelector('select[name="filter"]').value;
         var onlyFriends = filterForm.querySelector('input[name="only_friends"]').checked;
         var excludeMyMatches = filterForm.querySelector('input[name="exclude_my_matches"]');
         var excludeChecked = excludeMyMatches ? excludeMyMatches.checked : false;
 
-        return location !== "" || date !== "" || format !== "" || filter !== "all" || onlyFriends || excludeChecked;
+        return location !== "" || dateFrom !== "" || dateTo !== "" || format !== "" || onlyFriends || excludeChecked;
     }
 
     // Function to perform AJAX filter request
@@ -121,9 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset all inputs in form
         filterForm.querySelector('input[name="location"]').value = '';
-        filterForm.querySelector('input[name="date"]').value = '';
+        var dateFromInput = filterForm.querySelector('input[name="date_from"]');
+        var dateToInput = filterForm.querySelector('input[name="date_to"]');
+        if (dateFromInput) dateFromInput.value = '';
+        if (dateToInput) dateToInput.value = '';
         filterForm.querySelector('select[name="format"]').value = '';
-        filterForm.querySelector('select[name="filter"]').value = 'all';
         filterForm.querySelector('input[name="only_friends"]').checked = false;
         
         var excludeMyMatches = filterForm.querySelector('input[name="exclude_my_matches"]');

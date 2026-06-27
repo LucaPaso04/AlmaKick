@@ -21,23 +21,30 @@
                 }
             }
             ?>
-            <a href="<?= $backUrl ?>" class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small" aria-label="Torna indietro">
+            <a href="<?= $backUrl ?>"
+                class="btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center hover-scale match-show-avatar-small"
+                aria-label="Torna indietro">
                 <span class="bi bi-arrow-left" aria-hidden="true"></span>
             </a>
-            
-            <span class="badge bg-light text-dark bg-opacity-75 fs-6 rounded-pill backdrop-blur shadow-sm" role="img" aria-label="Data e ora della partita">
+
+            <span class="badge bg-light text-dark bg-opacity-75 fs-6 rounded-pill backdrop-blur shadow-sm" role="img"
+                aria-label="Data e ora della partita">
                 <span class="bi bi-calendar-event me-1" aria-hidden="true"></span>
                 <?= date('d/m/Y H:i', strtotime($match['date'] . ' ' . $match['time'])) ?>
             </span>
-            
+
             <?php if ($match['status'] === 'cancelled'): ?>
-                <span class="badge bg-danger rounded-pill fs-6 text-uppercase shadow-sm" role="img" aria-label="Stato partita: Annullata">Annullata</span>
+                <span class="badge bg-danger rounded-pill fs-6 text-uppercase shadow-sm" role="img"
+                    aria-label="Stato partita: Annullata">Annullata</span>
             <?php elseif ($match['status'] === 'finished'): ?>
-                <span class="badge bg-dark rounded-pill fs-6 shadow-sm" role="img" aria-label="Stato partita: Conclusa">🏁 Conclusa</span>
+                <span class="badge bg-dark rounded-pill fs-6 shadow-sm" role="img" aria-label="Stato partita: Conclusa">🏁
+                    Conclusa</span>
             <?php elseif ($match['status'] === 'full'): ?>
-                <span class="badge bg-success rounded-pill fs-6 shadow-sm" role="img" aria-label="Stato partita: Completa">Completa</span>
+                <span class="badge bg-success rounded-pill fs-6 shadow-sm" role="img"
+                    aria-label="Stato partita: Completa">Completa</span>
             <?php else: ?>
-                <span class="badge bg-white text-primary rounded-pill fs-6 text-uppercase fw-bold shadow-sm" role="img" aria-label="Formato partita"><?= e($match['format']) ?></span>
+                <span class="badge bg-white text-primary rounded-pill fs-6 text-uppercase fw-bold shadow-sm" role="img"
+                    aria-label="Formato partita"><?= e($match['format']) ?></span>
             <?php endif; ?>
         </div>
 
@@ -45,9 +52,11 @@
             <?= e($match['location']) ?>
         </h1>
         <p class="fs-5 mb-0 opacity-75">
-            <span class="bi bi-person-circle me-2" aria-hidden="true"></span>Organizzata da 
-            <a href="<?= url('/profile?username=' . urlencode($match['host_username'])) ?>" class="text-white text-decoration-underline fw-bold rounded px-1 focus-ring" aria-label="Profilo dell'organizzatore <?= e($match['host_name']) ?>">
-                <?= e($match['host_name']) ?>
+            <span class="bi bi-person-circle me-2" aria-hidden="true"></span>Organizzata da
+            <a href="<?= url('/profile?username=' . urlencode($match['host_username'])) ?>"
+                class="text-white text-decoration-underline fw-bold rounded px-1 focus-ring"
+                aria-label="Profilo dell'organizzatore <?= e($match['host_name']) ?>">
+                <?= e($match['host_name']) ?> (@<?= e($match['host_username']) ?>)
             </a>
         </p>
     </div>

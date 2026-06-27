@@ -157,7 +157,7 @@ $pitch_patterns = ['pattern-circles', 'pattern-vertical', 'pattern-horizontal', 
 $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
 ?>
 
-<?php if($teams_generated): ?>
+<?php if($teams_generated && ($match['status'] === 'full' || $match['status'] === 'finished')): ?>
 <div class="card shadow-sm border-0 mb-4 rounded-4 overflow-hidden" role="region" aria-label="Visualizzazione Formazioni in Campo">
     <div class="card-body p-0">
         <h2 class="fw-bold text-center py-3 mb-0 bg-body-tertiary border-bottom fs-5"><span class="bi bi-people-fill me-2 text-primary" aria-hidden="true"></span>Formazioni in Campo</h2>

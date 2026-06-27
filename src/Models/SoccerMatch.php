@@ -64,9 +64,13 @@ class SoccerMatch
             $params['location'] = '%' . $filters['location'] . '%';
         }
 
-        if (!empty($filters['date'])) {
-            $where[] = "m.date = :date";
-            $params['date'] = $filters['date'];
+        if (!empty($filters['date_from'])) {
+            $where[] = "m.date >= :date_from";
+            $params['date_from'] = $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $where[] = "m.date <= :date_to";
+            $params['date_to'] = $filters['date_to'];
         }
 
         if (!empty($filters['format'])) {
@@ -195,9 +199,13 @@ class SoccerMatch
             $params['location'] = '%' . $filters['location'] . '%';
         }
 
-        if (!empty($filters['date'])) {
-            $where[] = "m.date = :date";
-            $params['date'] = $filters['date'];
+        if (!empty($filters['date_from'])) {
+            $where[] = "m.date >= :date_from";
+            $params['date_from'] = $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $where[] = "m.date <= :date_to";
+            $params['date_to'] = $filters['date_to'];
         }
 
         if (!empty($filters['format'])) {

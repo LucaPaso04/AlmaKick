@@ -63,7 +63,7 @@ foreach ($registrations as $reg) {
                     <div>
                         <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6">
                             <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none text-body focus-ring rounded" aria-label="Profilo di <?= e($reg['name']) ?>">
-                                <?= e($reg['name']) ?>
+                                <?= e($reg['name']) ?> (@<?= e($reg['username']) ?>)
                             </a>
                             <?php if($reg['has_guest']): ?>
                                 <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><i class="bi bi-person-plus-fill me-1"></i>+1 Ospite</span>
@@ -128,7 +128,7 @@ foreach ($registrations as $reg) {
                     <div>
                         <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6 text-warning">
                             <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none text-warning focus-ring rounded" aria-label="Profilo di <?= e($reg['name']) ?>">
-                                <?= e($reg['name']) ?>
+                                <?= e($reg['name']) ?> (@<?= e($reg['username']) ?>)
                             </a>
                             <?php if($reg['has_guest']): ?>
                                 <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><i class="bi bi-person-plus-fill me-1"></i>+1 Ospite</span>

@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var textEl = document.getElementById('detected-address-text');
         if (!alertEl || !textEl) return;
 
-        textEl.textContent = "📍 Indirizzo rilevato: " + address;
+        textEl.textContent = address;
         alertEl.classList.remove('d-none');
 
         var applyBtn = document.getElementById('apply-address-btn');
