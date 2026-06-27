@@ -8,6 +8,33 @@ header {
     z-index: 100;
 }
 
+header .navbar {
+    background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+#scroll-progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+#scroll-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), #38bdf8);
+    transition: width 0.05s linear;
+}
+
+.footer-tagline {
+    max-width: 500px;
+}
+
 .logo {
     font-weight: 800;
     font-size: 1.5rem;
@@ -45,12 +72,12 @@ footer {
 
 /* Logo Image Styling */
 .header-logo-mobile {
-    height: 36px;
+    height: 32px;
     width: auto;
 }
 
 .header-logo-desktop {
-    height: 42px;
+    height: 38px;
     width: auto;
 }
 
@@ -128,6 +155,50 @@ footer {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Topbar and mobile nav helpers */
+.user-avatar-img,
+.user-avatar-fallback,
+.profile-nav-avatar {
+    width: 32px;
+    height: 32px;
+}
+
+.user-avatar-img {
+    border: 2px solid var(--bs-primary);
+}
+
+.user-avatar-fallback {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.user-badge-dot,
+.profile-nav-badge-dot {
+    width: 12px;
+    height: 12px;
+}
+
+.user-dropdown-menu {
+    min-width: 200px;
+    border-radius: 0.75rem;
+}
+
+.bottom-mobile-bar {
+    background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 1030;
+}
+
+.mobile-nav-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.mobile-nav-label.active {
+    font-weight: 700;
 }
 
 /* Search Hover Reveal Effect */

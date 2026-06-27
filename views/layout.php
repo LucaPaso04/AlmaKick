@@ -86,8 +86,8 @@ if (isset($_SESSION['user'])) {
 <body class="d-flex flex-column min-vh-100">
 
     <!-- Scroll Progress Bar -->
-    <div id="scroll-progress-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 10000; pointer-events: none;">
-        <div id="scroll-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(to right, var(--accent), #38bdf8); transition: width 0.05s linear;"></div>
+    <div id="scroll-progress-container">
+        <div id="scroll-progress-bar"></div>
     </div>
 
     <!-- Toast Container per notifiche fluttuanti -->
@@ -117,16 +117,16 @@ if (isset($_SESSION['user'])) {
     </div>
 
     <header>
-        <nav class="navbar navbar-expand sticky-top border-bottom" style="background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+        <nav class="navbar navbar-expand sticky-top border-bottom">
             <div class="container-fluid px-3 px-md-4">
                 <!-- Brand Logo & Home Link (Top Left) -->
                 <div class="d-flex align-items-center gap-2">
                     <a href="<?= url('/') ?>" class="navbar-brand py-0 d-flex align-items-center gap-2" aria-label="AlmaKick Home">
                         <span class="logo-bg-wrapper <?= $isHomeActive ? 'logo-active' : '' ?>">
                             <!-- Logo monogramma per mobile -->
-                            <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none" style="height: 32px; width: auto;">
+                            <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none">
                             <!-- Logo completo per desktop -->
-                            <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block" style="height: 38px; width: auto;">
+                            <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
                         </span>
                         <span class="fw-bold fs-5 <?= $isHomeActive ? 'text-primary' : 'text-body' ?>">Home</span>
                     </a>
@@ -166,22 +166,22 @@ if (isset($_SESSION['user'])) {
                                 
                                 <span class="position-relative d-inline-block">
                                     <?php if($userAvatar): ?>
-                                        <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Il tuo Avatar" class="rounded-circle object-fit-cover shadow-sm transition-transform hover-scale" style="width: 32px; height: 32px; border: 2px solid var(--bs-primary);">
+                                        <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Il tuo Avatar" class="rounded-circle object-fit-cover shadow-sm transition-transform hover-scale user-avatar-img">
                                     <?php else: ?>
-                                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm transition-transform hover-scale" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.95rem;">
+                                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm transition-transform hover-scale user-avatar-fallback">
                                             <?= strtoupper(substr($_SESSION['user']['name'], 0, 1)) ?>
                                         </span>
                                     <?php endif; ?>
                                     
                                     <?php if($pendingRequestsCount > 0): ?>
-                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm" style="width: 12px; height: 12px;">
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm user-badge-dot">
                                             <span class="visually-hidden"><?= $pendingRequestsCount ?> notifiche</span>
                                         </span>
                                     <?php endif; ?>
                                 </span>
                             </button>
                             
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down" aria-labelledby="userMenuDropdown" style="min-width: 200px; border-radius: 0.75rem;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down user-dropdown-menu" aria-labelledby="userMenuDropdown">
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?= url('/profile') ?>">
                                         <span class="bi bi-person fs-5 text-primary"></span> <span class="fw-medium">Il mio Profilo</span>
@@ -242,11 +242,11 @@ if (isset($_SESSION['user'])) {
                             <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
                         </span>
                     </div>
-                    <p class="text-body-secondary small mb-0" style="max-width: 500px;">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
+                    <p class="text-body-secondary small mb-0 footer-tagline">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
                 </div>
                 <!-- Right Column: Links aligned horizontally on desktop -->
                 <div class="col-12 col-md-4 text-center text-md-end">
-                    <h3 class="h6 fw-semibold mb-3">Link Utili</h3>
+                    <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
                     <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
                         <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
                         <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
@@ -273,7 +273,7 @@ if (isset($_SESSION['user'])) {
             $isProfiloActive = ($current_path === '/profile');
         ?>
         <!-- BOTTOM BAR MOBILE GLASSMORPHISM -->
-        <div class="d-lg-none fixed-bottom border-top shadow-lg pb-safe" style="background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 1030;">
+        <div class="d-lg-none fixed-bottom border-top shadow-lg pb-safe bottom-mobile-bar">
             <nav aria-label="Menu navigazione principale">
                 <ul class="nav nav-pills nav-justified py-2 align-items-center">
                     <li class="nav-item">
@@ -281,7 +281,7 @@ if (isset($_SESSION['user'])) {
                             <div class="position-relative transition-transform <?= $isHomeActive ? 'scale-110' : '' ?>">
                                 <span class="bi bi-calendar-event<?= $isHomeActive ? '-fill text-primary' : '' ?> fs-4"></span>
                             </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isHomeActive ? '700' : '500' ?>">Partite</small>
+                            <small class="mt-1 mobile-nav-label<?= $isHomeActive ? ' active' : '' ?>">Partite</small>
                         </a>
                     </li>
 
@@ -290,7 +290,7 @@ if (isset($_SESSION['user'])) {
                             <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
                                 <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
                             </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isClassificheActive ? '700' : '500' ?>">Top 10</small>
+                            <small class="mt-1 mobile-nav-label<?= $isClassificheActive ? ' active' : '' ?>">Top 10</small>
                         </a>
                     </li>
 
@@ -299,7 +299,7 @@ if (isset($_SESSION['user'])) {
                             <div class="position-relative transition-transform <?= $isCercaActive ? 'scale-110' : '' ?>">
                                 <span class="bi bi-people<?= $isCercaActive ? '-fill' : '' ?> fs-4"></span>
                             </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isCercaActive ? '700' : '500' ?>">Cerca</small>
+                            <small class="mt-1 mobile-nav-label<?= $isCercaActive ? ' active' : '' ?>">Cerca</small>
                         </a>
                     </li>
 
@@ -307,17 +307,17 @@ if (isset($_SESSION['user'])) {
                         <a href="<?= url('/profile') ?>" class="nav-link flex-column d-flex align-items-center <?= $isProfiloActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isProfiloActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isProfiloActive ? 'scale-110' : '' ?>">
                                 <?php if($userAvatar): ?>
-                                    <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Avatar" class="rounded-circle object-fit-cover <?= $isProfiloActive ? 'border border-2 border-primary shadow-sm' : '' ?>" style="width: 26px; height: 26px;">
+                                    <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Avatar" class="rounded-circle object-fit-cover profile-nav-avatar <?= $isProfiloActive ? 'border border-2 border-primary shadow-sm' : '' ?>">
                                 <?php else: ?>
                                     <span class="bi bi-person<?= $isProfiloActive ? '-fill' : '' ?> fs-4"></span>
                                 <?php endif; ?>
                                 <?php if($pendingRequestsCount > 0): ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm" style="width: 12px; height: 12px;">
+                                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm profile-nav-badge-dot">
                                         <span class="visually-hidden">Notifiche</span>
                                     </span>
                                 <?php endif; ?>
                             </div>
-                            <small class="mt-1" style="font-size: 0.7rem; font-weight: <?= $isProfiloActive ? '700' : '500' ?>">Profilo</small>
+                            <small class="mt-1 mobile-nav-label<?= $isProfiloActive ? ' active' : '' ?>">Profilo</small>
                         </a>
                     </li>
                 </ul>
@@ -327,197 +327,7 @@ if (isset($_SESSION['user'])) {
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle logic
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-            const htmlEl = document.documentElement;
-
-            // Load saved theme or default to dark
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            htmlEl.setAttribute('data-bs-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-
-            if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
-                    const currentTheme = htmlEl.getAttribute('data-bs-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    htmlEl.setAttribute('data-bs-theme', newTheme);
-                    localStorage.setItem('theme', newTheme);
-                    updateThemeIcon(newTheme);
-                });
-            }
-
-            function updateThemeIcon(theme) {
-                if (!themeIcon) return;
-                if (theme === 'dark') {
-                    themeIcon.className = 'bi bi-sun-fill fs-5 transition-transform';
-                } else {
-                    themeIcon.className = 'bi bi-moon-fill fs-5 transition-transform';
-                }
-            }
-
-            // Custom dynamic toast logic
-            function initToast(toast) {
-                const isError = toast.classList.contains('toast-danger') || toast.getAttribute('data-duration') === '0';
-                const progressBar = toast.querySelector('.custom-toast-progress');
-                const closeBtn = toast.querySelector('.btn-close-toast');
-                
-                let animationFrameId = null;
-
-                function dismissToast(el) {
-                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                    el.classList.add('hide');
-                    el.addEventListener('animationend', function() {
-                        el.remove();
-                    });
-                }
-
-                // Close button click
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', () => {
-                        dismissToast(toast);
-                    });
-                }
-
-                if (isError) {
-                    if (progressBar) progressBar.remove();
-                    return; // Error/Sticky toasts do not auto-dismiss and have no progress countdown
-                }
-
-                const duration = parseInt(toast.getAttribute('data-duration')) || 4500;
-                let remainingTime = duration;
-                let lastFrameTime = performance.now();
-                let isPaused = false;
-
-                function updateProgress(timestamp) {
-                    if (isPaused) {
-                        lastFrameTime = timestamp;
-                        animationFrameId = requestAnimationFrame(updateProgress);
-                        return;
-                    }
-
-                    const delta = timestamp - lastFrameTime;
-                    lastFrameTime = timestamp;
-                    remainingTime -= delta;
-
-                    if (remainingTime <= 0) {
-                        if (progressBar) progressBar.style.width = '0%';
-                        dismissToast(toast);
-                    } else {
-                        const percent = (remainingTime / duration) * 100;
-                        if (progressBar) progressBar.style.width = percent + '%';
-                        animationFrameId = requestAnimationFrame(updateProgress);
-                    }
-                }
-
-                // Pause on hover
-                toast.addEventListener('mouseenter', () => { isPaused = true; });
-                toast.addEventListener('mouseleave', () => { isPaused = false; });
-
-                // Start countdown
-                animationFrameId = requestAnimationFrame(updateProgress);
-            }
-
-            // Init toasts loaded on start
-            document.querySelectorAll('.custom-toast').forEach(initToast);
-
-            // Global function to show toast dynamically
-            window.showToast = function(message, type = 'success', duration = 4500) {
-                const container = document.getElementById('toast-container');
-                if (!container) return;
-
-                const toast = document.createElement('div');
-                toast.className = `custom-toast toast-${type}`;
-                if (type !== 'danger' && duration > 0) {
-                    toast.setAttribute('data-duration', duration);
-                } else {
-                    toast.setAttribute('data-duration', '0');
-                }
-                toast.setAttribute('role', 'alert');
-
-                const iconClass = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
-                const progressHtml = (type !== 'danger' && duration > 0) ? '<div class="custom-toast-progress"></div>' : '';
-                
-                toast.innerHTML = `
-                    <div class="custom-toast-content">
-                        <span class="bi ${iconClass} fs-5"></span>
-                        <span>${escapeHtml(message)}</span>
-                    </div>
-                    <button type="button" class="btn-close-toast" aria-label="Chiudi avviso">&times;</button>
-                    ${progressHtml}
-                `;
-
-                container.appendChild(toast);
-                initToast(toast);
-            };
-
-            function escapeHtml(text) {
-                const map = {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                };
-                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-            }
-
-            // Form submit loading states
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    if (submitBtn && !form.classList.contains('no-spinner')) {
-                        // Avoid triggering on simple buttons that shouldn't lock
-                        if (submitBtn.classList.contains('no-loading-state')) return;
-
-                        // Inject spinner
-                        submitBtn.innerHTML = `
-                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            Caricamento...
-                        `;
-                        
-                        // Disable the button on the next tick so the form submits successfully
-                        setTimeout(() => {
-                            submitBtn.disabled = true;
-                        }, 0);
-                    }
-                });
-            });
-
-            // Back to Top button logic
-            const backToTopBtn = document.getElementById('back-to-top');
-            if (backToTopBtn) {
-                window.addEventListener('scroll', function() {
-                    if (window.scrollY > 400) {
-                        backToTopBtn.classList.add('show');
-                    } else {
-                        backToTopBtn.classList.remove('show');
-                    }
-                });
-
-                backToTopBtn.addEventListener('click', function() {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
-            }
-
-            // Scroll Progress Bar logic
-            const scrollProgressBar = document.getElementById('scroll-progress-bar');
-            if (scrollProgressBar) {
-                window.addEventListener('scroll', function() {
-                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-                    scrollProgressBar.style.width = scrolled + '%';
-                });
-            }
-        });
-    </script>
-
+    <script src="<?= url('/js/app.js') ?>"></script>
     <!-- Floating Back to Top Button -->
     <button id="back-to-top" class="btn" aria-label="Torna in alto">
         <span class="bi bi-arrow-up fs-5"></span>

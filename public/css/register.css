@@ -137,6 +137,7 @@
 }
 
 /* Heading Styles */
+.register-card h1,
 .register-card h2 {
     transition: color 0.3s ease;
     letter-spacing: -0.5px;
@@ -180,6 +181,7 @@
         padding: 1.5rem;
     }
 
+    .register-card h1,
     .register-card h2 {
         font-size: 1.75rem;
     }
@@ -207,6 +209,7 @@
         padding: 1.25rem;
     }
 
+    .register-card h1,
     .register-card h2 {
         font-size: 1.5rem;
     }
