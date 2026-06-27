@@ -1,0 +1,113 @@
+/* Hero section style */
+.leaderboard-hero {
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-primary) 100%);
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.leaderboard-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(251, 54, 64, 0.15), transparent 70%),
+                radial-gradient(circle at bottom left, rgba(36, 123, 160, 0.15), transparent 70%);
+    pointer-events: none;
+}
+
+/* Empty state icon */
+.leaderboards-empty-icon {
+    width: 80px;
+    height: 80px;
+    background-color: var(--card-bg) !important;
+}
+
+/* Leaderboard Rank Badges */
+.rank-badge {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.rank-1 {
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    color: #000;
+}
+
+.rank-2 {
+    background: linear-gradient(135deg, #c0c0c0, #a9a9a9);
+    color: #000;
+}
+
+.rank-3 {
+    background: linear-gradient(135deg, #cd7f32, #8b4513);
+    color: #fff;
+}
+
+.rank-other {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+/* User Avatar */
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    overflow: hidden;
+}
+
+/* Card gradients for headers */
+.card-header-gradient-danger {
+    background: linear-gradient(135deg, #fb3640, #b21e25);
+}
+
+.card-header-gradient-warning {
+    background: linear-gradient(135deg, #ffa500, #cc7a00);
+}
+
+.card-header-gradient-info {
+    background: linear-gradient(135deg, #247ba0, #18526b);
+}
+
+/* Readability fix for warning text links */
+.text-darken {
+    color: #cc7a00 !important;
+}
+
+html[data-bs-theme="dark"] .text-darken {
+    color: #ffb833 !important;
+}
+
+/* Animation on hover for items */
+.leaderboard-item {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    position: relative;
+}
+
+.leaderboard-item:hover {
+    background-color: var(--card-hover-bg) !important;
+    transform: translateX(4px);
+}
+
+.leaderboard-link {
+    color: var(--text-primary);
+}
+
+.leaderboard-link:hover {
+    text-decoration: underline !important;
+}
