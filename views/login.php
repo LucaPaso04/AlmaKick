@@ -3,8 +3,10 @@
         <div class="card shadow border-0 rounded-4 login-card">
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <div class="d-inline-flex bg-primary text-white rounded-circle p-3 mb-3 shadow-sm login-icon-bg">
-                        <i class="bi bi-dribbble fs-1"></i>
+                    <div class="mb-3">
+                        <span class="logo-bg-wrapper login-icon-bg">
+                            <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="form-logo">
+                        </span>
                     </div>
                     <h2 class="fw-bold fs-3 mt-2">Bentornato</h2>
                     <p class="text-secondary">Accedi a AlmaKick</p>
