@@ -15,6 +15,8 @@ if (empty($current_path)) {
     $current_path = '/';
 }
 
+$isHomeActive = (isset($_SESSION['user']) && ($current_path === '/matches' || $current_path === '/')) || (!isset($_SESSION['user']) && ($current_path === '/welcome' || $current_path === '/'));
+
 $userAvatar = null;
 $avatarUrl = null;
 $pendingRequestsCount = 0;
@@ -117,21 +119,41 @@ if (isset($_SESSION['user'])) {
     <header>
         <nav class="navbar navbar-expand sticky-top border-bottom" style="background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
             <div class="container-fluid px-3 px-md-4">
-                <!-- Brand Logo (Clickable on both Desktop and Mobile) -->
-                <a href="<?= url('/') ?>" class="navbar-brand py-0 d-flex align-items-center" aria-label="AlmaKick Home">
-                    <span class="logo-bg-wrapper">
-                        <!-- Logo monogramma per mobile -->
-                        <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none">
-                        <!-- Logo completo per desktop -->
-                        <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
-                    </span>
-                </a>
+                <!-- Brand Logo & Home Link (Top Left) -->
+                <div class="d-flex align-items-center gap-2">
+                    <a href="<?= url('/') ?>" class="navbar-brand py-0 d-flex align-items-center gap-2" aria-label="AlmaKick Home">
+                        <span class="logo-bg-wrapper <?= $isHomeActive ? 'logo-active' : '' ?>">
+                            <!-- Logo monogramma per mobile -->
+                            <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none" style="height: 32px; width: auto;">
+                            <!-- Logo completo per desktop -->
+                            <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block" style="height: 38px; width: auto;">
+                        </span>
+                        <span class="fw-bold fs-5 <?= $isHomeActive ? 'text-primary' : 'text-body' ?>">Home</span>
+                    </a>
 
-
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <?php 
+                            $isClassificheActive = ($current_path === '/leaderboard');
+                            $isCercaActive = ($current_path === '/users');
+                        ?>
+                        <!-- Classifica con effetto hover reveal elegante -->
+                        <a class="nav-link fw-semibold p-0 text-decoration-none search-hover-reveal ms-3 <?= $isClassificheActive ? 'text-primary' : '' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifica">
+                            <span class="bi bi-trophy-fill fs-5 <?= $isClassificheActive ? 'text-warning' : 'text-body' ?>"></span>
+                            <span class="search-text-reveal fw-semibold text-primary">Classifica</span>
+                        </a>
+                    <?php endif; ?>
+                </div>
 
                 <!-- Right side -->
                 <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
                     
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <!-- Lente d'ingrandimento per la ricerca con effetto hover reveal elegante -->
+                        <a class="btn btn-link text-body p-0 text-decoration-none search-hover-reveal <?= $isCercaActive ? 'text-primary' : '' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
+                            <span class="bi bi-search fs-5"></span>
+                            <span class="search-text-reveal fw-semibold text-primary">Cerca</span>
+                        </a>
+                    <?php endif; ?>
                     <?php 
                         $isCercaActive = ($current_path === '/users');
                         $isClassificheActive = ($current_path === '/leaderboard');
@@ -152,28 +174,28 @@ if (isset($_SESSION['user'])) {
                         </li>
                     </ul>
 
-                    <!-- Theme Toggle -->
-                    <button class="btn btn-link text-body p-0 text-decoration-none me-3" id="theme-toggle" aria-label="Cambia tema">
+                    <!-- Theme Toggle (Invertito con la lente, posizionato dopo la lente) -->
+                    <button class="btn btn-link text-body p-0 text-decoration-none" id="theme-toggle" aria-label="Cambia tema">
                         <span class="bi bi-sun-fill fs-5 transition-transform" id="theme-icon"></span>
                     </button>
 
                     <?php if (isset($_SESSION['user'])): ?>
-                        <!-- Avatar User Dropdown (Desktop Only) -->
-                        <div class="dropdown d-none d-md-block">
+                        <!-- Avatar User Dropdown (Profilo) -->
+                        <div class="dropdown">
                             <button class="btn btn-link p-0 position-relative text-decoration-none dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent"
                                 type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu utente">
                                 
                                 <span class="position-relative d-inline-block">
                                     <?php if($userAvatar): ?>
-                                        <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Il tuo Avatar" class="rounded-circle object-fit-cover shadow-sm transition-transform hover-scale" style="width: 38px; height: 38px; border: 2px solid var(--bs-primary);">
+                                        <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Il tuo Avatar" class="rounded-circle object-fit-cover shadow-sm transition-transform hover-scale" style="width: 32px; height: 32px; border: 2px solid var(--bs-primary);">
                                     <?php else: ?>
-                                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm transition-transform hover-scale" style="width: 38px; height: 38px; font-weight: 700; font-size: 1.1rem;">
+                                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm transition-transform hover-scale" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.95rem;">
                                             <?= strtoupper(substr($_SESSION['user']['name'], 0, 1)) ?>
                                         </span>
                                     <?php endif; ?>
                                     
                                     <?php if($pendingRequestsCount > 0): ?>
-                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm" style="width: 14px; height: 14px;">
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm" style="width: 12px; height: 12px;">
                                             <span class="visually-hidden"><?= $pendingRequestsCount ?> notifiche</span>
                                         </span>
                                     <?php endif; ?>
@@ -228,12 +250,12 @@ if (isset($_SESSION['user'])) {
         <?= $content ?>
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-body-tertiary border-top py-4 mt-auto pb-5 pb-lg-4">
         <div class="container">
-            <div class="row gy-4">
-                <div class="col-12 col-md-4">
-                    <div class="mb-3">
+            <div class="row align-items-center gy-4">
+                <!-- Left Column: Logo & Tagline -->
+                <div class="col-12 col-md-8 text-center text-md-start">
+                    <div class="mb-3 d-inline-flex">
                         <span class="logo-bg-wrapper">
                             <!-- Logo monogramma per mobile -->
                             <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none">
@@ -241,25 +263,19 @@ if (isset($_SESSION['user'])) {
                             <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
                         </span>
                     </div>
-                    <p class="text-body-secondary small mb-0">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
+                    <p class="text-body-secondary small mb-0" style="max-width: 500px;">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
                 </div>
-                <div class="col-6 col-md-4">
-                    <h3 class="h6 fw-semibold">Link Utili</h3>
-                    <ul class="list-unstyled small mb-0">
-                        <li class="mb-2"><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
-                        <li class="mb-2"><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
+                <!-- Right Column: Links aligned horizontally on desktop -->
+                <div class="col-12 col-md-4 text-center text-md-end">
+                    <h3 class="h6 fw-semibold mb-3">Link Utili</h3>
+                    <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
+                        <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
+                        <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
                         <?php if (isset($_SESSION['user'])): ?>
                             <li><a href="<?= url('/profile') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Il mio Profilo</a></li>
                         <?php else: ?>
                             <li><a href="<?= url('/login') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Accedi</a></li>
                         <?php endif; ?>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-4">
-                    <h3 class="h6 fw-semibold">Contatti</h3>
-                    <ul class="list-unstyled small mb-0">
-                        <li class="mb-2 text-body-secondary"><span class="bi bi-envelope me-2"></span>info@almakick.it</li>
-                        <li class="text-body-secondary"><span class="bi bi-instagram me-2"></span>@almakick</li>
                     </ul>
                 </div>
             </div>
