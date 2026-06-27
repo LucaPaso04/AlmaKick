@@ -54,7 +54,7 @@
                         <label for="preferred_role">Ruolo in Campo Preferito</label>
                     </div>
 
-                    <div class="form-floating mb-4">
+                    <div class="form-floating mb-4 position-relative">
                         <input type="password" 
                                class="form-control bg-body-tertiary border-0" 
                                id="password"
@@ -63,6 +63,9 @@
                                required 
                                minlength="6">
                         <label for="password">Password</label>
+                        <button type="button" class="password-toggle" aria-label="Mostra password">
+                            <i class="bi bi-eye"></i>
+                        </button>
                         <div class="form-text mt-2 ms-1">Minimo 6 caratteri</div>
                     </div>
 
@@ -79,6 +82,24 @@
         </div>
     </div>
 </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const toggleButton = document.querySelector('.password-toggle');
+        if (!passwordInput || !toggleButton) return;
+ 
+        const icon = toggleButton.querySelector('i');
+ 
+        toggleButton.addEventListener('click', function() {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleButton.setAttribute('aria-label', isPassword ? 'Nascondi password' : 'Mostra password');
+            if (icon) {
+                icon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+            }
+        });
+    });
+</script>
 <?php 
     // Pulisci i vecchi valori dopo averli mostrati
     unset($_SESSION['old_fullname']);
