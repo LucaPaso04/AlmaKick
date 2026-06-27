@@ -79,6 +79,8 @@ if (isset($_SESSION['user'])) {
         <link rel="stylesheet" href="<?= url('/css/login.css') ?>">
     <?php elseif ($current_path === '/register'): ?>
         <link rel="stylesheet" href="<?= url('/css/register.css') ?>">
+    <?php elseif ($current_path === '/leaderboard'): ?>
+        <link rel="stylesheet" href="<?= url('/css/leaderboard.css') ?>">
     <?php endif; ?>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -152,6 +154,25 @@ if (isset($_SESSION['user'])) {
                             <span class="search-text-reveal fw-semibold text-primary">Cerca</span>
                         </a>
                     <?php endif; ?>
+                    <?php 
+                        $isCercaActive = ($current_path === '/users');
+                        $isClassificheActive = ($current_path === '/leaderboard');
+                    ?>
+                    <!-- Desktop only links -->
+                    <ul class="navbar-nav d-none d-lg-flex">
+                        <?php if (isset($_SESSION['user'])): ?>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isCercaActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
+                                    <span class="bi bi-people-fill <?= $isCercaActive ? 'text-primary' : 'text-secondary' ?> me-1"></span> Cerca Giocatori
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold px-3 py-2 rounded-pill transition-all <?= $isClassificheActive ? 'bg-primary bg-opacity-10 text-primary' : 'text-body hover-bg-light' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifiche">
+                                <span class="bi bi-trophy-fill <?= $isClassificheActive ? 'text-primary' : 'text-warning' ?> me-1"></span> Classifiche
+                            </a>
+                        </li>
+                    </ul>
 
                     <!-- Theme Toggle (Invertito con la lente, posizionato dopo la lente) -->
                     <button class="btn btn-link text-body p-0 text-decoration-none" id="theme-toggle" aria-label="Cambia tema">
