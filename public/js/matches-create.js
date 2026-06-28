@@ -142,6 +142,14 @@ document.addEventListener('DOMContentLoaded', function() {
     var costInput = document.getElementById('total_cost');
     var quotaPreview = document.getElementById('quota_preview');
 
+    // Carica l'ultimo costo salvato da localStorage
+    if (costInput) {
+        var lastCost = localStorage.getItem('last_match_cost');
+        if (lastCost !== null) {
+            costInput.value = lastCost;
+        }
+    }
+
     function updateQuotaPreview() {
         if (!costInput || !quotaPreview) return;
         var checkedRadio = document.querySelector('input[name="format"]:checked');
@@ -182,6 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Inizializza la preview della quota
+    updateQuotaPreview();
+
     // 3. Smart defaults for Date & Time
     var dateInput = document.getElementById('date');
     var timeInput = document.getElementById('time');
@@ -218,6 +229,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     firstInvalid.focus();
                 }
             } else {
+                // Salva l'ultimo costo in localStorage per la prossima creazione
+                if (costInput) {
+                    localStorage.setItem('last_match_cost', costInput.value);
+                }
                 // Valid: show loading feedback
                 if (submitBtn) {
                     submitBtn.innerHTML = `
