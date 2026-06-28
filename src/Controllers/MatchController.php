@@ -8,6 +8,7 @@ class MatchController extends BaseController {
 
     public function index() {
         $this->resolveExpiredMvps();
+        $this->autoCancelExpiredMatches();
         $matchModel = new SoccerMatch();
         
         $filters = [
@@ -136,6 +137,7 @@ class MatchController extends BaseController {
 
     public function show($id) {
         $this->resolveExpiredMvps();
+        $this->autoCancelExpiredMatches();
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
 
@@ -1002,6 +1004,90 @@ class MatchController extends BaseController {
                     SET mvp_assigned = 1, updated_at = NOW() 
                     WHERE id = :id
                 ")->execute(['id' => $matchId]);
+            }
+        }
+    }
+
+    private function autoCancelExpiredMatches() {
+        $db = \App\Database::getInstance()->getConnection();
+
+        // Trova tutte le partite 'open' che iniziano tra NOW() e NOW() + 2 ore
+        $stmt = $db->prepare("
+            SELECT m.id, m.max_players, m.format
+            FROM matches m
+            WHERE m.status = 'open'
+              AND CONCAT(m.date, ' ', m.time) <= DATE_ADD(NOW(), INTERVAL 2 HOUR)
+              AND CONCAT(m.date, ' ', m.time) > NOW()
+        ");
+        $stmt->execute();
+        $matches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($matches)) {
+            return;
+        }
+
+        $formatMinPlayers = [
+            '5v5' => 8,
+            '5vs5' => 8,
+            '7v7' => 12,
+            '7vs7' => 12,
+            '8v8' => 14,
+            '8vs8' => 14,
+            '11v11' => 20,
+            '11vs11' => 20
+        ];
+
+        foreach ($matches as $match) {
+            $matchId = $match['id'];
+
+            // Conta i posti occupati in questo match (considerando gli ospiti)
+            $stmtCount = $db->prepare("
+                SELECT COALESCE(SUM(1 + has_guest), 0) 
+                FROM registrations 
+                WHERE match_id = :match_id 
+                  AND status = 'registered'
+            ");
+            $stmtCount->execute(['match_id' => $matchId]);
+            $occupied = (int)$stmtCount->fetchColumn();
+
+            // Calcola la soglia minima richiesta
+            $fmt = str_replace(' ', '', strtolower($match['format'] ?? ''));
+            if (isset($formatMinPlayers[$fmt])) {
+                $minPlayers = $formatMinPlayers[$fmt];
+            } else {
+                $minPlayers = (int)ceil((int)$match['max_players'] * 0.8);
+            }
+
+            // Se gli iscritti sono sotto la soglia minima, annulla la partita
+            if ($occupied < $minPlayers) {
+                try {
+                    $db->beginTransaction();
+
+                    // Aggiorna lo stato del match
+                    $stmtCancelMatch = $db->prepare("
+                        UPDATE matches 
+                        SET status = 'cancelled', 
+                            cancellation_reason = 'Annullamento automatico: soglia minima di iscritti non raggiunta a 2 ore dall\'inizio.', 
+                            updated_at = NOW() 
+                        WHERE id = :id
+                    ");
+                    $stmtCancelMatch->execute(['id' => $matchId]);
+
+                    // Annulla tutte le registrazioni
+                    $stmtCancelRegs = $db->prepare("
+                        UPDATE registrations 
+                        SET status = 'cancelled', 
+                            updated_at = NOW() 
+                        WHERE match_id = :match_id
+                    ");
+                    $stmtCancelRegs->execute(['match_id' => $matchId]);
+
+                    $db->commit();
+                } catch (\Exception $e) {
+                    if ($db->inTransaction()) {
+                        $db->rollBack();
+                    }
+                }
             }
         }
     }
