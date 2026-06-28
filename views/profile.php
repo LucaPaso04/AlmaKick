@@ -57,8 +57,13 @@
                     <?php endif; ?>
                 </div>
 
-                <h3 class="fw-bold mb-0 profile-username">
-                    <?= e($user['name']) ?> <?= e($user['last_name'] ?? '') ?>
+                <h3 class="fw-bold mb-0 profile-username d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                    <span><?= e($user['name']) ?> <?= e($user['last_name'] ?? '') ?></span>
+                    <?php if ((int)$user['trust_score'] < 40): ?>
+                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 rounded-pill px-2" style="font-size: 0.75rem;" title="Il trust score di questo giocatore è inferiore a 40.">
+                            ⚠️ Giocatore Poco Affidabile
+                        </span>
+                    <?php endif; ?>
                 </h3>
                 <p class="text-muted mb-3 text-capitalize fw-medium">
                     <i class="bi bi-person-vcard me-1"></i><?= e($user['preferred_role'] ?? 'Ruolo non specificato') ?>

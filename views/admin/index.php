@@ -169,9 +169,12 @@
                     <?php foreach ($users as $u): ?>
                         <?php
                             $is_suspect = ($u['weather_cancels'] > 3);
+                            $is_low_trust = ($u['trust_score'] < 25);
                             $row_class = '';
                             if ($u['is_banned']) {
                                 $row_class = 'table-banned';
+                            } elseif ($is_low_trust) {
+                                $row_class = 'table-banned'; // evidenzia in rosso
                             } elseif ($is_suspect) {
                                 $row_class = 'table-suspicious';
                             }
@@ -183,6 +186,9 @@
                                     <a href="<?= url('/profile?username=' . urlencode($u['username'])) ?>" class="text-decoration-none text-reset">
                                         <?= e($u['name']) ?> <?= e($u['last_name'] ?? '') ?>
                                     </a>
+                                    <?php if ($is_low_trust && !$u['is_banned']): ?>
+                                        <span class="badge bg-danger rounded-pill ms-1 text-white" style="font-size: 0.7rem;" title="Questo utente ha un trust score inferiore a 25 ed è segnalato all'amministratore per un eventuale ban.">⚠️ SEGNALATO</span>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="small text-muted"><?= e($u['email']) ?></div>
                             </td>

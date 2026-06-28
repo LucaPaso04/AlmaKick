@@ -352,22 +352,40 @@ class MatchController extends BaseController {
         // Cancella iscrizione
         $db->prepare("UPDATE registrations SET status = 'cancelled', updated_at = NOW() WHERE id = :id")->execute(['id' => $reg['id']]);
 
-        // Se era un iscritto attivo, prova a promuovere il primo in panchina
+        // Se era un iscritto attivo, prova a promuovere chi entra nei posti rimasti in panchina
         if ($reg['status'] === 'registered') {
-            $stmtNext = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND status = 'waitlist' ORDER BY created_at ASC LIMIT 1");
-            $stmtNext->execute(['match_id' => $id]);
-            $next = $stmtNext->fetch();
-            if ($next) {
-                $db->prepare("UPDATE registrations SET status = 'registered', updated_at = NOW() WHERE id = :id")->execute(['id' => $next['id']]);
-            }
-
-            // Ricalcola se la partita è di nuovo disponibile
+            // Ricalcola i posti occupati escludendo il record appena cancellato
             $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
             $stmtCount->execute(['match_id' => $id]);
             $occupied = (int)$stmtCount->fetchColumn();
 
+            $freeSeats = max(0, (int)$match['max_players'] - $occupied);
+
+            if ($freeSeats > 0) {
+                // Recupera la lista d'attesa ordinata cronologicamente
+                $stmtWaitlist = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND status = 'waitlist' ORDER BY created_at ASC");
+                $stmtWaitlist->execute(['match_id' => $id]);
+                $waitlist = $stmtWaitlist->fetchAll(\PDO::FETCH_ASSOC);
+
+                foreach ($waitlist as $next) {
+                    $needed = 1 + (int)$next['has_guest'];
+                    if ($needed <= $freeSeats) {
+                        // Promuovi questo panchinaro a titolare
+                        $db->prepare("UPDATE registrations SET status = 'registered', updated_at = NOW() WHERE id = :id")->execute(['id' => $next['id']]);
+                        $freeSeats -= $needed;
+                        $occupied += $needed;
+                        if ($freeSeats <= 0) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Ricalcola se la partita è di nuovo disponibile o piena
             if ($occupied < (int)$match['max_players']) {
                 $db->prepare("UPDATE matches SET status = 'open' WHERE id = :id")->execute(['id' => $id]);
+            } else {
+                $db->prepare("UPDATE matches SET status = 'full' WHERE id = :id")->execute(['id' => $id]);
             }
         }
 
