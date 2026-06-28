@@ -115,7 +115,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
                 </a>
             </h3>
             <p class="text-center text-muted small mb-2"><span class="bi bi-person-fill text-secondary"></span> Org:
-                <?= e($p['host_name'] ?? '') ?></p>
+                @<?= e($p['host_username'] ?? '') ?></p>
 
             <!-- Barra di Progresso Iscritti -->
             <div class="my-2 px-1">

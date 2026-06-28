@@ -1,6 +1,6 @@
 <?php
 // Determine which tab should be active by default based on search filters or tab parameter
-$hasFilters = !empty($_GET['location']) || !empty($_GET['date']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']) || !empty($_GET['exclude_my_matches']);
+$hasFilters = !empty($_GET['location']) || !empty($_GET['date_from']) || !empty($_GET['date_to']) || !empty($_GET['format']) || (!empty($_GET['filter']) && $_GET['filter'] !== 'all') || !empty($_GET['only_friends']) || !empty($_GET['exclude_my_matches']);
 $activeTab = $_GET['tab'] ?? ($hasFilters ? 'explore' : 'bacheca');
 
 $username = $_SESSION['user']['username'] ?? null;
@@ -162,16 +162,27 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         <div class="input-group input-group-sm">
                             <span class="input-group-text border-end-0"><span class="bi bi-search text-muted"></span></span>
                             <label for="filter-location" class="visually-hidden">Cerca città o campo</label>
-                            <input type="text" id="filter-location" name="location" class="form-control border-start-0 ps-0"
+                            <input type="text" id="filter-location" name="location" class="form-control border-start-0 ps-2"
                                 placeholder="Cerca città o campo..." value="<?= e($_GET['location'] ?? '') ?>">
                         </div>
                     </div>
 
-                    <!-- Data -->
-                    <div style="flex: 1 1 120px;">
-                        <label for="filter-date" class="visually-hidden">Data partita</label>
-                        <input type="date" id="filter-date" name="date" class="form-control form-control-sm"
-                            value="<?= e($_GET['date'] ?? '') ?>">
+                    <!-- Data Inizio (Dal) -->
+                    <div style="flex: 1 1 140px;">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text border-end-0 bg-transparent text-muted small">Dal</span>
+                            <input type="date" id="filter-date-from" name="date_from" class="form-control border-start-0 ps-1"
+                                value="<?= e($_GET['date_from'] ?? '') ?>">
+                        </div>
+                    </div>
+
+                    <!-- Data Fine (Al) -->
+                    <div style="flex: 1 1 140px;">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text border-end-0 bg-transparent text-muted small">Al</span>
+                            <input type="date" id="filter-date-to" name="date_to" class="form-control border-start-0 ps-1"
+                                value="<?= e($_GET['date_to'] ?? '') ?>">
+                        </div>
                     </div>
 
                     <!-- Formato -->
@@ -188,18 +199,6 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                         </select>
                     </div>
 
-                    <!-- Tipo -->
-                    <div style="flex: 1 1 120px;">
-                        <label for="filter-type" class="visually-hidden">Filtra per tipo</label>
-                        <select id="filter-type" name="filter" class="form-select form-select-sm">
-                            <option value="all" <?= (($_GET['filter'] ?? 'all') == 'all') ? 'selected' : '' ?>>Tutte le
-                                partite</option>
-                            <option value="friends" <?= (($_GET['filter'] ?? '') == 'friends') ? 'selected' : '' ?>>Partite
-                                degli amici</option>
-                            <option value="mine" <?= (($_GET['filter'] ?? '') == 'mine') ? 'selected' : '' ?>>Le mie
-                                partite</option>
-                        </select>
-                    </div>
 
                     <!-- Partite di Amici -->
                     <div class="d-flex align-items-center py-1">

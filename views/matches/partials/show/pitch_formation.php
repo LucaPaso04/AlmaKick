@@ -9,6 +9,13 @@ $away_team = array_filter($registrations, function($r) {
 });
 $teams_generated = count($home_team) > 0 || count($away_team) > 0;
 
+$roleEmojiMap = [
+    'GK' => '🧤',
+    'DEF' => '🛡️',
+    'MID' => '🛡️⚔️',
+    'ATT' => '⚔️'
+];
+
 $getCanonicalRole = function($preferredRole) {
     $r = strtolower($preferredRole ?? '');
     if (str_contains($r, 'portiere') || str_contains($r, 'goalkeeper')) {
@@ -157,7 +164,7 @@ $pitch_patterns = ['pattern-circles', 'pattern-vertical', 'pattern-horizontal', 
 $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
 ?>
 
-<?php if($teams_generated): ?>
+<?php if($teams_generated && ($match['status'] === 'full' || $match['status'] === 'finished')): ?>
 <div class="card shadow-sm border-0 mb-4 rounded-4 overflow-hidden" role="region" aria-label="Visualizzazione Formazioni in Campo">
     <div class="card-body p-0">
         <h2 class="fw-bold text-center py-3 mb-0 bg-body-tertiary border-bottom fs-5"><span class="bi bi-people-fill me-2 text-primary" aria-hidden="true"></span>Formazioni in Campo</h2>
@@ -226,8 +233,8 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                             <span class="badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 backdrop-blur pitch-player-label">
                                                 <?= e($displayName) ?>
                                             </span>
-                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role">
-                                                <?= $roleKey ?>
+                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role" style="font-size: 0.8rem;">
+                                                <?= $roleEmojiMap[$roleKey] ?? $roleKey ?>
                                             </small>
                                         </div>
                                     </div>
@@ -277,8 +284,8 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                             <span class="badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 backdrop-blur pitch-player-label">
                                                 <?= e($displayName) ?>
                                             </span>
-                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role">
-                                                <?= $roleKey ?>
+                                            <small class="text-white-50 mt-1 d-block fw-bold pitch-player-role" style="font-size: 0.8rem;">
+                                                <?= $roleEmojiMap[$roleKey] ?? $roleKey ?>
                                             </small>
                                         </div>
                                     </div>

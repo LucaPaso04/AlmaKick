@@ -24,7 +24,13 @@
                                 }
                             }
                             ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $isMe ? 'bg-danger bg-opacity-10' : '' ?>">
+                            <?php
+                            $podiumClass = '';
+                            if ($index === 0) $podiumClass = 'podium-gold';
+                            elseif ($index === 1) $podiumClass = 'podium-silver';
+                            elseif ($index === 2) $podiumClass = 'podium-bronze';
+                            ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $podiumClass ?> <?= $isMe ? 'bg-danger bg-opacity-10' : '' ?>">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" aria-label="Posizione <?= $index + 1 ?>">
                                         <?php if ($index < 3): ?>
@@ -45,7 +51,7 @@
                                             <a href="<?= url('/profile?username=' . urlencode($user['username'])) ?>" class="text-decoration-none <?= $isMe ? 'text-danger' : 'text-body' ?> leaderboard-link stretched-link"><?= e($user['name'] . ' ' . $user['last_name']) ?></a>
                                             <?php if ($isMe): ?> <span class="badge bg-danger ms-1 small">Tu</span> <?php endif; ?>
                                         </h6>
-                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e($user['preferred_role'] ?? 'Giocatore') ?></small>
+                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e(getRoleBadge($user['preferred_role'])) ?></small>
                                     </div>
                                 </div>
                                 <span class="badge bg-danger rounded-pill fs-6 shadow-sm z-2" aria-label="<?= (int)$user['total_goals'] ?> gol"><?= (int)$user['total_goals'] ?> <i class="bi bi-record-circle" aria-hidden="true"></i></span>
@@ -87,7 +93,13 @@
                                 }
                             }
                             ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $isMe ? 'bg-warning bg-opacity-10' : '' ?>">
+                            <?php
+                            $podiumClass = '';
+                            if ($index === 0) $podiumClass = 'podium-gold';
+                            elseif ($index === 1) $podiumClass = 'podium-silver';
+                            elseif ($index === 2) $podiumClass = 'podium-bronze';
+                            ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $podiumClass ?> <?= $isMe ? 'bg-warning bg-opacity-10' : '' ?>">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" aria-label="Posizione <?= $index + 1 ?>">
                                         <?php if ($index < 3): ?>
@@ -108,7 +120,7 @@
                                             <a href="<?= url('/profile?username=' . urlencode($user['username'])) ?>" class="text-decoration-none <?= $isMe ? 'text-warning text-darken' : 'text-body' ?> leaderboard-link stretched-link"><?= e($user['name'] . ' ' . $user['last_name']) ?></a>
                                             <?php if ($isMe): ?> <span class="badge bg-warning text-dark ms-1 small">Tu</span> <?php endif; ?>
                                         </h6>
-                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e($user['preferred_role'] ?? 'Giocatore') ?></small>
+                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e(getRoleBadge($user['preferred_role'])) ?></small>
                                     </div>
                                 </div>
                                 <span class="badge bg-warning text-dark rounded-pill fs-6 shadow-sm z-2" aria-label="<?= (int)$user['mvp_count'] ?> titoli MVP"><?= (int)$user['mvp_count'] ?> <i class="bi bi-trophy" aria-hidden="true"></i></span>
@@ -150,7 +162,13 @@
                                 }
                             }
                             ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $isMe ? 'bg-info bg-opacity-10' : '' ?>">
+                            <?php
+                            $podiumClass = '';
+                            if ($index === 0) $podiumClass = 'podium-gold';
+                            elseif ($index === 1) $podiumClass = 'podium-silver';
+                            elseif ($index === 2) $podiumClass = 'podium-bronze';
+                            ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $podiumClass ?> <?= $isMe ? 'bg-info bg-opacity-10' : '' ?>">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" aria-label="Posizione <?= $index + 1 ?>">
                                         <?php if ($index < 3): ?>
@@ -171,7 +189,7 @@
                                             <a href="<?= url('/profile?username=' . urlencode($user['username'])) ?>" class="text-decoration-none <?= $isMe ? 'text-info text-darken' : 'text-body' ?> leaderboard-link stretched-link"><?= e($user['name'] . ' ' . $user['last_name']) ?></a>
                                             <?php if ($isMe): ?> <span class="badge bg-info ms-1 small text-white">Tu</span> <?php endif; ?>
                                         </h6>
-                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e($user['preferred_role'] ?? 'Giocatore') ?></small>
+                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e(getRoleBadge($user['preferred_role'])) ?></small>
                                     </div>
                                 </div>
                                 <span class="badge bg-info rounded-pill fs-6 shadow-sm text-white z-2" aria-label="Valutazione <?= number_format($user['skill_rating'], 1) ?> stelle"><?= number_format($user['skill_rating'], 1) ?> <i class="bi bi-star-fill" aria-hidden="true"></i></span>
