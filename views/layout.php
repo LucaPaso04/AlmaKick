@@ -137,11 +137,13 @@ if (isset($_SESSION['user'])) {
                         $isClassificheActive = ($current_path === '/leaderboard');
                         $isCercaActive = ($current_path === '/users');
                     ?>
-                    <!-- Classifica con effetto hover reveal elegante -->
-                    <a class="nav-link fw-semibold p-0 text-decoration-none search-hover-reveal ms-3 d-none d-md-inline-flex <?= $isClassificheActive ? 'text-primary' : '' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifica">
-                        <span class="bi bi-trophy-fill fs-5 <?= $isClassificheActive ? 'text-warning' : 'text-body' ?>"></span>
-                        <span class="search-text-reveal fw-semibold text-primary">Classifica</span>
-                    </a>
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <!-- Classifica con effetto hover reveal elegante -->
+                        <a class="nav-link fw-semibold p-0 text-decoration-none search-hover-reveal ms-3 d-none d-md-inline-flex <?= $isClassificheActive ? 'text-primary' : '' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifica">
+                            <span class="bi bi-trophy-fill fs-5 <?= $isClassificheActive ? 'text-warning' : 'text-body' ?>"></span>
+                            <span class="search-text-reveal fw-semibold text-primary">Classifica</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Right side -->
@@ -246,19 +248,17 @@ if (isset($_SESSION['user'])) {
                     </div>
                     <p class="text-body-secondary small mb-0 footer-tagline">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
                 </div>
-                <!-- Right Column: Links aligned horizontally on desktop -->
-                <div class="col-12 col-md-4 text-center text-md-end">
-                    <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
-                    <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
-                        <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
-                        <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
-                        <?php if (isset($_SESSION['user'])): ?>
+                <?php if (isset($_SESSION['user'])): ?>
+                    <!-- Right Column: Links aligned horizontally on desktop -->
+                    <div class="col-12 col-md-4 text-center text-md-end">
+                        <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
+                        <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
+                            <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
+                            <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
                             <li><a href="<?= url('/profile') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Il mio Profilo</a></li>
-                        <?php else: ?>
-                            <li><a href="<?= url('/login') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Accedi</a></li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </div>
             <hr class="my-4 border-secondary-subtle">
             <div class="text-center text-body-secondary small">
