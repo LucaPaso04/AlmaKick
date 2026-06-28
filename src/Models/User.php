@@ -307,4 +307,41 @@ class User {
         ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
+
+    public function searchUsers(string $query, string $currentUsername, int $limit, int $offset): array {
+        $search = '%' . $query . '%';
+        $stmt = $this->db->prepare("
+            SELECT * FROM users
+            WHERE is_banned = 0 
+              AND username != :current_username
+              AND (name LIKE :q1 OR last_name LIKE :q2 OR username LIKE :q3)
+            ORDER BY name ASC, last_name ASC
+            LIMIT :limit OFFSET :offset
+        ");
+        $stmt->bindValue(':current_username', $currentUsername, PDO::PARAM_STR);
+        $stmt->bindValue(':q1', $search, PDO::PARAM_STR);
+        $stmt->bindValue(':q2', $search, PDO::PARAM_STR);
+        $stmt->bindValue(':q3', $search, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function countSearchUsers(string $query, string $currentUsername): int {
+        $search = '%' . $query . '%';
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) FROM users
+            WHERE is_banned = 0 
+              AND username != :current_username
+              AND (name LIKE :q1 OR last_name LIKE :q2 OR username LIKE :q3)
+        ");
+        $stmt->bindValue(':current_username', $currentUsername, PDO::PARAM_STR);
+        $stmt->bindValue(':q1', $search, PDO::PARAM_STR);
+        $stmt->bindValue(':q2', $search, PDO::PARAM_STR);
+        $stmt->bindValue(':q3', $search, PDO::PARAM_STR);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
 }
+

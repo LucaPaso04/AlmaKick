@@ -6,6 +6,63 @@ use App\Models\User;
 
 class UserController extends BaseController {
 
+    public function index() {
+        if (!isset($_SESSION['user'])) {
+            $_SESSION['error'] = "Accesso negato. Effettua prima il login.";
+            $this->redirect('/login');
+        }
+
+        $userModel = new User();
+        $q = trim($_GET['q'] ?? '');
+
+        // Parametri di paginazione
+        $perPage = 9;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $offset = ($page - 1) * $perPage;
+
+        $currentUsername = $_SESSION['user']['username'];
+        $users = $userModel->searchUsers($q, $currentUsername, $perPage, $offset);
+        $totalUsers = $userModel->countSearchUsers($q, $currentUsername);
+        $totalPages = ceil($totalUsers / $perPage);
+
+        // Se la richiesta è AJAX, restituisce JSON con i risultati e la paginazione
+        if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
+            ob_start();
+            require VIEW_PATH . '/users/partials/results.php';
+            $htmlContent = ob_get_clean();
+
+            // Generazione HTML della paginazione
+            $paginationHtml = '';
+            if ($totalPages > 1) {
+                $paginationHtml .= '<nav aria-label="Navigazione pagine"><ul class="pagination pagination-sm justify-content-center mt-4 mb-0">';
+                $prevClass = ($page <= 1) ? 'disabled' : '';
+                $paginationHtml .= '<li class="page-item ' . $prevClass . '"><a class="page-link" href="#" data-page="' . ($page - 1) . '"><i class="bi bi-chevron-left"></i></a></li>';
+                for ($i = 1; $i <= $totalPages; $i++) {
+                    $activeClass = ($i == $page) ? 'active' : '';
+                    $paginationHtml .= '<li class="page-item ' . $activeClass . '"><a class="page-link" href="#" data-page="' . $i . '">' . $i . '</a></li>';
+                }
+                $nextClass = ($page >= $totalPages) ? 'disabled' : '';
+                $paginationHtml .= '<li class="page-item ' . $nextClass . '"><a class="page-link" href="#" data-page="' . ($page + 1) . '"><i class="bi bi-chevron-right"></i></a></li>';
+                $paginationHtml .= '</ul></nav>';
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode([
+                'html' => $htmlContent,
+                'pagination' => $paginationHtml
+            ]);
+            exit;
+        }
+
+        view('users/index', [
+            'title' => 'Ricerca Giocatori - AlmaKick',
+            'users' => $users,
+            'totalPages' => $totalPages,
+            'page' => $page,
+            'q' => $q
+        ]);
+    }
+
     public function show() {
         if (!isset($_SESSION['user'])) {
             $_SESSION['error'] = "Accesso negato. Effettua prima il login.";
