@@ -67,3 +67,44 @@
 .name-label {
     font-size: 0.8rem;
 }
+
+/* Instagram-like Row List Styling */
+.instagram-list-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.instagram-list-item:hover {
+    background-color: rgba(var(--twilight-rgb), 0.1);
+    border-color: var(--accent);
+    transform: translateX(4px);
+}
+
+.user-search-avatar-mini {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}
+
+.username-label-list {
+    color: var(--bs-body-color);
+    font-size: 0.95rem;
+}
+
+.name-label-list {
+    font-size: 0.8rem;
+}
+
+.remove-history-btn {
+    transition: color 0.2s ease;
+}
+
+.remove-history-btn:hover {
+    color: var(--danger) !important;
+}
+
+.fs-7 {
+    font-size: 0.85rem !important;
+}
