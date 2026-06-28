@@ -7,6 +7,7 @@ use App\Models\SoccerMatch;
 class MatchController extends BaseController {
 
     public function index() {
+        $this->resolveExpiredMvps();
         $matchModel = new SoccerMatch();
         
         $filters = [
@@ -113,6 +114,7 @@ class MatchController extends BaseController {
     }
 
     public function show($id) {
+        $this->resolveExpiredMvps();
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
 
@@ -357,9 +359,9 @@ class MatchController extends BaseController {
         }
 
         $db = \App\Database::getInstance()->getConnection();
-        // Recupera iscritti attivi
+        // Recupera iscritti attivi con il flag has_guest
         $stmt = $db->prepare("
-            SELECT r.id, u.skill_rating 
+            SELECT r.id, r.has_guest, u.skill_rating 
             FROM registrations r
             JOIN users u ON r.username = u.username
             WHERE r.match_id = :match_id AND r.status = 'registered'
@@ -372,22 +374,44 @@ class MatchController extends BaseController {
             $this->redirectToMatch($id);
         }
 
-        // Ordina per skill
+        // Ordina per skill decrescente
         usort($players, function($a, $b) {
             return $b['skill_rating'] <=> $a['skill_rating'];
         });
 
-        // Snake draft per assegnare Home e Away
+        // Algoritmo greedy con snake draft di fallback per bilanciare i pesi (1 + has_guest)
         $homeIds = [];
         $awayIds = [];
+        $homeWeight = 0;
+        $awayWeight = 0;
+
         foreach ($players as $idx => $player) {
-            $round = (int)floor($idx / 2);
-            if ($round % 2 === 0) {
-                if ($idx % 2 === 0) $homeIds[] = $player['id'];
-                else $awayIds[] = $player['id'];
+            $weight = 1 + (int)$player['has_guest'];
+            if ($homeWeight < $awayWeight) {
+                $homeIds[] = $player['id'];
+                $homeWeight += $weight;
+            } elseif ($awayWeight < $homeWeight) {
+                $awayIds[] = $player['id'];
+                $awayWeight += $weight;
             } else {
-                if ($idx % 2 === 0) $awayIds[] = $player['id'];
-                else $homeIds[] = $player['id'];
+                $round = (int)floor($idx / 2);
+                if ($round % 2 === 0) {
+                    if ($idx % 2 === 0) {
+                        $homeIds[] = $player['id'];
+                        $homeWeight += $weight;
+                    } else {
+                        $awayIds[] = $player['id'];
+                        $awayWeight += $weight;
+                    }
+                } else {
+                    if ($idx % 2 === 0) {
+                        $awayIds[] = $player['id'];
+                        $awayWeight += $weight;
+                    } else {
+                        $homeIds[] = $player['id'];
+                        $homeWeight += $weight;
+                    }
+                }
             }
         }
 
@@ -401,7 +425,7 @@ class MatchController extends BaseController {
             $stmtUpdateAway->execute(['id' => $regId]);
         }
 
-        $_SESSION['success'] = "Squadre generate con successo in base alla Skill dei giocatori!";
+        $_SESSION['success'] = "Squadre generate con successo bilanciando gli iscritti e gli ospiti!";
         $this->redirectToMatch($id);
     }
 
@@ -565,6 +589,24 @@ class MatchController extends BaseController {
                 'thumb' => $thumbDown
             ]);
             $votedCount++;
+
+            // Aggiorna skill_rating dell'utente valutato
+            if ($skillVote !== null) {
+                $stmtUpdateSkill = $db->prepare("
+                    UPDATE users 
+                    SET skill_rating = (
+                        SELECT COALESCE(ROUND(AVG(skill_vote), 2), 0.00)
+                        FROM evaluations
+                        WHERE evaluated_username = :user_evaluated
+                          AND skill_vote IS NOT NULL
+                    )
+                    WHERE username = :user_evaluated2
+                ");
+                $stmtUpdateSkill->execute([
+                    'user_evaluated' => $targetUsername,
+                    'user_evaluated2' => $targetUsername
+                ]);
+            }
 
             // Se c'è pollice in giù, applica penalità di trust score (-10)
             if ($thumbDown) {
@@ -736,39 +778,63 @@ class MatchController extends BaseController {
         $result_home = isset($_POST['result_home']) ? max(0, (int)$_POST['result_home']) : 0;
         $result_away = isset($_POST['result_away']) ? max(0, (int)$_POST['result_away']) : 0;
         $goals = $_POST['goals'] ?? [];
+        $guestGoals = $_POST['guest_goals'] ?? [];
+        $teams = $_POST['teams'] ?? [];
 
         $db = \App\Database::getInstance()->getConnection();
-
-        // Validazione corrispondenza gol dei singoli rispetto al risultato finale
-        $stmtCheckReg = $db->prepare("SELECT id, team FROM registrations WHERE match_id = :match_id AND status = 'registered'");
-        $stmtCheckReg->execute(['match_id' => $id]);
-        $allRegs = $stmtCheckReg->fetchAll(\PDO::FETCH_ASSOC);
-
-        $sumHomeGoals = 0;
-        $sumAwayGoals = 0;
-        foreach ($allRegs as $reg) {
-            $regId = $reg['id'];
-            $playerGoals = isset($goals[$regId]) ? max(0, (int)$goals[$regId]) : 0;
-            if ($reg['team'] === 'home') {
-                $sumHomeGoals += $playerGoals;
-            } elseif ($reg['team'] === 'away') {
-                $sumAwayGoals += $playerGoals;
-            }
-        }
-
-        if ($sumHomeGoals !== $result_home || $sumAwayGoals !== $result_away) {
-            $_SESSION['old_report_input'] = [
-                'result_home' => $result_home,
-                'result_away' => $result_away,
-                'goals' => $goals
-            ];
-            $_SESSION['error'] = "La somma dei gol individuali dei giocatori (Home: $sumHomeGoals, Away: $sumAwayGoals) non corrisponde al risultato finale (Home: $result_home, Away: $result_away).";
-            $this->redirect(url('/matches/' . $id . '/report'));
-        }
 
         try {
             $db->beginTransaction();
 
+            // 1. Aggiorna le squadre dei giocatori in base alle scelte dell'organizzatore
+            $stmtUpdateTeam = $db->prepare("UPDATE registrations SET team = :team, updated_at = NOW() WHERE id = :id AND match_id = :match_id");
+            foreach ($teams as $regId => $teamVal) {
+                if (in_array($teamVal, ['home', 'away'])) {
+                    $stmtUpdateTeam->execute([
+                        'team' => $teamVal,
+                        'id' => $regId,
+                        'match_id' => $id
+                    ]);
+                }
+            }
+
+            // 2. Recupera gli iscritti con i team aggiornati per la validazione
+            $stmtCheckReg = $db->prepare("SELECT id, team, has_guest FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+            $stmtCheckReg->execute(['match_id' => $id]);
+            $allRegs = $stmtCheckReg->fetchAll(\PDO::FETCH_ASSOC);
+
+            // 3. Convalida la corrispondenza dei gol inseriti rispetto al risultato finale
+            $sumHomeGoals = 0;
+            $sumAwayGoals = 0;
+
+            foreach ($allRegs as $reg) {
+                $regId = $reg['id'];
+                $playerGoals = isset($goals[$regId]) ? max(0, (int)$goals[$regId]) : 0;
+                $gG = isset($guestGoals[$regId]) ? max(0, (int)$guestGoals[$regId]) : 0;
+
+                if ($reg['team'] === 'home') {
+                    $sumHomeGoals += $playerGoals + $gG;
+                } elseif ($reg['team'] === 'away') {
+                    $sumAwayGoals += $playerGoals + $gG;
+                }
+            }
+
+            if ($sumHomeGoals !== $result_home || $sumAwayGoals !== $result_away) {
+                $_SESSION['old_report_input'] = [
+                    'result_home' => $result_home,
+                    'result_away' => $result_away,
+                    'goals' => $goals,
+                    'guest_goals' => $guestGoals,
+                    'teams' => $teams
+                ];
+                $_SESSION['error'] = "La somma dei gol dei giocatori e degli ospiti (Home: $sumHomeGoals, Away: $sumAwayGoals) non corrisponde al risultato finale (Home: $result_home, Away: $result_away).";
+                
+                // Rollback per non salvare le modifiche provvisorie se la validazione fallisce
+                $db->rollBack();
+                $this->redirect(url('/matches/' . $id . '/report'));
+            }
+
+            // 4. Salva il risultato finale del match
             $stmtUpdateMatch = $db->prepare("UPDATE matches SET result_home = :home, result_away = :away, updated_at = NOW() WHERE id = :id");
             $stmtUpdateMatch->execute([
                 'home' => $result_home,
@@ -776,6 +842,7 @@ class MatchController extends BaseController {
                 'id' => $id
             ]);
 
+            // 5. Salva i gol individuali dei giocatori registrati
             $stmtUpdateReg = $db->prepare("UPDATE registrations SET goals_scored = :goals, updated_at = NOW() WHERE id = :id AND match_id = :match_id");
             foreach ($goals as $regId => $goalsCount) {
                 $goalsCount = max(0, (int)$goalsCount);
@@ -785,6 +852,35 @@ class MatchController extends BaseController {
                     'match_id' => $id
                 ]);
             }
+
+            // 6. Ricalcola total_goals e matches_played per tutti i giocatori del match
+            $stmtUpdateStats = $db->prepare("
+                UPDATE users u
+                SET 
+                  u.total_goals = (
+                      SELECT COALESCE(SUM(r.goals_scored), 0)
+                      FROM registrations r
+                      JOIN matches m ON r.match_id = m.id
+                      WHERE r.username = u.username 
+                        AND r.status = 'registered' 
+                        AND m.status = 'finished'
+                  ),
+                  u.matches_played = (
+                      SELECT COUNT(*)
+                      FROM registrations r
+                      JOIN matches m ON r.match_id = m.id
+                      WHERE r.username = u.username 
+                        AND r.status = 'registered' 
+                        AND m.status = 'finished'
+                  )
+                WHERE u.username IN (
+                    SELECT DISTINCT username 
+                    FROM registrations 
+                    WHERE match_id = :match_id 
+                      AND status = 'registered'
+                )
+            ");
+            $stmtUpdateStats->execute(['match_id' => $id]);
 
             $db->commit();
             $_SESSION['success'] = "Tabellino salvato con successo!";
@@ -805,5 +901,82 @@ class MatchController extends BaseController {
             $redirectUrl .= '?from=' . urlencode($from);
         }
         $this->redirect(url($redirectUrl));
+    }
+
+    private function resolveExpiredMvps() {
+        $db = \App\Database::getInstance()->getConnection();
+        
+        // Trova tutte le partite finite, con scadenza votazione passata e MVP non ancora assegnato
+        $stmt = $db->prepare("
+            SELECT id, host_username 
+            FROM matches 
+            WHERE status = 'finished' 
+              AND mvp_assigned = 0 
+              AND mvp_deadline IS NOT NULL 
+              AND mvp_deadline <= NOW()
+        ");
+        $stmt->execute();
+        $expiredMatches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($expiredMatches)) {
+            return;
+        }
+
+        foreach ($expiredMatches as $match) {
+            $matchId = $match['id'];
+
+            // Trova l'utente con la valutazione media più alta (skill_vote) tra i partecipanti di questo match
+            $stmtMvp = $db->prepare("
+                SELECT evaluated_username, AVG(skill_vote) as avg_vote, COUNT(skill_vote) as vote_count
+                FROM evaluations
+                WHERE match_id = :match_id 
+                  AND skill_vote IS NOT NULL
+                GROUP BY evaluated_username
+                ORDER BY avg_vote DESC, vote_count DESC, evaluated_username ASC
+                LIMIT 1
+            ");
+            $stmtMvp->execute(['match_id' => $matchId]);
+            $mvpResult = $stmtMvp->fetch(\PDO::FETCH_ASSOC);
+
+            if ($mvpResult) {
+                $mvpUsername = $mvpResult['evaluated_username'];
+
+                try {
+                    $db->beginTransaction();
+
+                    // Aggiorna il match con l'MVP assegnato
+                    $stmtUpdateMatch = $db->prepare("
+                        UPDATE matches 
+                        SET mvp_assigned = 1, mvp_username = :username, updated_at = NOW() 
+                        WHERE id = :id
+                    ");
+                    $stmtUpdateMatch->execute([
+                        'username' => $mvpUsername,
+                        'id' => $matchId
+                    ]);
+
+                    // Incrementa il conteggio MVP dell'utente
+                    $stmtUpdateUser = $db->prepare("
+                        UPDATE users 
+                        SET mvp_count = mvp_count + 1, updated_at = NOW() 
+                        WHERE username = :username
+                    ");
+                    $stmtUpdateUser->execute(['username' => $mvpUsername]);
+
+                    $db->commit();
+                } catch (\Exception $e) {
+                    if ($db->inTransaction()) {
+                        $db->rollBack();
+                    }
+                }
+            } else {
+                // Se nessuno ha ricevuto voti, assegniamo comunque mvp_assigned = 1 per evitare di ripetere l'operazione
+                $db->prepare("
+                    UPDATE matches 
+                    SET mvp_assigned = 1, updated_at = NOW() 
+                    WHERE id = :id
+                ")->execute(['id' => $matchId]);
+            }
+        }
     }
 }

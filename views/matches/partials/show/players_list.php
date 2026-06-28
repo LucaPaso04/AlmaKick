@@ -94,6 +94,61 @@ foreach ($registrations as $reg) {
                 </div>
             </div>
         <?php endforeach; ?>
+
+        <?php
+        // Calcola e visualizza i gol degli ospiti se la partita è finita ed ha gol ospiti
+        $sumHomeGoalsRegistered = 0;
+        $sumAwayGoalsRegistered = 0;
+        foreach ($activePlayers as $reg) {
+            if ($reg['team'] === 'home') {
+                $sumHomeGoalsRegistered += (int)$reg['goals_scored'];
+            } elseif ($reg['team'] === 'away') {
+                $sumAwayGoalsRegistered += (int)$reg['goals_scored'];
+            }
+        }
+        $guestHomeGoals = ($match['status'] === 'finished' && $match['result_home'] !== null) ? max(0, (int)$match['result_home'] - $sumHomeGoalsRegistered) : 0;
+        $guestAwayGoals = ($match['status'] === 'finished' && $match['result_away'] !== null) ? max(0, (int)$match['result_away'] - $sumAwayGoalsRegistered) : 0;
+        ?>
+
+        <?php if ($guestHomeGoals > 0): ?>
+            <div class="list-group-item border-0 border-bottom d-flex justify-content-between align-items-center py-3 bg-body hover-scale transition-all" role="listitem">
+                <div class="d-flex align-items-center">
+                    <div class="bg-danger text-white rounded-circle d-flex justify-content-center align-items-center me-3 fs-5 fw-bold shadow-sm border border-2 border-white match-show-avatar" aria-hidden="true">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6">
+                            <span>Ospiti Squadra Home</span>
+                            <span class="badge bg-danger shadow-sm">Home</span>
+                            <span class="badge bg-success shadow-sm" role="img" aria-label="Hanno segnato <?= $guestHomeGoals ?> gol">⚽ <?= $guestHomeGoals ?></span>
+                        </h3>
+                        <small class="text-muted d-flex align-items-center gap-1 mt-1">
+                            <i class="bi bi-people-fill" aria-hidden="true"></i> Gol complessivi degli ospiti
+                        </small>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($guestAwayGoals > 0): ?>
+            <div class="list-group-item border-0 border-bottom d-flex justify-content-between align-items-center py-3 bg-body hover-scale transition-all" role="listitem">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3 fs-5 fw-bold shadow-sm border border-2 border-white match-show-avatar" aria-hidden="true">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6">
+                            <span>Ospiti Squadra Away</span>
+                            <span class="badge bg-primary shadow-sm">Away</span>
+                            <span class="badge bg-success shadow-sm" role="img" aria-label="Hanno segnato <?= $guestAwayGoals ?> gol">⚽ <?= $guestAwayGoals ?></span>
+                        </h3>
+                        <small class="text-muted d-flex align-items-center gap-1 mt-1">
+                            <i class="bi bi-people-fill" aria-hidden="true"></i> Gol complessivi degli ospiti
+                        </small>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     <?php else: ?>
         <div class="list-group-item text-center text-muted py-4 border-0 rounded-4">
             Nessun titolare iscritto ancora.
