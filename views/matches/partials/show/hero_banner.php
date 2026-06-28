@@ -43,8 +43,12 @@
                 <span class="badge bg-success rounded-pill fs-6 shadow-sm" role="img"
                     aria-label="Stato partita: Completa">Completa</span>
             <?php else: ?>
-                <span class="badge bg-white text-primary rounded-pill fs-6 text-uppercase fw-bold shadow-sm" role="img"
+                <span class="badge bg-white text-primary rounded-pill fs-6 text-uppercase fw-bold shadow-sm me-2" role="img"
                     aria-label="Formato partita"><?= e($match['format']) ?></span>
+                <?php if (!empty($match['is_urgent'])): ?>
+                    <span class="badge bg-danger text-white rounded-pill fs-6 text-uppercase fw-bold shadow-sm animate__animated animate__pulse animate__infinite" role="img"
+                        aria-label="Partita Urgente">🔥 Urgente</span>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
 

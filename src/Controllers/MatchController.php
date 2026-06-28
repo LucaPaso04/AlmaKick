@@ -33,6 +33,17 @@ class MatchController extends BaseController {
         ]);
 
         $matches = $matchModel->getAllActive($listFilters);
+        foreach ($matches as &$p) {
+            $matchTime = strtotime($p['date'] . ' ' . $p['time']);
+            $timeDiff = $matchTime - time();
+            if ($timeDiff > 0 && $timeDiff < 48 * 3600 && (int)$p['posti_occupati'] < (int)$p['max_players']) {
+                $p['is_urgent'] = 1;
+            } else {
+                $p['is_urgent'] = 0;
+            }
+        }
+        unset($p);
+
         $totalMatches = $matchModel->countAllActive($filters);
         $totalPages = ceil($totalMatches / $perPage);
 
@@ -100,6 +111,16 @@ class MatchController extends BaseController {
                 'username' => $username,
                 'filter' => 'mine'
             ]);
+            foreach ($myMatches as &$p) {
+                $matchTime = strtotime($p['date'] . ' ' . $p['time']);
+                $timeDiff = $matchTime - time();
+                if ($timeDiff > 0 && $timeDiff < 48 * 3600 && (int)$p['posti_occupati'] < (int)$p['max_players']) {
+                    $p['is_urgent'] = 1;
+                } else {
+                    $p['is_urgent'] = 0;
+                }
+            }
+            unset($p);
         }
 
         view('matches/index', [
@@ -148,6 +169,11 @@ class MatchController extends BaseController {
         }
         $available_seats = max(0, (int)$match['max_players'] - $occupied_seats);
         $current_quote = (float)$match['total_cost'] / max(1, (int)$match['max_players']);
+
+        // Calcola urgenza partita
+        $matchTime = strtotime($match['date'] . ' ' . $match['time']);
+        $timeDiff = $matchTime - time();
+        $match['is_urgent'] = ($timeDiff > 0 && $timeDiff < 48 * 3600 && $occupied_seats < (int)$match['max_players']) ? 1 : 0;
 
         // Verifica iscrizione e ruolo utente corrente
         $is_registered = false;
