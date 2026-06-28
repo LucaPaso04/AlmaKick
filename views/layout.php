@@ -81,6 +81,8 @@ if (isset($_SESSION['user'])) {
         <link rel="stylesheet" href="<?= url('/css/register.css') ?>">
     <?php elseif ($current_path === '/leaderboard'): ?>
         <link rel="stylesheet" href="<?= url('/css/leaderboard.css') ?>">
+    <?php elseif ($current_path === '/users'): ?>
+        <link rel="stylesheet" href="<?= url('/css/users.css') ?>">
     <?php endif; ?>
 </head>
 <body class="d-flex flex-column min-vh-100">

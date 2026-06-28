@@ -85,6 +85,7 @@ $router->add('GET', '/matches/{id}/report', 'MatchController@showReport', [\App\
 $router->add('POST', '/matches/{id}/report', 'MatchController@storeReport', [\App\Middleware\AuthMiddleware::class]);
 
 // ROTTE PROFILO E AMICIZIE
+$router->add('GET', '/users', 'UserController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/profile', 'UserController@show', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/profile/avatar', 'UserController@updateAvatar', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/profile/info', 'UserController@updateInfo', [\App\Middleware\AuthMiddleware::class]);

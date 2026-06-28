@@ -6,6 +6,46 @@ use App\Models\User;
 
 class UserController extends BaseController {
 
+    public function index() {
+        if (!isset($_SESSION['user'])) {
+            $_SESSION['error'] = "Accesso negato. Effettua prima il login.";
+            $this->redirect('/login');
+        }
+
+        $userModel = new User();
+        $q = trim($_GET['q'] ?? '');
+
+        $users = [];
+        if ($q !== '') {
+            $currentUsername = $_SESSION['user']['username'];
+            // Cerca al massimo 10 utenti
+            $users = $userModel->searchUsers($q, $currentUsername, 10, 0);
+        }
+
+        // Se la richiesta è AJAX, restituisce JSON con i risultati
+        if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
+            ob_start();
+            require VIEW_PATH . '/users/partials/results.php';
+            $htmlContent = ob_get_clean();
+
+            header('Content-Type: application/json');
+            echo json_encode([
+                'html' => $htmlContent,
+                'pagination' => ''
+            ]);
+            exit;
+        }
+
+        view('users/index', [
+            'title' => 'Ricerca Giocatori - AlmaKick',
+            'users' => $users,
+            'totalPages' => 0,
+            'page' => 1,
+            'q' => $q
+        ]);
+    }
+
+
     public function show() {
         if (!isset($_SESSION['user'])) {
             $_SESSION['error'] = "Accesso negato. Effettua prima il login.";
