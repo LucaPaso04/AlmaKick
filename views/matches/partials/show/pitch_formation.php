@@ -251,7 +251,7 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                                 <i class="bi bi-person-plus-fill fs-5" aria-hidden="true"></i>
                                             </div>
                                         <?php else: ?>
-                                            <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
+                                            <a href="<?= url('/profile?username=' . urlencode($reg['username']) . '&match_id=' . $match['id']) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
                                                 <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center fw-bold text-white shadow match-show-avatar"
                                                      style="background: #dc3545; <?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>">
                                                     <?php if(!$regAvatarUrl): ?>
@@ -309,7 +309,7 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                                 <i class="bi bi-person-plus-fill fs-5" aria-hidden="true"></i>
                                             </div>
                                         <?php else: ?>
-                                            <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
+                                            <a href="<?= url('/profile?username=' . urlencode($reg['username']) . '&match_id=' . $match['id']) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
                                                 <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center fw-bold text-white shadow match-show-avatar"
                                                      style="background: #0d6efd; <?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>">
                                                     <?php if(!$regAvatarUrl): ?>

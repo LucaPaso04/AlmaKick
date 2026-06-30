@@ -99,6 +99,15 @@ class AdminController extends BaseController {
             }
         }
 
+        $problematicFilter = $_GET['problematic'] ?? '';
+        if (!empty($problematicFilter)) {
+            if ($problematicFilter === 'low_trust') {
+                $whereUsers[] = "u.trust_score < 40";
+            } elseif ($problematicFilter === 'suspicious_weather') {
+                $whereUsers[] = "(SELECT COUNT(*) FROM matches m WHERE m.host_username = u.username AND m.status = 'cancelled' AND m.cancellation_reason = 'Meteo avverso') >= 3";
+            }
+        }
+
         $whereUsersSql = !empty($whereUsers) ? 'WHERE ' . implode(' AND ', $whereUsers) : '';
 
         $allowedSorts = ['username', 'trust_score', 'weather_cancels'];
@@ -133,6 +142,23 @@ class AdminController extends BaseController {
 
         foreach ($usersList as &$u) {
             $u['id'] = $u['username'];
+        }
+        unset($u);
+
+        // Preleva lo storico trust specifico per i 10 utenti visualizzati in questa pagina con un'unica query
+        $usernames = array_column($usersList, 'username');
+        $trustHistories = [];
+        if (!empty($usernames)) {
+            $placeholders = implode(',', array_fill(0, count($usernames), '?'));
+            $stmtHist = $db->prepare("SELECT * FROM trust_history WHERE username IN ($placeholders) ORDER BY created_at DESC");
+            $stmtHist->execute($usernames);
+            while ($row = $stmtHist->fetch(PDO::FETCH_ASSOC)) {
+                $row['created_at'] = new DateTime($row['created_at']);
+                $trustHistories[$row['username']][] = $row;
+            }
+        }
+        foreach ($usersList as &$u) {
+            $u['trust_history'] = $trustHistories[$u['username']] ?? [];
         }
         unset($u);
 
@@ -269,36 +295,7 @@ class AdminController extends BaseController {
             $matchesList[] = $row;
         }
 
-        // 5. Trust Score Logs with pagination
-        $trustPage = isset($_GET['trust_page']) ? max(1, (int)$_GET['trust_page']) : 1;
-        $perPageTrust = 5;
-        $offsetTrust = ($trustPage - 1) * $perPageTrust;
-
-        $totalTrust = (int)$db->query("SELECT COUNT(*) FROM trust_history")->fetchColumn();
-        $totalPagesTrust = ceil($totalTrust / $perPageTrust);
-
-        $listQueryTrust = "
-            SELECT th.*, u.name AS user_name
-            FROM trust_history th
-            LEFT JOIN users u ON th.username = u.username
-            ORDER BY th.created_at DESC
-            LIMIT :limit OFFSET :offset
-        ";
-        $stmtListTrust = $db->prepare($listQueryTrust);
-        $stmtListTrust->bindValue('limit', $perPageTrust, PDO::PARAM_INT);
-        $stmtListTrust->bindValue('offset', $offsetTrust, PDO::PARAM_INT);
-        $stmtListTrust->execute();
-        $trustLogsRaw = $stmtListTrust->fetchAll();
-
-        $trustLogsList = [];
-        foreach ($trustLogsRaw as $row) {
-            $row['user'] = [
-                'name' => $row['user_name']
-            ];
-            $row['user_id'] = $row['username'];
-            $row['created_at'] = new DateTime($row['created_at']);
-            $trustLogsList[] = $row;
-        }
+        // 5. Trust Score Logs rimosso dalla pagina globale (ora integrato nelle modali utente)
 
         view('admin/index', [
             'title' => 'Dashboard Amministratore - AlmaKick',
@@ -312,6 +309,7 @@ class AdminController extends BaseController {
             'search' => $search,
             'roleFilter' => $roleFilter,
             'statusFilter' => $statusFilter,
+            'problematicFilter' => $problematicFilter,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
             'allRoles' => $allRoles,
@@ -333,12 +331,6 @@ class AdminController extends BaseController {
             'statusMatch' => $statusMatch,
             'dateMatch' => $dateMatch,
             'formatMatch' => $formatMatch,
-
-            // Trust Logs
-            'trust_logs' => $trustLogsList,
-            'totalTrust' => $totalTrust,
-            'totalPagesTrust' => $totalPagesTrust,
-            'pageTrust' => $trustPage,
 
             // Charts Data
             'regTrend' => $regTrend,

@@ -137,6 +137,7 @@ CREATE TABLE `reports` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `reporter_username` varchar(50) NOT NULL,
   `reported_username` varchar(50) NOT NULL,
+  `match_id` bigint(20) unsigned DEFAULT NULL,
   `reason` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
   `status` enum('pending','resolved','dismissed') NOT NULL DEFAULT 'pending',
@@ -146,9 +147,11 @@ CREATE TABLE `reports` (
   PRIMARY KEY (`id`),
   KEY `reports_reporter_foreign` (`reporter_username`),
   KEY `reports_reported_foreign` (`reported_username`),
+  KEY `reports_match_foreign` (`match_id`),
   KEY `reports_status_index` (`status`),
   CONSTRAINT `reports_reported_foreign` FOREIGN KEY (`reported_username`) REFERENCES `users` (`username`) ON DELETE CASCADE,
-  CONSTRAINT `reports_reporter_foreign` FOREIGN KEY (`reporter_username`) REFERENCES `users` (`username`) ON DELETE CASCADE
+  CONSTRAINT `reports_reporter_foreign` FOREIGN KEY (`reporter_username`) REFERENCES `users` (`username`) ON DELETE CASCADE,
+  CONSTRAINT `reports_match_foreign` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

@@ -62,7 +62,7 @@ foreach ($registrations as $reg) {
                     </div>
                     <div>
                         <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6">
-                            <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none text-body focus-ring rounded" aria-label="Profilo di <?= e($reg['name']) ?>">
+                            <a href="<?= url('/profile?username=' . urlencode($reg['username']) . '&match_id=' . $match['id']) ?>" class="text-decoration-none text-body focus-ring rounded" aria-label="Profilo di <?= e($reg['name']) ?>">
                                 <?= e($reg['name']) ?> (@<?= e($reg['username']) ?>)
                             </a>
                             <?php if($reg['has_guest']): ?>
@@ -182,7 +182,7 @@ foreach ($registrations as $reg) {
                     </div>
                     <div>
                         <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6 text-warning">
-                            <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none text-warning focus-ring rounded" aria-label="Profilo di <?= e($reg['name']) ?>">
+                            <a href="<?= url('/profile?username=' . urlencode($reg['username']) . '&match_id=' . $match['id']) ?>" class="text-decoration-none text-warning focus-ring rounded" aria-label="Profilo di <?= e($reg['name']) ?>">
                                 <?= e($reg['name']) ?> (@<?= e($reg['username']) ?>)
                             </a>
                             <?php if($reg['has_guest']): ?>
