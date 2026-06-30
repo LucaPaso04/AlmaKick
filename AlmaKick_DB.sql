@@ -493,6 +493,6 @@ INSERT INTO trust_history (username, match_id, score_change, reason, created_at)
 ('giuseppe_turchese', 16, -5, 'Segnalazione pollice in giù da un compagno di squadra.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
 ('francesco_blu', NULL, -15, 'Ritiro iscrizione a meno di 24 ore dalla partita.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
 ('francesco_blu', NULL, -15, 'Ritiro iscrizione a meno di 24 ore dalla partita.', DATE_SUB(NOW(), INTERVAL 10 DAY)),
-('francesco_blu', NULL, -40, 'Partita annullata a meno di 24h dall\''inizio.', DATE_SUB(NOW(), INTERVAL 15 DAY));
+('francesco_blu', NULL, -40, 'Partita annullata a meno di 24h dall''inizio.', DATE_SUB(NOW(), INTERVAL 15 DAY));
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -364,7 +364,7 @@ class AdminController extends BaseController {
         } else {
             $_SESSION['error'] = "Impossibile completare l'operazione su se stessi o utente non valido.";
         }
-        $this->redirect(url('/admin'));
+        $this->respondAjaxOrRedirect(url('/admin') . '#users-section');
     }
 
     public function unban() {
@@ -384,7 +384,7 @@ class AdminController extends BaseController {
         } else {
             $_SESSION['error'] = "Azione non valida.";
         }
-        $this->redirect(url('/admin'));
+        $this->respondAjaxOrRedirect(url('/admin') . '#users-section');
     }
 
     public function resolveReport($id) {
@@ -399,7 +399,7 @@ class AdminController extends BaseController {
         ]);
         
         $_SESSION['success'] = "Segnalazione #{$id} contrassegnata come risolta.";
-        $this->redirect(url('/admin'));
+        $this->respondAjaxOrRedirect(url('/admin') . '#reports-section');
     }
 
     public function dismissReport($id) {
@@ -414,7 +414,7 @@ class AdminController extends BaseController {
         ]);
         
         $_SESSION['success'] = "Segnalazione #{$id} archiviata/ignorata.";
-        $this->redirect(url('/admin'));
+        $this->respondAjaxOrRedirect(url('/admin') . '#reports-section');
     }
 
     public function forceCancelMatch() {
@@ -460,7 +460,7 @@ class AdminController extends BaseController {
         } else {
             $_SESSION['error'] = "Azione non valida.";
         }
-        $this->redirect(url('/admin'));
+        $this->respondAjaxOrRedirect(url('/admin') . '#matches-section');
     }
 
     public function deleteMatch() {
@@ -477,6 +477,69 @@ class AdminController extends BaseController {
         } else {
             $_SESSION['error'] = "Azione non valida.";
         }
-        $this->redirect(url('/admin'));
+        $this->respondAjaxOrRedirect(url('/admin') . '#matches-section');
+    }
+
+    public function updateTrust() {
+        $this->validateCsrf();
+        $username = $_POST['username'] ?? '';
+        $newTrust = isset($_POST['trust_score']) ? (int)$_POST['trust_score'] : null;
+        $reason = trim($_POST['reason'] ?? '');
+        
+        if (!empty($username) && $newTrust !== null && $newTrust >= 0 && $newTrust <= 100 && !empty($reason)) {
+            $db = \App\Database::getInstance()->getConnection();
+            
+            // Recupera il trust score precedente per calcolare il delta
+            $stmtPrev = $db->prepare("SELECT trust_score FROM users WHERE username = :username");
+            $stmtPrev->execute(['username' => $username]);
+            $prevTrust = $stmtPrev->fetchColumn();
+            
+            if ($prevTrust !== false) {
+                $prevTrust = (int)$prevTrust;
+                $delta = $newTrust - $prevTrust;
+                
+                // Aggiorna il trust score dell'utente
+                $stmtUpdate = $db->prepare("UPDATE users SET trust_score = :trust WHERE username = :username");
+                $stmtUpdate->execute([
+                    'trust' => $newTrust,
+                    'username' => $username
+                ]);
+                
+                // Registra lo storico delle variazioni
+                $stmtLog = $db->prepare("
+                    INSERT INTO trust_history (username, score_change, reason, created_at) 
+                    VALUES (:username, :change, :reason, NOW())
+                ");
+                $stmtLog->execute([
+                    'username' => $username,
+                    'change' => $delta,
+                    'reason' => 'Modifica manuale admin: ' . $reason
+                ]);
+                
+                $_SESSION['success'] = "Trust Score dell'utente @{$username} aggiornato a {$newTrust} con successo.";
+            } else {
+                $_SESSION['error'] = "Utente non trovato.";
+            }
+        } else {
+            $_SESSION['error'] = "Dati inseriti non validi o incompleti.";
+        }
+        
+        $this->respondAjaxOrRedirect(url('/admin') . '#users-section');
+    }
+
+    private function respondAjaxOrRedirect($fallbackUrl) {
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            if (isset($_SESSION['success'])) {
+                $response = ['success' => true, 'message' => $_SESSION['success']];
+                unset($_SESSION['success']);
+            } else {
+                $response = ['success' => false, 'message' => $_SESSION['error'] ?? 'Errore sconosciuto'];
+                unset($_SESSION['error']);
+            }
+            echo json_encode($response);
+            exit;
+        }
+        $this->redirect($fallbackUrl);
     }
 }

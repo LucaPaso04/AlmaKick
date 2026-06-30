@@ -112,7 +112,7 @@
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#users-section" class="row g-2">
             <?php // Search ?>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
                     <input type="text" name="search" class="form-control" placeholder="Cerca utente..."
@@ -121,7 +121,7 @@
             </div>
 
             <?php // Role Filter ?>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select name="role" class="form-select">
                     <option value="">Tutti i ruoli</option>
                     <?php foreach ($allRoles as $role): ?>
@@ -133,19 +133,12 @@
             </div>
 
             <?php // Status Filter ?>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select name="status" class="form-select">
                     <option value="">Tutti gli stati</option>
                     <option value="active" <?= $statusFilter === 'active' ? 'selected' : '' ?>>Attivi</option>
                     <option value="banned" <?= $statusFilter === 'banned' ? 'selected' : '' ?>>Bannati</option>
                 </select>
-            </div>
-
-            <?php // Search Button ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search me-1"></i>Cerca
-                </button>
             </div>
 
             <?php // Conserva i filtri delle segnalazioni e partite ?>
@@ -264,6 +257,10 @@
                                                     class="bi bi-unlock-fill me-1"></i>Riattiva</button>
                                         </form>
                                     <?php else: ?>
+                                        <button type="button" class="btn btn-sm btn-outline-info rounded-pill fw-bold me-1" 
+                                            data-bs-toggle="modal" data-bs-target="#editTrustModal<?= e($u['username']) ?>">
+                                            <i class="bi bi-shield-shaded me-1"></i>Trust
+                                        </button>
                                         <form action="<?= url('/admin/ban') ?>#users-section" method="POST" class="d-inline-block">
                                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                             <input type="hidden" name="user_id" value="<?= e($u['username']) ?>">
@@ -271,6 +268,38 @@
                                                 onclick="return confirm('Bannare questo utente? Non potrà più accedere.');"><i
                                                     class="bi bi-ban me-1"></i>Banna</button>
                                         </form>
+
+                                        <!-- Modale Modifica Trust Score -->
+                                        <div class="modal fade text-start" id="editTrustModal<?= e($u['username']) ?>" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h5 class="modal-title fw-bold text-info"><i class="bi bi-shield-shaded me-2"></i>Gestisci Trust Score</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                                    </div>
+                                                    <form action="<?= url('/admin/users/update-trust') ?>" method="POST" class="action-form">
+                                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <input type="hidden" name="username" value="<?= e($u['username']) ?>">
+                                                        <div class="modal-body py-3">
+                                                            <div class="mb-3">
+                                                                <label for="trust_score_input<?= e($u['username']) ?>" class="form-label fw-semibold">Nuovo Punteggio Trust (0 - 100)</label>
+                                                                <input type="number" name="trust_score" id="trust_score_input<?= e($u['username']) ?>" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
+                                                                    min="0" max="100" value="<?= e($u['trust_score']) ?>" required>
+                                                            </div>
+                                                            <div class="mb-0">
+                                                                <label for="trust_reason_input<?= e($u['username']) ?>" class="form-label fw-semibold">Motivazione della Modifica</label>
+                                                                <textarea name="reason" id="trust_reason_input<?= e($u['username']) ?>" rows="3" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
+                                                                    placeholder="Es. Ripristino dopo contestazione meteo o errore di segnalazione..." required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer border-top-0 pt-0">
+                                                            <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Annulla</button>
+                                                            <button type="submit" class="btn btn-info rounded-pill px-4 fw-bold text-white shadow-sm">Salva Modifiche</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             </td>
@@ -357,7 +386,7 @@
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#reports-section" class="row g-2">
             <?php // Search ?>
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
                     <input type="text" name="search_report" class="form-control" placeholder="Cerca in segnalazioni..."
@@ -366,20 +395,13 @@
             </div>
 
             <?php // Status Filter ?>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <select name="status_report" class="form-select">
                     <option value="">Tutti gli stati</option>
                     <option value="pending" <?= $statusReport === 'pending' ? 'selected' : '' ?>>Pendenti</option>
                     <option value="resolved" <?= $statusReport === 'resolved' ? 'selected' : '' ?>>Risolte</option>
                     <option value="dismissed" <?= $statusReport === 'dismissed' ? 'selected' : '' ?>>Ignorate</option>
                 </select>
-            </div>
-
-            <?php // Search Button ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-danger w-100 fw-semibold">
-                    <i class="bi bi-search me-1"></i>Filtra
-                </button>
             </div>
 
             <?php // Conserva gli altri filtri ?>
@@ -623,7 +645,7 @@
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#matches-section" class="row g-2">
             <?php // Search ?>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
                     <input type="text" name="search_match" class="form-control" placeholder="Cerca..." value="<?= e($searchMatch) ?>">
@@ -642,7 +664,7 @@
             </div>
 
             <?php // Date Filter ?>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <input type="date" name="date_match" class="form-control" value="<?= e($dateMatch) ?>" title="Filtra per data">
             </div>
 
@@ -655,13 +677,6 @@
                     <option value="8v8" <?= $formatMatch === '8v8' ? 'selected' : '' ?>>8v8</option>
                     <option value="11v11" <?= $formatMatch === '11v11' ? 'selected' : '' ?>>11v11</option>
                 </select>
-            </div>
-
-            <?php // Search Button ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-success w-100">
-                    <i class="bi bi-search me-1"></i>Cerca
-                </button>
             </div>
             
             <?php // Conserva i filtri degli utenti e delle segnalazioni ?>
@@ -931,5 +946,180 @@ document.addEventListener("DOMContentLoaded", function() {
             history.pushState(null, null, targetHash);
         });
     });
+
+    // 3. Gestione Eventi tramite Event Delegation (Deleghe sul contenitore dei tab)
+    const tabContent = document.getElementById('adminDashboardTabsContent');
+    if (tabContent) {
+        // A. Clic sui link di paginazione
+        tabContent.addEventListener('click', function(e) {
+            const link = e.target.closest('a.page-link');
+            if (link) {
+                e.preventDefault();
+                const url = link.getAttribute('href');
+                if (url && url !== '#') {
+                    loadDashboardState(url, false);
+                }
+            }
+        });
+
+        // B. Invio dei moduli (ricerca GET e azioni POST)
+        tabContent.addEventListener('submit', function(e) {
+            const form = e.target.closest('form');
+            if (!form) return;
+
+            if (form.getAttribute('method').toUpperCase() === 'GET') {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const params = new URLSearchParams(formData);
+                
+                // Rimuove il cancelletto (#) dall'action per inserire i parametri di query prima dell'hash
+                const rawAction = form.getAttribute('action') || window.location.pathname;
+                const actionParts = rawAction.split('#');
+                const actionPath = actionParts[0];
+                const actionHash = actionParts[1] ? '#' + actionParts[1] : '';
+                
+                const url = `${actionPath}?${params.toString()}${actionHash}`;
+                loadDashboardState(url, false);
+            } else if (form.getAttribute('method').toUpperCase() === 'POST') {
+                e.preventDefault();
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                let originalBtnHtml = '';
+                if (submitBtn) {
+                    originalBtnHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>...';
+                    submitBtn.disabled = true;
+                }
+
+                const url = form.getAttribute('action');
+                const formData = new FormData(form);
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Errore di rete');
+                    return response.json();
+                })
+                .then(data => {
+                    // Chiudi le modali aperte
+                    const openModalEl = document.querySelector('.modal.show');
+                    if (openModalEl) {
+                        const modalInstance = bootstrap.Modal.getInstance(openModalEl) || new bootstrap.Modal(openModalEl);
+                        modalInstance.hide();
+                        
+                        document.querySelectorAll('.modal-backdrop').forEach(bd => bd.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }
+
+                    if (data.success) {
+                        window.showToast(data.message, 'success');
+                        loadDashboardState(window.location.href, true);
+                    } else {
+                        window.showToast(data.message, 'danger');
+                        if (submitBtn) {
+                            submitBtn.innerHTML = originalBtnHtml;
+                            submitBtn.disabled = false;
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Errore durante l\'azione:', err);
+                    window.showToast('Errore di connessione o operazione non valida.', 'danger');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = originalBtnHtml;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+
+        // C. Rilevazione del cambio sui menu dropdown e datepicker per l'invio automatico
+        tabContent.addEventListener('change', function(e) {
+            const input = e.target;
+            if (input.tagName === 'SELECT' || input.type === 'date') {
+                const form = input.closest('form');
+                if (form && form.getAttribute('method').toUpperCase() === 'GET') {
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit();
+                    } else {
+                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                    }
+                }
+            }
+        });
+    }
 });
+
+function loadDashboardState(url, isAction) {
+    const activeTabButton = document.querySelector('.admin-tabs .nav-link.active');
+    const activeTabTarget = activeTabButton ? activeTabButton.getAttribute('data-bs-target') : '#overview-section';
+    const activePane = document.querySelector(activeTabTarget);
+
+    if (activePane) {
+        activePane.classList.add('ajax-loading');
+    }
+
+    return fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        if (isAction || activeTabTarget === '#overview-section') {
+            const newStatsGrid = doc.querySelector('.stats-grid');
+            const currentStatsGrid = document.querySelector('.stats-grid');
+            if (newStatsGrid && currentStatsGrid) {
+                currentStatsGrid.innerHTML = newStatsGrid.innerHTML;
+            }
+        }
+
+        const panes = ['#overview-section', '#users-section', '#reports-section', '#matches-section', '#trust-section'];
+        panes.forEach(paneId => {
+            const newPane = doc.querySelector(paneId);
+            const currentPane = document.querySelector(paneId);
+            if (newPane && currentPane) {
+                if (isAction || paneId === activeTabTarget) {
+                    currentPane.innerHTML = newPane.innerHTML;
+                } else if (paneId !== '#overview-section') {
+                    currentPane.innerHTML = newPane.innerHTML;
+                }
+            }
+        });
+
+        history.pushState(null, null, url);
+
+        if (isAction || activeTabTarget === '#overview-section') {
+            const overviewPane = document.querySelector('#overview-section');
+            if (overviewPane) {
+                const scripts = overviewPane.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.text = oldScript.text;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            }
+        }
+
+        if (activePane) {
+            activePane.classList.remove('ajax-loading');
+        }
+    })
+    .catch(err => {
+        console.error('Errore AJAX:', err);
+        if (activePane) {
+            activePane.classList.remove('ajax-loading');
+        }
+    });
+}
 </script>

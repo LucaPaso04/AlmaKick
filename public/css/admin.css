@@ -301,3 +301,13 @@
         padding: 0.6rem 1rem;
     }
 }
+
+/* AJAX Loading State Transition */
+.tab-pane {
+    transition: opacity 0.25s ease-in-out;
+}
+.tab-pane.ajax-loading {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: wait;
+}
