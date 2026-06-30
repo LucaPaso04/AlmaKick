@@ -72,6 +72,7 @@ if (isset($_SESSION['user'])) {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom Modular Stylesheet -->
     <link rel="stylesheet" href="<?= url('/css/style.css') ?>">
+    <meta name="csrf-token" content="<?= e($_SESSION['csrf_token'] ?? '') ?>">
     <!-- Page-specific Styles -->
     <?php if ($current_path === '/welcome'): ?>
         <link rel="stylesheet" href="<?= url('/css/welcome.css') ?>">
@@ -163,6 +164,41 @@ if (isset($_SESSION['user'])) {
                     </button>
 
                     <?php if (isset($_SESSION['user'])): ?>
+                        <!-- Campana Notifiche Premium -->
+                        <div class="dropdown notifications-dropdown-wrapper">
+                            <button class="btn btn-link text-body p-0 text-decoration-none position-relative" 
+                                    id="notificationsBell" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-expanded="false" 
+                                    aria-label="Notifiche">
+                                <span class="bi bi-bell fs-5 transition-transform" id="notificationsBellIcon"></span>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white d-none" id="notificationsBadge" style="font-size: 0.6rem; padding: 0.25em 0.4em;">
+                                    0
+                                </span>
+                            </button>
+                            
+                            <div class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0 notifications-dropdown fade-down" aria-labelledby="notificationsBell" style="width: 320px; max-width: 90vw;">
+                                 <div class="notifications-header d-flex justify-content-between align-items-center p-3 border-bottom border-secondary-subtle">
+                                    <h6 class="fw-bold mb-0 text-body" style="font-size: 0.95rem;">Notifiche</h6>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-link btn-sm text-decoration-none p-0 text-primary fw-semibold d-none" id="markAllReadBtn" style="font-size: 0.8rem;">
+                                            Segna come lette
+                                        </button>
+                                        <span class="text-secondary small d-none" id="notificationsHeaderDivider">|</span>
+                                        <button class="btn btn-link btn-sm text-decoration-none p-0 text-danger fw-semibold d-none" id="clearAllBtn" style="font-size: 0.8rem;">
+                                            Svuota tutto
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="notifications-list" id="notificationsList" style="max-height: 350px; overflow-y: auto;">
+                                    <div class="text-center py-4 text-muted small" id="notificationsEmpty">
+                                        <i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></i>
+                                        Nessuna nuova notifica
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Avatar User Dropdown (Profilo) -->
                         <div class="dropdown d-none d-md-block">
                             <button class="btn btn-link p-0 position-relative text-decoration-none dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent"
@@ -174,12 +210,6 @@ if (isset($_SESSION['user'])) {
                                     <?php else: ?>
                                         <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm transition-transform hover-scale user-avatar-fallback">
                                             <?= strtoupper(substr($_SESSION['user']['name'], 0, 1)) ?>
-                                        </span>
-                                    <?php endif; ?>
-                                    
-                                    <?php if($pendingRequestsCount > 0): ?>
-                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm user-badge-dot">
-                                            <span class="visually-hidden"><?= $pendingRequestsCount ?> notifiche</span>
                                         </span>
                                     <?php endif; ?>
                                 </span>
@@ -315,11 +345,7 @@ if (isset($_SESSION['user'])) {
                                         <?= strtoupper(substr($_SESSION['user']['name'], 0, 1)) ?>
                                     </span>
                                 <?php endif; ?>
-                                <?php if($pendingRequestsCount > 0): ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm profile-nav-badge-dot">
-                                        <span class="visually-hidden">Notifiche</span>
-                                    </span>
-                                <?php endif; ?>
+                                <?php // Il badge è centralizzato sulla campana per evitare ridondanze ?>
                             </div>
                             <small class="mt-1 mobile-nav-label<?= $isProfiloActive ? ' active' : '' ?>">Profilo</small>
                         </a>
