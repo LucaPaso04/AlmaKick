@@ -137,11 +137,13 @@ if (isset($_SESSION['user'])) {
                         $isClassificheActive = ($current_path === '/leaderboard');
                         $isCercaActive = ($current_path === '/users');
                     ?>
-                    <!-- Classifica con effetto hover reveal elegante -->
-                    <a class="nav-link fw-semibold p-0 text-decoration-none search-hover-reveal ms-3 <?= $isClassificheActive ? 'text-primary' : '' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifica">
-                        <span class="bi bi-trophy-fill fs-5 <?= $isClassificheActive ? 'text-warning' : 'text-body' ?>"></span>
-                        <span class="search-text-reveal fw-semibold text-primary">Classifica</span>
-                    </a>
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <!-- Classifica con effetto hover reveal elegante -->
+                        <a class="nav-link fw-semibold p-0 text-decoration-none search-hover-reveal ms-3 d-none d-md-inline-flex <?= $isClassificheActive ? 'text-primary' : '' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifica">
+                            <span class="bi bi-trophy-fill fs-5 <?= $isClassificheActive ? 'text-warning' : 'text-body' ?>"></span>
+                            <span class="search-text-reveal fw-semibold text-primary">Classifica</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Right side -->
@@ -149,8 +151,8 @@ if (isset($_SESSION['user'])) {
                     
                     <?php if (isset($_SESSION['user'])): ?>
                         <!-- Lente d'ingrandimento per la ricerca con effetto hover reveal elegante -->
-                        <a class="btn btn-link text-body p-0 text-decoration-none search-hover-reveal <?= $isCercaActive ? 'text-primary' : '' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
-                            <span class="bi bi-search fs-5"></span>
+                        <a class="btn btn-link p-0 text-decoration-none search-hover-reveal d-none d-md-inline-flex <?= $isCercaActive ? 'text-primary' : 'text-body' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
+                            <span class="bi bi-search fs-5 <?= $isCercaActive ? 'text-primary' : 'text-body' ?>"></span>
                             <span class="search-text-reveal fw-semibold text-primary">Cerca</span>
                         </a>
                     <?php endif; ?>
@@ -162,7 +164,7 @@ if (isset($_SESSION['user'])) {
 
                     <?php if (isset($_SESSION['user'])): ?>
                         <!-- Avatar User Dropdown (Profilo) -->
-                        <div class="dropdown">
+                        <div class="dropdown d-none d-md-block">
                             <button class="btn btn-link p-0 position-relative text-decoration-none dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent"
                                 type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu utente">
                                 
@@ -246,19 +248,17 @@ if (isset($_SESSION['user'])) {
                     </div>
                     <p class="text-body-secondary small mb-0 footer-tagline">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
                 </div>
-                <!-- Right Column: Links aligned horizontally on desktop -->
-                <div class="col-12 col-md-4 text-center text-md-end">
-                    <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
-                    <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
-                        <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
-                        <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
-                        <?php if (isset($_SESSION['user'])): ?>
+                <?php if (isset($_SESSION['user'])): ?>
+                    <!-- Right Column: Links aligned horizontally on desktop -->
+                    <div class="col-12 col-md-4 text-center text-md-end">
+                        <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
+                        <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
+                            <li><a href="<?= url('/matches') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Esplora Partite</a></li>
+                            <li><a href="<?= url('/leaderboard') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Classifiche</a></li>
                             <li><a href="<?= url('/profile') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Il mio Profilo</a></li>
-                        <?php else: ?>
-                            <li><a href="<?= url('/login') ?>" class="text-body-secondary text-decoration-none hover-text-primary transition-colors">Accedi</a></li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </div>
             <hr class="my-4 border-secondary-subtle">
             <div class="text-center text-body-secondary small">
@@ -292,14 +292,14 @@ if (isset($_SESSION['user'])) {
                             <div class="position-relative transition-transform <?= $isClassificheActive ? 'scale-110' : '' ?>">
                                 <span class="bi bi-trophy<?= $isClassificheActive ? '-fill text-warning' : '' ?> fs-4"></span>
                             </div>
-                            <small class="mt-1 mobile-nav-label<?= $isClassificheActive ? ' active' : '' ?>">Top 10</small>
+                            <small class="mt-1 mobile-nav-label<?= $isClassificheActive ? ' active' : '' ?>">Classifica</small>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a href="<?= url('/users') ?>" class="nav-link flex-column d-flex align-items-center <?= $isCercaActive ? 'text-primary fw-bold' : 'text-secondary' ?>" aria-current="<?= $isCercaActive ? 'page' : 'false' ?>">
                             <div class="position-relative transition-transform <?= $isCercaActive ? 'scale-110' : '' ?>">
-                                <span class="bi bi-people<?= $isCercaActive ? '-fill' : '' ?> fs-4"></span>
+                                <span class="bi bi-search fs-4 <?= $isCercaActive ? 'text-primary' : '' ?>"></span>
                             </div>
                             <small class="mt-1 mobile-nav-label<?= $isCercaActive ? ' active' : '' ?>">Cerca</small>
                         </a>
@@ -311,7 +311,9 @@ if (isset($_SESSION['user'])) {
                                 <?php if($userAvatar): ?>
                                     <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Avatar" class="rounded-circle object-fit-cover profile-nav-avatar <?= $isProfiloActive ? 'border border-2 border-primary shadow-sm' : '' ?>">
                                 <?php else: ?>
-                                    <span class="bi bi-person<?= $isProfiloActive ? '-fill' : '' ?> fs-4"></span>
+                                    <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm profile-nav-avatar <?= $isProfiloActive ? 'border border-2 border-primary' : '' ?>" style="font-weight: 700; font-size: 0.95rem; width: 32px; height: 32px;">
+                                        <?= strtoupper(substr($_SESSION['user']['name'], 0, 1)) ?>
+                                    </span>
                                 <?php endif; ?>
                                 <?php if($pendingRequestsCount > 0): ?>
                                     <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-white rounded-circle shadow-sm profile-nav-badge-dot">

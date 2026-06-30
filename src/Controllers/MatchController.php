@@ -7,6 +7,8 @@ use App\Models\SoccerMatch;
 class MatchController extends BaseController {
 
     public function index() {
+        $this->resolveExpiredMvps();
+        $this->autoCancelExpiredMatches();
         $matchModel = new SoccerMatch();
         
         $filters = [
@@ -32,6 +34,17 @@ class MatchController extends BaseController {
         ]);
 
         $matches = $matchModel->getAllActive($listFilters);
+        foreach ($matches as &$p) {
+            $matchTime = strtotime($p['date'] . ' ' . $p['time']);
+            $timeDiff = $matchTime - time();
+            if ($timeDiff > 0 && $timeDiff < 48 * 3600 && (int)$p['posti_occupati'] < (int)$p['max_players']) {
+                $p['is_urgent'] = 1;
+            } else {
+                $p['is_urgent'] = 0;
+            }
+        }
+        unset($p);
+
         $totalMatches = $matchModel->countAllActive($filters);
         $totalPages = ceil($totalMatches / $perPage);
 
@@ -99,6 +112,16 @@ class MatchController extends BaseController {
                 'username' => $username,
                 'filter' => 'mine'
             ]);
+            foreach ($myMatches as &$p) {
+                $matchTime = strtotime($p['date'] . ' ' . $p['time']);
+                $timeDiff = $matchTime - time();
+                if ($timeDiff > 0 && $timeDiff < 48 * 3600 && (int)$p['posti_occupati'] < (int)$p['max_players']) {
+                    $p['is_urgent'] = 1;
+                } else {
+                    $p['is_urgent'] = 0;
+                }
+            }
+            unset($p);
         }
 
         view('matches/index', [
@@ -113,6 +136,8 @@ class MatchController extends BaseController {
     }
 
     public function show($id) {
+        $this->resolveExpiredMvps();
+        $this->autoCancelExpiredMatches();
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
 
@@ -146,6 +171,11 @@ class MatchController extends BaseController {
         }
         $available_seats = max(0, (int)$match['max_players'] - $occupied_seats);
         $current_quote = (float)$match['total_cost'] / max(1, (int)$match['max_players']);
+
+        // Calcola urgenza partita
+        $matchTime = strtotime($match['date'] . ' ' . $match['time']);
+        $timeDiff = $matchTime - time();
+        $match['is_urgent'] = ($timeDiff > 0 && $timeDiff < 48 * 3600 && $occupied_seats < (int)$match['max_players']) ? 1 : 0;
 
         // Verifica iscrizione e ruolo utente corrente
         $is_registered = false;
@@ -322,22 +352,40 @@ class MatchController extends BaseController {
         // Cancella iscrizione
         $db->prepare("UPDATE registrations SET status = 'cancelled', updated_at = NOW() WHERE id = :id")->execute(['id' => $reg['id']]);
 
-        // Se era un iscritto attivo, prova a promuovere il primo in panchina
+        // Se era un iscritto attivo, prova a promuovere chi entra nei posti rimasti in panchina
         if ($reg['status'] === 'registered') {
-            $stmtNext = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND status = 'waitlist' ORDER BY created_at ASC LIMIT 1");
-            $stmtNext->execute(['match_id' => $id]);
-            $next = $stmtNext->fetch();
-            if ($next) {
-                $db->prepare("UPDATE registrations SET status = 'registered', updated_at = NOW() WHERE id = :id")->execute(['id' => $next['id']]);
-            }
-
-            // Ricalcola se la partita è di nuovo disponibile
+            // Ricalcola i posti occupati escludendo il record appena cancellato
             $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
             $stmtCount->execute(['match_id' => $id]);
             $occupied = (int)$stmtCount->fetchColumn();
 
+            $freeSeats = max(0, (int)$match['max_players'] - $occupied);
+
+            if ($freeSeats > 0) {
+                // Recupera la lista d'attesa ordinata cronologicamente
+                $stmtWaitlist = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND status = 'waitlist' ORDER BY created_at ASC");
+                $stmtWaitlist->execute(['match_id' => $id]);
+                $waitlist = $stmtWaitlist->fetchAll(\PDO::FETCH_ASSOC);
+
+                foreach ($waitlist as $next) {
+                    $needed = 1 + (int)$next['has_guest'];
+                    if ($needed <= $freeSeats) {
+                        // Promuovi questo panchinaro a titolare
+                        $db->prepare("UPDATE registrations SET status = 'registered', updated_at = NOW() WHERE id = :id")->execute(['id' => $next['id']]);
+                        $freeSeats -= $needed;
+                        $occupied += $needed;
+                        if ($freeSeats <= 0) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Ricalcola se la partita è di nuovo disponibile o piena
             if ($occupied < (int)$match['max_players']) {
                 $db->prepare("UPDATE matches SET status = 'open' WHERE id = :id")->execute(['id' => $id]);
+            } else {
+                $db->prepare("UPDATE matches SET status = 'full' WHERE id = :id")->execute(['id' => $id]);
             }
         }
 
@@ -357,9 +405,9 @@ class MatchController extends BaseController {
         }
 
         $db = \App\Database::getInstance()->getConnection();
-        // Recupera iscritti attivi
+        // Recupera iscritti attivi con il flag has_guest
         $stmt = $db->prepare("
-            SELECT r.id, u.skill_rating 
+            SELECT r.id, r.has_guest, u.skill_rating 
             FROM registrations r
             JOIN users u ON r.username = u.username
             WHERE r.match_id = :match_id AND r.status = 'registered'
@@ -372,22 +420,44 @@ class MatchController extends BaseController {
             $this->redirectToMatch($id);
         }
 
-        // Ordina per skill
+        // Ordina per skill decrescente
         usort($players, function($a, $b) {
             return $b['skill_rating'] <=> $a['skill_rating'];
         });
 
-        // Snake draft per assegnare Home e Away
+        // Algoritmo greedy con snake draft di fallback per bilanciare i pesi (1 + has_guest)
         $homeIds = [];
         $awayIds = [];
+        $homeWeight = 0;
+        $awayWeight = 0;
+
         foreach ($players as $idx => $player) {
-            $round = (int)floor($idx / 2);
-            if ($round % 2 === 0) {
-                if ($idx % 2 === 0) $homeIds[] = $player['id'];
-                else $awayIds[] = $player['id'];
+            $weight = 1 + (int)$player['has_guest'];
+            if ($homeWeight < $awayWeight) {
+                $homeIds[] = $player['id'];
+                $homeWeight += $weight;
+            } elseif ($awayWeight < $homeWeight) {
+                $awayIds[] = $player['id'];
+                $awayWeight += $weight;
             } else {
-                if ($idx % 2 === 0) $awayIds[] = $player['id'];
-                else $homeIds[] = $player['id'];
+                $round = (int)floor($idx / 2);
+                if ($round % 2 === 0) {
+                    if ($idx % 2 === 0) {
+                        $homeIds[] = $player['id'];
+                        $homeWeight += $weight;
+                    } else {
+                        $awayIds[] = $player['id'];
+                        $awayWeight += $weight;
+                    }
+                } else {
+                    if ($idx % 2 === 0) {
+                        $awayIds[] = $player['id'];
+                        $awayWeight += $weight;
+                    } else {
+                        $homeIds[] = $player['id'];
+                        $homeWeight += $weight;
+                    }
+                }
             }
         }
 
@@ -401,7 +471,7 @@ class MatchController extends BaseController {
             $stmtUpdateAway->execute(['id' => $regId]);
         }
 
-        $_SESSION['success'] = "Squadre generate con successo in base alla Skill dei giocatori!";
+        $_SESSION['success'] = "Squadre generate con successo bilanciando gli iscritti e gli ospiti!";
         $this->redirectToMatch($id);
     }
 
@@ -565,6 +635,24 @@ class MatchController extends BaseController {
                 'thumb' => $thumbDown
             ]);
             $votedCount++;
+
+            // Aggiorna skill_rating dell'utente valutato
+            if ($skillVote !== null) {
+                $stmtUpdateSkill = $db->prepare("
+                    UPDATE users 
+                    SET skill_rating = (
+                        SELECT COALESCE(ROUND(AVG(skill_vote), 2), 0.00)
+                        FROM evaluations
+                        WHERE evaluated_username = :user_evaluated
+                          AND skill_vote IS NOT NULL
+                    )
+                    WHERE username = :user_evaluated2
+                ");
+                $stmtUpdateSkill->execute([
+                    'user_evaluated' => $targetUsername,
+                    'user_evaluated2' => $targetUsername
+                ]);
+            }
 
             // Se c'è pollice in giù, applica penalità di trust score (-10)
             if ($thumbDown) {
@@ -736,39 +824,63 @@ class MatchController extends BaseController {
         $result_home = isset($_POST['result_home']) ? max(0, (int)$_POST['result_home']) : 0;
         $result_away = isset($_POST['result_away']) ? max(0, (int)$_POST['result_away']) : 0;
         $goals = $_POST['goals'] ?? [];
+        $guestGoals = $_POST['guest_goals'] ?? [];
+        $teams = $_POST['teams'] ?? [];
 
         $db = \App\Database::getInstance()->getConnection();
-
-        // Validazione corrispondenza gol dei singoli rispetto al risultato finale
-        $stmtCheckReg = $db->prepare("SELECT id, team FROM registrations WHERE match_id = :match_id AND status = 'registered'");
-        $stmtCheckReg->execute(['match_id' => $id]);
-        $allRegs = $stmtCheckReg->fetchAll(\PDO::FETCH_ASSOC);
-
-        $sumHomeGoals = 0;
-        $sumAwayGoals = 0;
-        foreach ($allRegs as $reg) {
-            $regId = $reg['id'];
-            $playerGoals = isset($goals[$regId]) ? max(0, (int)$goals[$regId]) : 0;
-            if ($reg['team'] === 'home') {
-                $sumHomeGoals += $playerGoals;
-            } elseif ($reg['team'] === 'away') {
-                $sumAwayGoals += $playerGoals;
-            }
-        }
-
-        if ($sumHomeGoals !== $result_home || $sumAwayGoals !== $result_away) {
-            $_SESSION['old_report_input'] = [
-                'result_home' => $result_home,
-                'result_away' => $result_away,
-                'goals' => $goals
-            ];
-            $_SESSION['error'] = "La somma dei gol individuali dei giocatori (Home: $sumHomeGoals, Away: $sumAwayGoals) non corrisponde al risultato finale (Home: $result_home, Away: $result_away).";
-            $this->redirect(url('/matches/' . $id . '/report'));
-        }
 
         try {
             $db->beginTransaction();
 
+            // 1. Aggiorna le squadre dei giocatori in base alle scelte dell'organizzatore
+            $stmtUpdateTeam = $db->prepare("UPDATE registrations SET team = :team, updated_at = NOW() WHERE id = :id AND match_id = :match_id");
+            foreach ($teams as $regId => $teamVal) {
+                if (in_array($teamVal, ['home', 'away'])) {
+                    $stmtUpdateTeam->execute([
+                        'team' => $teamVal,
+                        'id' => $regId,
+                        'match_id' => $id
+                    ]);
+                }
+            }
+
+            // 2. Recupera gli iscritti con i team aggiornati per la validazione
+            $stmtCheckReg = $db->prepare("SELECT id, team, has_guest FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+            $stmtCheckReg->execute(['match_id' => $id]);
+            $allRegs = $stmtCheckReg->fetchAll(\PDO::FETCH_ASSOC);
+
+            // 3. Convalida la corrispondenza dei gol inseriti rispetto al risultato finale
+            $sumHomeGoals = 0;
+            $sumAwayGoals = 0;
+
+            foreach ($allRegs as $reg) {
+                $regId = $reg['id'];
+                $playerGoals = isset($goals[$regId]) ? max(0, (int)$goals[$regId]) : 0;
+                $gG = isset($guestGoals[$regId]) ? max(0, (int)$guestGoals[$regId]) : 0;
+
+                if ($reg['team'] === 'home') {
+                    $sumHomeGoals += $playerGoals + $gG;
+                } elseif ($reg['team'] === 'away') {
+                    $sumAwayGoals += $playerGoals + $gG;
+                }
+            }
+
+            if ($sumHomeGoals !== $result_home || $sumAwayGoals !== $result_away) {
+                $_SESSION['old_report_input'] = [
+                    'result_home' => $result_home,
+                    'result_away' => $result_away,
+                    'goals' => $goals,
+                    'guest_goals' => $guestGoals,
+                    'teams' => $teams
+                ];
+                $_SESSION['error'] = "La somma dei gol dei giocatori e degli ospiti (Home: $sumHomeGoals, Away: $sumAwayGoals) non corrisponde al risultato finale (Home: $result_home, Away: $result_away).";
+                
+                // Rollback per non salvare le modifiche provvisorie se la validazione fallisce
+                $db->rollBack();
+                $this->redirect(url('/matches/' . $id . '/report'));
+            }
+
+            // 4. Salva il risultato finale del match
             $stmtUpdateMatch = $db->prepare("UPDATE matches SET result_home = :home, result_away = :away, updated_at = NOW() WHERE id = :id");
             $stmtUpdateMatch->execute([
                 'home' => $result_home,
@@ -776,6 +888,7 @@ class MatchController extends BaseController {
                 'id' => $id
             ]);
 
+            // 5. Salva i gol individuali dei giocatori registrati
             $stmtUpdateReg = $db->prepare("UPDATE registrations SET goals_scored = :goals, updated_at = NOW() WHERE id = :id AND match_id = :match_id");
             foreach ($goals as $regId => $goalsCount) {
                 $goalsCount = max(0, (int)$goalsCount);
@@ -785,6 +898,35 @@ class MatchController extends BaseController {
                     'match_id' => $id
                 ]);
             }
+
+            // 6. Ricalcola total_goals e matches_played per tutti i giocatori del match
+            $stmtUpdateStats = $db->prepare("
+                UPDATE users u
+                SET 
+                  u.total_goals = (
+                      SELECT COALESCE(SUM(r.goals_scored), 0)
+                      FROM registrations r
+                      JOIN matches m ON r.match_id = m.id
+                      WHERE r.username = u.username 
+                        AND r.status = 'registered' 
+                        AND m.status = 'finished'
+                  ),
+                  u.matches_played = (
+                      SELECT COUNT(*)
+                      FROM registrations r
+                      JOIN matches m ON r.match_id = m.id
+                      WHERE r.username = u.username 
+                        AND r.status = 'registered' 
+                        AND m.status = 'finished'
+                  )
+                WHERE u.username IN (
+                    SELECT DISTINCT username 
+                    FROM registrations 
+                    WHERE match_id = :match_id 
+                      AND status = 'registered'
+                )
+            ");
+            $stmtUpdateStats->execute(['match_id' => $id]);
 
             $db->commit();
             $_SESSION['success'] = "Tabellino salvato con successo!";
@@ -805,5 +947,166 @@ class MatchController extends BaseController {
             $redirectUrl .= '?from=' . urlencode($from);
         }
         $this->redirect(url($redirectUrl));
+    }
+
+    private function resolveExpiredMvps() {
+        $db = \App\Database::getInstance()->getConnection();
+        
+        // Trova tutte le partite finite, con scadenza votazione passata e MVP non ancora assegnato
+        $stmt = $db->prepare("
+            SELECT id, host_username 
+            FROM matches 
+            WHERE status = 'finished' 
+              AND mvp_assigned = 0 
+              AND mvp_deadline IS NOT NULL 
+              AND mvp_deadline <= NOW()
+        ");
+        $stmt->execute();
+        $expiredMatches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($expiredMatches)) {
+            return;
+        }
+
+        foreach ($expiredMatches as $match) {
+            $matchId = $match['id'];
+
+            // Trova l'utente con la valutazione media più alta (skill_vote) tra i partecipanti di questo match
+            $stmtMvp = $db->prepare("
+                SELECT evaluated_username, AVG(skill_vote) as avg_vote, COUNT(skill_vote) as vote_count
+                FROM evaluations
+                WHERE match_id = :match_id 
+                  AND skill_vote IS NOT NULL
+                GROUP BY evaluated_username
+                ORDER BY avg_vote DESC, vote_count DESC, evaluated_username ASC
+                LIMIT 1
+            ");
+            $stmtMvp->execute(['match_id' => $matchId]);
+            $mvpResult = $stmtMvp->fetch(\PDO::FETCH_ASSOC);
+
+            if ($mvpResult) {
+                $mvpUsername = $mvpResult['evaluated_username'];
+
+                try {
+                    $db->beginTransaction();
+
+                    // Aggiorna il match con l'MVP assegnato
+                    $stmtUpdateMatch = $db->prepare("
+                        UPDATE matches 
+                        SET mvp_assigned = 1, mvp_username = :username, updated_at = NOW() 
+                        WHERE id = :id
+                    ");
+                    $stmtUpdateMatch->execute([
+                        'username' => $mvpUsername,
+                        'id' => $matchId
+                    ]);
+
+                    // Incrementa il conteggio MVP dell'utente
+                    $stmtUpdateUser = $db->prepare("
+                        UPDATE users 
+                        SET mvp_count = mvp_count + 1, updated_at = NOW() 
+                        WHERE username = :username
+                    ");
+                    $stmtUpdateUser->execute(['username' => $mvpUsername]);
+
+                    $db->commit();
+                } catch (\Exception $e) {
+                    if ($db->inTransaction()) {
+                        $db->rollBack();
+                    }
+                }
+            } else {
+                // Se nessuno ha ricevuto voti, assegniamo comunque mvp_assigned = 1 per evitare di ripetere l'operazione
+                $db->prepare("
+                    UPDATE matches 
+                    SET mvp_assigned = 1, updated_at = NOW() 
+                    WHERE id = :id
+                ")->execute(['id' => $matchId]);
+            }
+        }
+    }
+
+    private function autoCancelExpiredMatches() {
+        $db = \App\Database::getInstance()->getConnection();
+
+        // Trova tutte le partite 'open' che iniziano tra NOW() e NOW() + 2 ore
+        $stmt = $db->prepare("
+            SELECT m.id, m.max_players, m.format
+            FROM matches m
+            WHERE m.status = 'open'
+              AND CONCAT(m.date, ' ', m.time) <= DATE_ADD(NOW(), INTERVAL 2 HOUR)
+              AND CONCAT(m.date, ' ', m.time) > NOW()
+        ");
+        $stmt->execute();
+        $matches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($matches)) {
+            return;
+        }
+
+        $formatMinPlayers = [
+            '5v5' => 8,
+            '5vs5' => 8,
+            '7v7' => 12,
+            '7vs7' => 12,
+            '8v8' => 14,
+            '8vs8' => 14,
+            '11v11' => 20,
+            '11vs11' => 20
+        ];
+
+        foreach ($matches as $match) {
+            $matchId = $match['id'];
+
+            // Conta i posti occupati in questo match (considerando gli ospiti)
+            $stmtCount = $db->prepare("
+                SELECT COALESCE(SUM(1 + has_guest), 0) 
+                FROM registrations 
+                WHERE match_id = :match_id 
+                  AND status = 'registered'
+            ");
+            $stmtCount->execute(['match_id' => $matchId]);
+            $occupied = (int)$stmtCount->fetchColumn();
+
+            // Calcola la soglia minima richiesta
+            $fmt = str_replace(' ', '', strtolower($match['format'] ?? ''));
+            if (isset($formatMinPlayers[$fmt])) {
+                $minPlayers = $formatMinPlayers[$fmt];
+            } else {
+                $minPlayers = (int)ceil((int)$match['max_players'] * 0.8);
+            }
+
+            // Se gli iscritti sono sotto la soglia minima, annulla la partita
+            if ($occupied < $minPlayers) {
+                try {
+                    $db->beginTransaction();
+
+                    // Aggiorna lo stato del match
+                    $stmtCancelMatch = $db->prepare("
+                        UPDATE matches 
+                        SET status = 'cancelled', 
+                            cancellation_reason = 'Annullamento automatico: soglia minima di iscritti non raggiunta a 2 ore dall\'inizio.', 
+                            updated_at = NOW() 
+                        WHERE id = :id
+                    ");
+                    $stmtCancelMatch->execute(['id' => $matchId]);
+
+                    // Annulla tutte le registrazioni
+                    $stmtCancelRegs = $db->prepare("
+                        UPDATE registrations 
+                        SET status = 'cancelled', 
+                            updated_at = NOW() 
+                        WHERE match_id = :match_id
+                    ");
+                    $stmtCancelRegs->execute(['match_id' => $matchId]);
+
+                    $db->commit();
+                } catch (\Exception $e) {
+                    if ($db->inTransaction()) {
+                        $db->rollBack();
+                    }
+                }
+            }
+        }
     }
 }

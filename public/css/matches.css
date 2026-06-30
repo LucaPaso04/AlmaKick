@@ -406,3 +406,14 @@ html[data-bs-theme="light"] .card-partita .text-danger-emphasis,
 html[data-bs-theme="light"] .match-card .text-danger-emphasis {
     color: #b91c1c !important;
 }
+
+/* Stile speciale per partite urgenti */
+.card-partita.card-partita-urgent {
+    border: 1.5px solid rgba(220, 53, 69, 0.65) !important;
+    box-shadow: 0 8px 24px rgba(220, 53, 69, 0.15) !important;
+}
+.card-partita.card-partita-urgent:hover {
+    border-color: rgba(220, 53, 69, 0.9) !important;
+    box-shadow: 0 16px 36px rgba(220, 53, 69, 0.25), 
+                0 0 20px rgba(220, 53, 69, 0.15) !important;
+}

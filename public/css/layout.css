@@ -1,14 +1,14 @@
 /* Header & Navigation */
-header {
+body > header {
     border-bottom: 1px solid var(--border);
     background: rgba(14, 22, 38, 0.85);
     backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1030;
 }
 
-header .navbar {
+body > header .navbar {
     background-color: rgba(var(--bs-body-bg-rgb), 0.85) !important;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);

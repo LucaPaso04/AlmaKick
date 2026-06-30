@@ -40,7 +40,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
 ?>
 
 <div class="col">
-    <div class="card h-100 card-partita rounded-4 shadow-sm bg-body overflow-visible mt-3 position-relative d-flex flex-column"
+    <div class="card h-100 card-partita rounded-4 shadow-sm bg-body overflow-visible mt-3 position-relative d-flex flex-column <?= !empty($p['is_urgent']) ? 'card-partita-urgent' : '' ?>"
      <?= $canClick ? 'onclick="window.location.href=\'' . url('/matches/' . $p['id']) . '?from=' . urlencode($requestUri) . '\';"' : '' ?> 
      style="<?= $canClick ? 'cursor: pointer;' : 'cursor: default;' ?>">
         <div class="match-header rounded-top-4" style="background: <?= $gradient ?>; height: 8px;"></div>
@@ -80,10 +80,10 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
                 <?php if (($p['status'] ?? '') === 'full' || ($p['posti_occupati'] ?? 0) >= $p['max_players']): ?>
                     <span class="badge bg-success rounded-pill shadow-sm py-1 px-2"><span
                             class="bi bi-check-circle-fill me-1"></span>Completa</span>
-                <?php elseif (($p['posti_occupati'] ?? 0) == $p['max_players'] - 1): ?>
+                <?php elseif (!empty($p['is_urgent'])): ?>
                     <span
                         class="badge bg-danger rounded-pill shadow-sm py-1 px-2 animate__animated animate__pulse animate__infinite">🔥
-                        Urgente: Manca 1!</span>
+                        Urgente: Mancano <?= ($p['max_players'] - $p['posti_occupati']) ?>!</span>
                 <?php else: ?>
                     <span
                         class="badge <?= $bgClass ?> rounded-pill shadow-sm py-1 px-2 border border-opacity-25"><?= strtoupper(e($p['format'] ?? '')) ?></span>

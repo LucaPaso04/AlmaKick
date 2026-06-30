@@ -196,6 +196,8 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
                             </option>
                             <option value="8vs8" <?= (($_GET['format'] ?? '') == '8vs8') ? 'selected' : '' ?>>8 vs 8
                             </option>
+                            <option value="11vs11" <?= (($_GET['format'] ?? '') == '11vs11') ? 'selected' : '' ?>>11 vs 11
+                            </option>
                         </select>
                     </div>
 

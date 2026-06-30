@@ -7,6 +7,11 @@ use App\Models\User;
 class LeaderboardController extends BaseController {
     
     public function index() {
+        if (!isset($_SESSION['user'])) {
+            $_SESSION['error'] = "Devi effettuare l'accesso per visualizzare le classifiche.";
+            $this->redirect(url('/login'));
+        }
+
         $userModel = new User();
         
         // Classifiche globali

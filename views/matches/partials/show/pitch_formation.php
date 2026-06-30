@@ -1,13 +1,42 @@
 <?php
 // views/matches/partials/show/pitch_formation.php
 
-$home_team = array_filter($registrations, function($r) {
-    return $r['team'] === 'home' && $r['status'] === 'registered';
-});
-$away_team = array_filter($registrations, function($r) {
-    return $r['team'] === 'away' && $r['status'] === 'registered';
-});
-$teams_generated = count($home_team) > 0 || count($away_team) > 0;
+$home_team_expanded = [];
+foreach ($registrations as $r) {
+    if ($r['team'] === 'home' && $r['status'] === 'registered') {
+        $home_team_expanded[] = $r;
+        if ($r['has_guest']) {
+            $home_team_expanded[] = [
+                'username' => 'guest_' . $r['username'],
+                'name' => 'Ospite di ' . (explode(' ', $r['name'])[0]),
+                'avatar' => null,
+                'preferred_role' => 'MID',
+                'skill_rating' => 3.0,
+                'goals_scored' => 0,
+                'is_guest_dummy' => true
+            ];
+        }
+    }
+}
+
+$away_team_expanded = [];
+foreach ($registrations as $r) {
+    if ($r['team'] === 'away' && $r['status'] === 'registered') {
+        $away_team_expanded[] = $r;
+        if ($r['has_guest']) {
+            $away_team_expanded[] = [
+                'username' => 'guest_' . $r['username'],
+                'name' => 'Ospite di ' . (explode(' ', $r['name'])[0]),
+                'avatar' => null,
+                'preferred_role' => 'MID',
+                'skill_rating' => 3.0,
+                'goals_scored' => 0,
+                'is_guest_dummy' => true
+            ];
+        }
+    }
+}
+$teams_generated = count($home_team_expanded) > 0 || count($away_team_expanded) > 0;
 
 $roleEmojiMap = [
     'GK' => '🧤',
@@ -153,8 +182,8 @@ $assignPlayersToFormation = function($team) use ($getCanonicalRole) {
     return $bestAssignments;
 };
 
-$home_lines = $assignPlayersToFormation($home_team);
-$away_lines = $assignPlayersToFormation($away_team);
+$home_lines = $assignPlayersToFormation($home_team_expanded);
+$away_lines = $assignPlayersToFormation($away_team_expanded);
 
 $home_order = ['GK', 'DEF', 'MID', 'ATT'];
 $away_order = ['ATT', 'MID', 'DEF', 'GK'];
@@ -164,7 +193,7 @@ $pitch_patterns = ['pattern-circles', 'pattern-vertical', 'pattern-horizontal', 
 $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
 ?>
 
-<?php if($teams_generated && ($match['status'] === 'full' || $match['status'] === 'finished')): ?>
+<?php if($teams_generated && ($match['status'] === 'full' || $match['status'] === 'finished') && $match['result_home'] === null): ?>
 <div class="card shadow-sm border-0 mb-4 rounded-4 overflow-hidden" role="region" aria-label="Visualizzazione Formazioni in Campo">
     <div class="card-body p-0">
         <h2 class="fw-bold text-center py-3 mb-0 bg-body-tertiary border-bottom fs-5"><span class="bi bi-people-fill me-2 text-primary" aria-hidden="true"></span>Formazioni in Campo</h2>
@@ -216,19 +245,26 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                     $displayName = (strlen($reg['name']) > 8) ? substr($reg['name'], 0, 8) . '.' : $reg['name'];
                                     ?>
                                     <div class="text-center position-relative player-avatar my-2 hover-scale transition-all">
-                                        <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
+                                        <?php if(isset($reg['is_guest_dummy'])): ?>
                                             <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center fw-bold text-white shadow match-show-avatar"
-                                                 style="background: #dc3545; <?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>">
-                                                <?php if(!$regAvatarUrl): ?>
-                                                    <?= strtoupper(substr($reg['name'], 0, 2)) ?>
-                                                <?php endif; ?>
-                                                <?php if($match['status'] === 'finished' && $reg['goals_scored'] > 0): ?>
-                                                    <span class="position-absolute bg-dark text-white rounded-circle border border-white d-flex align-items-center justify-content-center shadow-sm pitch-player-goals" role="img" aria-label="<?= $reg['goals_scored'] ?> gol segnati">
-                                                        ⚽<span class="sr-only"><?= $reg['goals_scored'] ?></span>
-                                                    </span>
-                                                <?php endif; ?>
+                                                 style="background: #dc3545; cursor: default;">
+                                                <i class="bi bi-person-plus-fill fs-5" aria-hidden="true"></i>
                                             </div>
-                                        </a>
+                                        <?php else: ?>
+                                            <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
+                                                <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center fw-bold text-white shadow match-show-avatar"
+                                                     style="background: #dc3545; <?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>">
+                                                    <?php if(!$regAvatarUrl): ?>
+                                                        <?= strtoupper(substr($reg['name'], 0, 2)) ?>
+                                                    <?php endif; ?>
+                                                    <?php if($match['status'] === 'finished' && $reg['goals_scored'] > 0): ?>
+                                                        <span class="position-absolute bg-dark text-white rounded-circle border border-white d-flex align-items-center justify-content-center shadow-sm pitch-player-goals" role="img" aria-label="<?= $reg['goals_scored'] ?> gol segnati">
+                                                            ⚽<span class="sr-only"><?= $reg['goals_scored'] ?></span>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </a>
+                                        <?php endif; ?>
                                         <div class="mt-1 d-flex flex-column align-items-center pe-none">
                                             <span class="badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 backdrop-blur pitch-player-label">
                                                 <?= e($displayName) ?>
@@ -267,19 +303,26 @@ $random_pitch_pattern = $pitch_patterns[array_rand($pitch_patterns)];
                                     $displayName = (strlen($reg['name']) > 8) ? substr($reg['name'], 0, 8) . '.' : $reg['name'];
                                     ?>
                                     <div class="text-center position-relative player-avatar my-2 hover-scale transition-all">
-                                        <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
+                                        <?php if(isset($reg['is_guest_dummy'])): ?>
                                             <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center fw-bold text-white shadow match-show-avatar"
-                                                 style="background: #0d6efd; <?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>">
-                                                <?php if(!$regAvatarUrl): ?>
-                                                    <?= strtoupper(substr($reg['name'], 0, 2)) ?>
-                                                <?php endif; ?>
-                                                <?php if($match['status'] === 'finished' && $reg['goals_scored'] > 0): ?>
-                                                    <span class="position-absolute bg-dark text-white rounded-circle border border-white d-flex align-items-center justify-content-center shadow-sm pitch-player-goals" role="img" aria-label="<?= $reg['goals_scored'] ?> gol segnati">
-                                                        ⚽<span class="sr-only"><?= $reg['goals_scored'] ?></span>
-                                                    </span>
-                                                <?php endif; ?>
+                                                 style="background: #0d6efd; cursor: default;">
+                                                <i class="bi bi-person-plus-fill fs-5" aria-hidden="true"></i>
                                             </div>
-                                        </a>
+                                        <?php else: ?>
+                                            <a href="<?= url('/profile?username=' . urlencode($reg['username'])) ?>" class="text-decoration-none focus-ring rounded-circle d-block mx-auto" aria-label="Profilo di <?= e($reg['name']) ?>, ruolo <?= $roleKey ?>">
+                                                <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center fw-bold text-white shadow match-show-avatar"
+                                                     style="background: #0d6efd; <?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>">
+                                                    <?php if(!$regAvatarUrl): ?>
+                                                        <?= strtoupper(substr($reg['name'], 0, 2)) ?>
+                                                    <?php endif; ?>
+                                                    <?php if($match['status'] === 'finished' && $reg['goals_scored'] > 0): ?>
+                                                        <span class="position-absolute bg-dark text-white rounded-circle border border-white d-flex align-items-center justify-content-center shadow-sm pitch-player-goals" role="img" aria-label="<?= $reg['goals_scored'] ?> gol segnati">
+                                                            ⚽<span class="sr-only"><?= $reg['goals_scored'] ?></span>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </a>
+                                        <?php endif; ?>
                                         <div class="mt-1 d-flex flex-column align-items-center pe-none">
                                             <span class="badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 backdrop-blur pitch-player-label">
                                                 <?= e($displayName) ?>
