@@ -109,6 +109,7 @@ $router->add('POST', '/api/notifications/clear-all', 'NotificationController@cle
 $router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/ban', 'AdminController@ban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/unban', 'AdminController@unban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+$router->add('POST', '/admin/users/update-trust', 'AdminController@updateTrust', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/reports/{id}/resolve', 'AdminController@resolveReport', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/reports/{id}/dismiss', 'AdminController@dismissReport', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/matches/cancel', 'AdminController@forceCancelMatch', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);

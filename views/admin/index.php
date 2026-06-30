@@ -13,8 +13,35 @@
     </div>
 </div>
 
-<?php // =================== STATS CARDS =================== ?>
-<div class="stats-grid mb-5">
+<?php // =================== TABS =================== ?>
+<ul class="nav nav-pills nav-fill admin-tabs mb-4 p-1 rounded-4 shadow-sm border border-secondary-subtle" id="adminDashboardTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill fw-bold" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-section" type="button" role="tab" aria-controls="overview-section" aria-selected="true">
+            📊 Panoramica
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-section" type="button" role="tab" aria-controls="users-section" aria-selected="false">
+            👥 Gestione Utenti
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports-section" type="button" role="tab" aria-controls="reports-section" aria-selected="false">
+            🚩 Segnalazioni
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="matches-tab" data-bs-toggle="tab" data-bs-target="#matches-section" type="button" role="tab" aria-controls="matches-section" aria-selected="false">
+            ⚽ Partite
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="adminDashboardTabsContent">
+    <!-- Tab 1: Panoramica -->
+    <div class="tab-pane fade show active" id="overview-section" role="tabpanel" aria-labelledby="overview-tab">
+        <?php // =================== STATS CARDS =================== ?>
+        <div class="stats-grid mb-5">
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-primary">
             <i class="bi bi-people-fill"></i>
@@ -66,10 +93,12 @@
     </div>
 </div>
 
-<?php require VIEW_PATH . '/admin/partials/charts.php'; ?>
+        <?php require VIEW_PATH . '/admin/partials/charts.php'; ?>
+    </div>
 
-<?php // =================== USERS TABLE =================== ?>
-<div id="users-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 2: Gestione Utenti -->
+    <div class="tab-pane fade" id="users-section" role="tabpanel" aria-labelledby="users-tab">
+        <div id="users-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Gestione Utenti</h5>
     </div>
@@ -87,7 +116,7 @@
             </div>
 
             <?php // Role Filter ?>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select name="role" class="form-select">
                     <option value="">Tutti i ruoli</option>
                     <?php foreach ($allRoles as $role): ?>
@@ -99,7 +128,7 @@
             </div>
 
             <?php // Status Filter ?>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select name="status" class="form-select">
                     <option value="">Tutti gli stati</option>
                     <option value="active" <?= $statusFilter === 'active' ? 'selected' : '' ?>>Attivi</option>
@@ -107,22 +136,16 @@
                 </select>
             </div>
 
-            <?php // Search Button ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search me-1"></i>Cerca
-                </button>
+            <?php // Problematic Profiling Filter ?>
+            <div class="col-md-3">
+                <select name="problematic" class="form-select">
+                    <option value="">Tutti i profili</option>
+                    <option value="low_trust" <?= $problematicFilter === 'low_trust' ? 'selected' : '' ?>>Trust Score < 40</option>
+                    <option value="suspicious_weather" <?= $problematicFilter === 'suspicious_weather' ? 'selected' : '' ?>>Annullamenti Meteo Sospetti (>=3)</option>
+                </select>
             </div>
-
-            <?php // Conserva i filtri delle segnalazioni e partite ?>
-            <input type="hidden" name="status_report" value="<?= e($statusReport) ?>">
-            <input type="hidden" name="search_report" value="<?= e($searchReport) ?>">
-            <input type="hidden" name="search_match" value="<?= e($searchMatch) ?>">
-            <input type="hidden" name="status_match" value="<?= e($statusMatch) ?>">
-            <input type="hidden" name="date_match" value="<?= e($dateMatch) ?>">
-            <input type="hidden" name="format_match" value="<?= e($formatMatch) ?>">
         </form>
-        <?php if ($search || $statusFilter || $roleFilter): ?>
+        <?php if ($search || $statusFilter || $roleFilter || $problematicFilter): ?>
             <div class="mt-2">
                 <a href="<?= url('/admin') ?>#users-section" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle me-1"></i>Resetta filtri
@@ -195,11 +218,73 @@
                             <td>
                                 <span class="text-capitalize"><?= e($u['preferred_role'] ?? '—') ?></span>
                             </td>
-                            <td class="text-center">
+                            <td class="text-center" onclick="event.stopPropagation();">
                                 <span
                                     class="badge rounded-pill fs-6 px-3 py-2 bg-<?= $u['trust_score'] >= 80 ? 'success' : ($u['trust_score'] >= 50 ? 'warning text-dark' : 'danger') ?>">
                                     <?= e($u['trust_score']) ?>
                                 </span>
+                                <button type="button" class="btn btn-link text-info p-0 ms-1" style="font-size: 1.15rem; vertical-align: middle;" 
+                                    data-bs-toggle="modal" data-bs-target="#trustHistoryModal<?= e($u['username']) ?>" title="Vedi storico variazioni">
+                                    <i class="bi bi-clock-history"></i>
+                                </button>
+
+                                <!-- Modale Storico Trust Score -->
+                                <div class="modal fade text-start" id="trustHistoryModal<?= e($u['username']) ?>" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                                            <div class="modal-header border-bottom-0 pb-0">
+                                                <h5 class="modal-title fw-bold text-info"><i class="bi bi-clock-history me-2"></i>Storico Trust: @<?= e($u['username']) ?></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                            </div>
+                                            <div class="modal-body py-3">
+                                                <?php if (!empty($u['trust_history'])): ?>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover align-middle mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Data</th>
+                                                                    <th class="text-center">Variazione</th>
+                                                                    <th>Motivazione</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php foreach ($u['trust_history'] as $log): ?>
+                                                                    <tr>
+                                                                        <td class="text-muted small"><?= $log['created_at']->format('d/m/Y H:i') ?></td>
+                                                                        <td class="text-center">
+                                                                            <?php if ($log['score_change'] > 0): ?>
+                                                                                <span class="badge bg-success-subtle text-success-emphasis rounded-pill fw-bold">
+                                                                                    +<?= $log['score_change'] ?>
+                                                                                </span>
+                                                                            <?php elseif ($log['score_change'] < 0): ?>
+                                                                                <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill fw-bold">
+                                                                                    <?= $log['score_change'] ?>
+                                                                                </span>
+                                                                            <?php else: ?>
+                                                                                <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill fw-bold">
+                                                                                    0
+                                                                                </span>
+                                                                            <?php endif; ?>
+                                                                        </td>
+                                                                        <td><?= e($log['reason']) ?></td>
+                                                                    </tr>
+                                                                <?php endforeach; ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <div class="text-center py-4 text-muted">
+                                                        <i class="bi bi-info-circle fs-3 mb-2 d-block"></i>
+                                                        Nessun record di variazione registrato per questo utente.
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="modal-footer border-top-0 pt-0">
+                                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Chiudi</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="text-center">
                                 <?php if ($is_suspect): ?>
@@ -230,6 +315,10 @@
                                                     class="bi bi-unlock-fill me-1"></i>Riattiva</button>
                                         </form>
                                     <?php else: ?>
+                                        <button type="button" class="btn btn-sm btn-outline-info rounded-pill fw-bold me-1" 
+                                            data-bs-toggle="modal" data-bs-target="#editTrustModal<?= e($u['username']) ?>">
+                                            <i class="bi bi-shield-shaded me-1"></i>Trust
+                                        </button>
                                         <form action="<?= url('/admin/ban') ?>#users-section" method="POST" class="d-inline-block">
                                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                             <input type="hidden" name="user_id" value="<?= e($u['username']) ?>">
@@ -237,6 +326,38 @@
                                                 onclick="return confirm('Bannare questo utente? Non potrà più accedere.');"><i
                                                     class="bi bi-ban me-1"></i>Banna</button>
                                         </form>
+
+                                        <!-- Modale Modifica Trust Score -->
+                                        <div class="modal fade text-start" id="editTrustModal<?= e($u['username']) ?>" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h5 class="modal-title fw-bold text-info"><i class="bi bi-shield-shaded me-2"></i>Gestisci Trust Score</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                                    </div>
+                                                    <form action="<?= url('/admin/users/update-trust') ?>" method="POST" class="action-form">
+                                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <input type="hidden" name="username" value="<?= e($u['username']) ?>">
+                                                        <div class="modal-body py-3">
+                                                            <div class="mb-3">
+                                                                <label for="trust_score_input<?= e($u['username']) ?>" class="form-label fw-semibold">Nuovo Punteggio Trust (0 - 100)</label>
+                                                                <input type="number" name="trust_score" id="trust_score_input<?= e($u['username']) ?>" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
+                                                                    min="0" max="100" value="<?= e($u['trust_score']) ?>" required>
+                                                            </div>
+                                                            <div class="mb-0">
+                                                                <label for="trust_reason_input<?= e($u['username']) ?>" class="form-label fw-semibold">Motivazione della Modifica</label>
+                                                                <textarea name="reason" id="trust_reason_input<?= e($u['username']) ?>" rows="3" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
+                                                                    placeholder="Es. Ripristino dopo contestazione meteo o errore di segnalazione..." required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer border-top-0 pt-0">
+                                                            <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Annulla</button>
+                                                            <button type="submit" class="btn btn-info rounded-pill px-4 fw-bold text-white shadow-sm">Salva Modifiche</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             </td>
@@ -264,7 +385,7 @@
                     <?php else: ?>
                         <li class="page-item">
                             <a class="page-link"
-                                href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $pageUsers - 1]))) ?>#users-section">
+                                href="<?= url('/admin?' . http_build_query(['page' => $pageUsers - 1, 'search' => $search, 'role' => $roleFilter, 'status' => $statusFilter, 'problematic' => $problematicFilter])) ?>#users-section">
                                 ← Precedente
                             </a>
                         </li>
@@ -279,7 +400,7 @@
                         <?php else: ?>
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $i]))) ?>#users-section">
+                                    href="<?= url('/admin?' . http_build_query(['page' => $i, 'search' => $search, 'role' => $roleFilter, 'status' => $statusFilter, 'problematic' => $problematicFilter])) ?>#users-section">
                                     <?= $i ?>
                                 </a>
                             </li>
@@ -294,7 +415,7 @@
                     <?php else: ?>
                         <li class="page-item">
                             <a class="page-link"
-                                href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['page' => $pageUsers + 1]))) ?>#users-section">
+                                href="<?= url('/admin?' . http_build_query(['page' => $pageUsers + 1, 'search' => $search, 'role' => $roleFilter, 'status' => $statusFilter, 'problematic' => $problematicFilter])) ?>#users-section">
                                 Prossima →
                             </a>
                         </li>
@@ -306,9 +427,12 @@
             </div>
         </div>
     <?php endif; ?>
-</div>
+        </div>
+    </div>
 
-<div id="reports-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 3: Segnalazioni -->
+    <div class="tab-pane fade" id="reports-section" role="tabpanel" aria-labelledby="reports-tab">
+        <div id="reports-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3 d-flex justify-content-between align-items-center">
         <h5 class="fw-bold mb-0"><i class="bi bi-flag-fill me-2 text-danger"></i>Gestione Segnalazioni</h5>
         <?php if($stats['pending_reports'] > 0): ?>
@@ -320,7 +444,7 @@
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#reports-section" class="row g-2">
             <?php // Search ?>
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
                     <input type="text" name="search_report" class="form-control" placeholder="Cerca in segnalazioni..."
@@ -329,20 +453,13 @@
             </div>
 
             <?php // Status Filter ?>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <select name="status_report" class="form-select">
                     <option value="">Tutti gli stati</option>
                     <option value="pending" <?= $statusReport === 'pending' ? 'selected' : '' ?>>Pendenti</option>
                     <option value="resolved" <?= $statusReport === 'resolved' ? 'selected' : '' ?>>Risolte</option>
                     <option value="dismissed" <?= $statusReport === 'dismissed' ? 'selected' : '' ?>>Ignorate</option>
                 </select>
-            </div>
-
-            <?php // Search Button ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-danger w-100 fw-semibold">
-                    <i class="bi bi-search me-1"></i>Filtra
-                </button>
             </div>
 
             <?php // Conserva gli altri filtri ?>
@@ -358,7 +475,7 @@
         </form>
         <?php if ($searchReport || $statusReport !== 'pending'): ?>
             <div class="mt-2">
-                <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['status_report' => 'pending', 'search_report' => '']))) ?>#reports-section" class="btn btn-sm btn-outline-secondary">
+                <a href="<?= url('/admin') ?>#reports-section" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle me-1"></i>Resetta filtri segnalazioni
                 </a>
             </div>
@@ -414,6 +531,13 @@
                             </td>
                             <td>
                                 <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-3 px-2 py-1"><?= e($r['reason']) ?></span>
+                                <?php if (!empty($r['match_id'])): ?>
+                                    <div class="mt-1">
+                                        <a href="<?= url('/matches/' . $r['match_id']) ?>?from=admin" class="badge bg-info-subtle text-info-emphasis text-decoration-none rounded-3 px-2 py-1" onclick="event.stopPropagation();">
+                                            <i class="bi bi-calendar-event me-1"></i>Partita #<?= e($r['match_id']) ?>
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <div class="text-wrap admin-reports-table-desc" title="<?= e($r['description']) ?>">
@@ -544,7 +668,7 @@
                         <li class="page-item disabled"><span class="page-link text-danger">← Precedente</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $pageReports - 1]))) ?>#reports-section">← Precedente</a>
+                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(['reports_page' => $pageReports - 1, 'search_report' => $searchReport, 'status_report' => $statusReport])) ?>#reports-section">← Precedente</a>
                         </li>
                     <?php endif; ?>
 
@@ -553,7 +677,7 @@
                         <?php if ($i == $pageReports): ?>
                             <li class="page-item active"><span class="page-link bg-danger border-danger"><?= $i ?></span></li>
                         <?php else: ?>
-                            <li class="page-item"><a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $i]))) ?>#reports-section"><?= $i ?></a></li>
+                            <li class="page-item"><a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(['reports_page' => $i, 'search_report' => $searchReport, 'status_report' => $statusReport])) ?>#reports-section"><?= $i ?></a></li>
                         <?php endif; ?>
                     <?php endfor; ?>
 
@@ -562,7 +686,7 @@
                         <li class="page-item disabled"><span class="page-link text-danger">Prossima →</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['reports_page' => $pageReports + 1]))) ?>#reports-section">Prossima →</a>
+                            <a class="page-link text-danger" href="<?= url('/admin?' . http_build_query(['reports_page' => $pageReports + 1, 'search_report' => $searchReport, 'status_report' => $statusReport])) ?>#reports-section">Prossima →</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -572,10 +696,12 @@
             </div>
         </div>
     <?php endif; ?>
-</div>
+        </div>
+    </div>
 
-<?php // =================== MATCHES TABLE =================== ?>
-<div id="matches-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 4: Partite -->
+    <div class="tab-pane fade" id="matches-section" role="tabpanel" aria-labelledby="matches-tab">
+        <div id="matches-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event-fill me-2 text-success"></i>Gestione Partite</h5>
     </div>
@@ -584,7 +710,7 @@
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#matches-section" class="row g-2">
             <?php // Search ?>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
                     <input type="text" name="search_match" class="form-control" placeholder="Cerca..." value="<?= e($searchMatch) ?>">
@@ -603,7 +729,7 @@
             </div>
 
             <?php // Date Filter ?>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <input type="date" name="date_match" class="form-control" value="<?= e($dateMatch) ?>" title="Filtra per data">
             </div>
 
@@ -617,27 +743,10 @@
                     <option value="11v11" <?= $formatMatch === '11v11' ? 'selected' : '' ?>>11v11</option>
                 </select>
             </div>
-
-            <?php // Search Button ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-success w-100">
-                    <i class="bi bi-search me-1"></i>Cerca
-                </button>
-            </div>
-            
-            <?php // Conserva i filtri degli utenti e delle segnalazioni ?>
-            <input type="hidden" name="search" value="<?= e($search) ?>">
-            <input type="hidden" name="status" value="<?= e($statusFilter) ?>">
-            <input type="hidden" name="role" value="<?= e($roleFilter) ?>">
-            <input type="hidden" name="sort" value="<?= e($sortBy) ?>">
-            <input type="hidden" name="order" value="<?= e($sortOrder) ?>">
-            <input type="hidden" name="page" value="<?= e($pageUsers) ?>">
-            <input type="hidden" name="status_report" value="<?= e($statusReport) ?>">
-            <input type="hidden" name="search_report" value="<?= e($searchReport) ?>">
         </form>
         <?php if ($searchMatch || $statusMatch || $dateMatch || $formatMatch): ?>
             <div class="mt-2">
-                <a href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['search_match' => '', 'status_match' => '', 'date_match' => '', 'format_match' => '']))) ?>#matches-section" class="btn btn-sm btn-outline-secondary">
+                <a href="<?= url('/admin') ?>#matches-section" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle me-1"></i>Resetta filtri partite
                 </a>
             </div>
@@ -734,7 +843,7 @@
                         <li class="page-item disabled"><span class="page-link text-success">← Precedente</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $pageMatches - 1]))) ?>#matches-section">← Precedente</a>
+                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(['matches_page' => $pageMatches - 1, 'search_match' => $searchMatch, 'status_match' => $statusMatch, 'date_match' => $dateMatch, 'format_match' => $formatMatch])) ?>#matches-section">← Precedente</a>
                         </li>
                     <?php endif; ?>
 
@@ -743,7 +852,7 @@
                         <?php if ($i == $pageMatches): ?>
                             <li class="page-item active"><span class="page-link bg-success border-success"><?= $i ?></span></li>
                         <?php else: ?>
-                            <li class="page-item"><a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $i]))) ?>#matches-section"><?= $i ?></a></li>
+                            <li class="page-item"><a class="page-link text-success" href="<?= url('/admin?' . http_build_query(['matches_page' => $i, 'search_match' => $searchMatch, 'status_match' => $statusMatch, 'date_match' => $dateMatch, 'format_match' => $formatMatch])) ?>#matches-section"><?= $i ?></a></li>
                         <?php endif; ?>
                     <?php endfor; ?>
 
@@ -752,7 +861,7 @@
                         <li class="page-item disabled"><span class="page-link text-success">Prossima →</span></li>
                     <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['matches_page' => $pageMatches + 1]))) ?>#matches-section">Prossima →</a>
+                            <a class="page-link text-success" href="<?= url('/admin?' . http_build_query(['matches_page' => $pageMatches + 1, 'search_match' => $searchMatch, 'status_match' => $statusMatch, 'date_match' => $dateMatch, 'format_match' => $formatMatch])) ?>#matches-section">Prossima →</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -762,91 +871,223 @@
             </div>
         </div>
     <?php endif; ?>
-</div>
-
-<?php // =================== TRUST HISTORY LOG =================== ?>
-<div id="trust-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
-    <div class="card-header bg-body-tertiary border-0 p-3">
-        <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-info"></i>Ultimi Eventi Trust Score</h5>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th class="ps-4">Data</th>
-                    <th>Utente</th>
-                    <th class="text-center">Variazione</th>
-                    <th>Motivo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($trust_logs)): ?>
-                    <?php foreach ($trust_logs as $log): ?>
-                        <?php
-                            $row_class = '';
-                            if ($log['score_change'] > 0) {
-                                $row_class = 'table-positive';
-                            } elseif ($log['score_change'] < 0) {
-                                $row_class = 'table-negative';
-                            }
-                        ?>
-                        <tr class="<?= $row_class ?> clickable-row" onclick="window.location.href='<?= url('/profile?username=' . urlencode($log['user_id'])) ?>';">
-                            <td class="ps-4 text-muted small"><?= $log['created_at']->format('d/m/Y H:i') ?></td>
-                            <td class="fw-bold"><?= e($log['user']['name'] ?? 'Eliminato') ?></td>
-                            <td class="text-center">
-                                <span
-                                    class="badge bg-<?= $log['score_change'] > 0 ? 'success' : 'danger' ?> rounded-pill fs-6 px-3">
-                                    <?= $log['score_change'] > 0 ? '+' : '' ?><?= e($log['score_change']) ?>
-                                </span>
-                            </td>
-                            <td class="small"><?= e($log['reason']) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">Nessun evento registrato.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-    
-    <?php // =================== PAGINATION (TRUST LOGS) =================== ?>
-    <?php if ($totalPagesTrust > 1): ?>
-        <div class="card-footer bg-body-tertiary border-top p-3">
-            <nav aria-label="Page navigation" class="d-flex justify-content-center">
-                <ul class="pagination mb-0">
-                    <?php // Previous Page Link ?>
-                    <?php if ($pageTrust <= 1): ?>
-                        <li class="page-item disabled"><span class="page-link text-info">← Precedente</span></li>
-                    <?php else: ?>
-                        <li class="page-item">
-                            <a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $pageTrust - 1]))) ?>#trust-section">← Precedente</a>
-                        </li>
-                    <?php endif; ?>
-
-                    <?php // Pagination Elements ?>
-                    <?php for ($i = 1; $i <= $totalPagesTrust; $i++): ?>
-                        <?php if ($i == $pageTrust): ?>
-                            <li class="page-item active"><span class="page-link bg-info border-info text-dark"><?= $i ?></span></li>
-                        <?php else: ?>
-                            <li class="page-item"><a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $i]))) ?>#trust-section"><?= $i ?></a></li>
-                        <?php endif; ?>
-                    <?php endfor; ?>
-
-                    <?php // Next Page Link ?>
-                    <?php if ($pageTrust >= $totalPagesTrust): ?>
-                        <li class="page-item disabled"><span class="page-link text-info">Prossima →</span></li>
-                    <?php else: ?>
-                        <li class="page-item">
-                            <a class="page-link text-info" href="<?= url('/admin?' . http_build_query(array_merge($_GET, ['trust_page' => $pageTrust + 1]))) ?>#trust-section">Prossima →</a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
-            <div class="text-center mt-2 small text-body-secondary">
-                Pagina <?= $pageTrust ?> di <?= $totalPagesTrust ?> (<?= $totalTrust ?> eventi)
-            </div>
         </div>
-    <?php endif; ?>
+    </div>
+
+
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Ripristina il tab attivo dall'hash dell'URL o da localStorage
+    const hash = window.location.hash;
+    let activeTabTrigger = null;
+
+    if (hash) {
+        // Cerca il bottone del tab che punta a questo hash
+        activeTabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+    }
+
+    if (!activeTabTrigger) {
+        // Fallback su localStorage se presente, altrimenti default sul primo tab
+        const savedTab = localStorage.getItem('admin_active_tab');
+        if (savedTab) {
+            activeTabTrigger = document.querySelector(`button[data-bs-target="${savedTab}"]`);
+        }
+    }
+
+    if (activeTabTrigger) {
+        const tab = new bootstrap.Tab(activeTabTrigger);
+        tab.show();
+    }
+
+    // 2. Registra l'evento al cambio di tab per salvare lo stato e aggiornare l'hash
+    const tabButtons = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('shown.bs.tab', function(e) {
+            const targetHash = e.target.getAttribute('data-bs-target');
+            
+            // Salva lo stato in localStorage
+            localStorage.setItem('admin_active_tab', targetHash);
+            
+            // Aggiorna l'hash dell'URL senza causare il salto della pagina
+            history.pushState(null, null, targetHash);
+        });
+    });
+
+    // 3. Gestione Eventi tramite Event Delegation (Deleghe sul contenitore dei tab)
+    const tabContent = document.getElementById('adminDashboardTabsContent');
+    if (tabContent) {
+        // A. Clic sui link di paginazione
+        tabContent.addEventListener('click', function(e) {
+            const link = e.target.closest('a.page-link');
+            if (link) {
+                e.preventDefault();
+                const url = link.getAttribute('href');
+                if (url && url !== '#') {
+                    loadDashboardState(url, false);
+                }
+            }
+        });
+
+        // B. Invio dei moduli (ricerca GET e azioni POST)
+        tabContent.addEventListener('submit', function(e) {
+            const form = e.target.closest('form');
+            if (!form) return;
+
+            if (form.getAttribute('method').toUpperCase() === 'GET') {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const params = new URLSearchParams(formData);
+                
+                // Rimuove il cancelletto (#) dall'action per inserire i parametri di query prima dell'hash
+                const rawAction = form.getAttribute('action') || window.location.pathname;
+                const actionParts = rawAction.split('#');
+                const actionPath = actionParts[0];
+                const actionHash = actionParts[1] ? '#' + actionParts[1] : '';
+                
+                const url = `${actionPath}?${params.toString()}${actionHash}`;
+                loadDashboardState(url, false);
+            } else if (form.getAttribute('method').toUpperCase() === 'POST') {
+                e.preventDefault();
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                let originalBtnHtml = '';
+                if (submitBtn) {
+                    originalBtnHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>...';
+                    submitBtn.disabled = true;
+                }
+
+                const url = form.getAttribute('action');
+                const formData = new FormData(form);
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Errore di rete');
+                    return response.json();
+                })
+                .then(data => {
+                    // Chiudi le modali aperte
+                    const openModalEl = document.querySelector('.modal.show');
+                    if (openModalEl) {
+                        const modalInstance = bootstrap.Modal.getInstance(openModalEl) || new bootstrap.Modal(openModalEl);
+                        modalInstance.hide();
+                        
+                        document.querySelectorAll('.modal-backdrop').forEach(bd => bd.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }
+
+                    if (data.success) {
+                        window.showToast(data.message, 'success');
+                        loadDashboardState(window.location.href, true);
+                    } else {
+                        window.showToast(data.message, 'danger');
+                        if (submitBtn) {
+                            submitBtn.innerHTML = originalBtnHtml;
+                            submitBtn.disabled = false;
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Errore durante l\'azione:', err);
+                    window.showToast('Errore di connessione o operazione non valida.', 'danger');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = originalBtnHtml;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+
+        // C. Rilevazione del cambio sui menu dropdown e datepicker per l'invio automatico
+        tabContent.addEventListener('change', function(e) {
+            const input = e.target;
+            if (input.tagName === 'SELECT' || input.type === 'date') {
+                const form = input.closest('form');
+                if (form && form.getAttribute('method').toUpperCase() === 'GET') {
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit();
+                    } else {
+                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                    }
+                }
+            }
+        });
+    }
+});
+
+function loadDashboardState(url, isAction) {
+    const activeTabButton = document.querySelector('.admin-tabs .nav-link.active');
+    const activeTabTarget = activeTabButton ? activeTabButton.getAttribute('data-bs-target') : '#overview-section';
+    const activePane = document.querySelector(activeTabTarget);
+
+    if (activePane) {
+        activePane.classList.add('ajax-loading');
+    }
+
+    return fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        if (isAction || activeTabTarget === '#overview-section') {
+            const newStatsGrid = doc.querySelector('.stats-grid');
+            const currentStatsGrid = document.querySelector('.stats-grid');
+            if (newStatsGrid && currentStatsGrid) {
+                currentStatsGrid.innerHTML = newStatsGrid.innerHTML;
+            }
+        }
+
+        const panes = ['#overview-section', '#users-section', '#reports-section', '#matches-section', '#trust-section'];
+        panes.forEach(paneId => {
+            const newPane = doc.querySelector(paneId);
+            const currentPane = document.querySelector(paneId);
+            if (newPane && currentPane) {
+                if (isAction || paneId === activeTabTarget) {
+                    currentPane.innerHTML = newPane.innerHTML;
+                } else if (paneId !== '#overview-section') {
+                    currentPane.innerHTML = newPane.innerHTML;
+                }
+            }
+        });
+
+        history.pushState(null, null, url);
+
+        if (isAction || activeTabTarget === '#overview-section') {
+            const overviewPane = document.querySelector('#overview-section');
+            if (overviewPane) {
+                const scripts = overviewPane.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.text = oldScript.text;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            }
+        }
+
+        if (activePane) {
+            activePane.classList.remove('ajax-loading');
+        }
+    })
+    .catch(err => {
+        console.error('Errore AJAX:', err);
+        if (activePane) {
+            activePane.classList.remove('ajax-loading');
+        }
+    });
+}
+</script>

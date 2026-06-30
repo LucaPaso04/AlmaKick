@@ -485,15 +485,18 @@ class UserController extends BaseController {
             $this->redirect('/profile');
         }
 
+        $matchId = isset($_POST['match_id']) && $_POST['match_id'] !== '' ? (int)$_POST['match_id'] : null;
+
         $db = \App\Database::getInstance()->getConnection();
         $stmt = $db->prepare("
-            INSERT INTO reports (reporter_username, reported_username, reason, description, status, created_at, updated_at)
-            VALUES (:reporter, :reported, :reason, :description, 'pending', NOW(), NOW())
+            INSERT INTO reports (reporter_username, reported_username, match_id, reason, description, status, created_at, updated_at)
+            VALUES (:reporter, :reported, :match_id, :reason, :description, 'pending', NOW(), NOW())
         ");
         
         $success = $stmt->execute([
             'reporter' => $reporter,
             'reported' => $reported,
+            'match_id' => $matchId,
             'reason' => $reason,
             'description' => $description
         ]);

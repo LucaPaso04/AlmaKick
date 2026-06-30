@@ -149,6 +149,9 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
             <form action="<?= url('/reports') ?>" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                 <input type="hidden" name="reported_username" value="<?= e($user['username']) ?>">
+                <?php if (isset($_GET['match_id'])): ?>
+                    <input type="hidden" name="match_id" value="<?= e($_GET['match_id']) ?>">
+                <?php endif; ?>
                 <div class="modal-body py-3">
                     <p class="text-muted small mb-3">
                         Stai segnalando l'utente <strong><?= e($user['name']) ?></strong> agli amministratori. Fornisci un motivo dettagliato per aiutarci nella verifica.
