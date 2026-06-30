@@ -343,5 +343,19 @@ class User {
         $stmt->execute();
         return (int)$stmt->fetchColumn();
     }
+
+    public function getFriendsCount(string $username): int {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) 
+            FROM friendships 
+            WHERE (sender_username = :username1 OR recipient_username = :username2) 
+              AND status = 'accepted'
+        ");
+        $stmt->execute([
+            'username1' => $username,
+            'username2' => $username
+        ]);
+        return (int)$stmt->fetchColumn();
+    }
 }
 

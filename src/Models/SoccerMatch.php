@@ -31,6 +31,7 @@ class SoccerMatch
     {
         $where = [];
         $where[] = "m.status IN ('open', 'full')";
+        $where[] = "CONCAT(m.date, ' ', m.time) >= NOW()";
         $params = [];
 
         $sessionUsername = $filters['username'] ?? null;
@@ -167,6 +168,7 @@ class SoccerMatch
     {
         $where = [];
         $where[] = "m.status IN ('open', 'full')";
+        $where[] = "CONCAT(m.date, ' ', m.time) >= NOW()";
         $params = [];
 
         $sessionUsername = $filters['username'] ?? null;

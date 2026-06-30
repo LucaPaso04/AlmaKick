@@ -97,6 +97,14 @@ $router->add('POST', '/friends/remove/{username}', 'UserController@removeFriend'
 $router->add('POST', '/reports', 'UserController@storeReport', [\App\Middleware\AuthMiddleware::class]);
 
 
+// ROTTE NOTIFICHE
+$router->add('GET', '/api/notifications', 'NotificationController@getLatest', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/api/notifications/{id}/read', 'NotificationController@markAsRead', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/api/notifications/read-all', 'NotificationController@markAllAsRead', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/api/notifications/{id}/delete', 'NotificationController@delete', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/api/notifications/clear-all', 'NotificationController@clearAll', [\App\Middleware\AuthMiddleware::class]);
+
+
 // ROTTE AMMINISTRATORE
 $router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/ban', 'AdminController@ban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);

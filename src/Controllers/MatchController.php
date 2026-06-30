@@ -372,6 +372,16 @@ class MatchController extends BaseController {
                     if ($needed <= $freeSeats) {
                         // Promuovi questo panchinaro a titolare
                         $db->prepare("UPDATE registrations SET status = 'registered', updated_at = NOW() WHERE id = :id")->execute(['id' => $next['id']]);
+                        
+                        // Invia notifica di promozione
+                        $notificationModel = new \App\Models\Notification();
+                        $notificationModel->create([
+                            'user_recipient' => $next['username'],
+                            'type' => 'match_promotion',
+                            'message' => '🔔 Congratulazioni! Sei stato promosso a giocatore attivo per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '.',
+                            'link' => url('/matches/' . $id)
+                        ]);
+
                         $freeSeats -= $needed;
                         $occupied += $needed;
                         if ($freeSeats <= 0) {
@@ -548,11 +558,27 @@ class MatchController extends BaseController {
             $stmtLog->execute(['username' => $username, 'match_id' => $id, 'change' => $scorePenalty]);
         }
 
+        // Recupera gli utenti iscritti (escluso l'organizzatore) per notificarli prima dell'annullamento
+        $stmtGetPlayers = $db->prepare("SELECT username FROM registrations WHERE match_id = :match_id AND status = 'registered' AND username != :host");
+        $stmtGetPlayers->execute(['match_id' => $id, 'host' => $match['host_username']]);
+        $playersToNotify = $stmtGetPlayers->fetchAll(\PDO::FETCH_COLUMN);
+
         // Annulla match e iscrizioni
         $stmtCancel = $db->prepare("UPDATE matches SET status = 'cancelled', cancellation_reason = :reason, updated_at = NOW() WHERE id = :id");
         $stmtCancel->execute(['reason' => $reason, 'id' => $id]);
 
         $db->prepare("UPDATE registrations SET status = 'cancelled', updated_at = NOW() WHERE match_id = :match_id")->execute(['match_id' => $id]);
+
+        // Invia notifiche
+        $notificationModel = new \App\Models\Notification();
+        foreach ($playersToNotify as $playerUsername) {
+            $notificationModel->create([
+                'user_recipient' => $playerUsername,
+                'type' => 'match_cancellation',
+                'message' => '⚠️ La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata dall\'organizzatore (Motivo: ' . $reason . ').',
+                'link' => url('/matches/' . $id)
+            ]);
+        }
 
         $_SESSION['success'] = "La partita è stata annullata." . ($scorePenalty < 0 ? " Hai ricevuto una penalità di $scorePenalty sul tuo Trust Score per preavviso insufficiente." : "");
         $this->redirectToMatch($id);
@@ -1029,9 +1055,9 @@ class MatchController extends BaseController {
     private function autoCancelExpiredMatches() {
         $db = \App\Database::getInstance()->getConnection();
 
-        // Trova tutte le partite 'open' che iniziano tra NOW() e NOW() + 2 ore
+        // Trova tutte le partite 'open' che iniziano tra NOW() e NOW() + 2 ore (selezioniamo anche data e luogo)
         $stmt = $db->prepare("
-            SELECT m.id, m.max_players, m.format
+            SELECT m.id, m.max_players, m.format, m.location, m.date
             FROM matches m
             WHERE m.status = 'open'
               AND CONCAT(m.date, ' ', m.time) <= DATE_ADD(NOW(), INTERVAL 2 HOUR)
@@ -1079,6 +1105,11 @@ class MatchController extends BaseController {
             // Se gli iscritti sono sotto la soglia minima, annulla la partita
             if ($occupied < $minPlayers) {
                 try {
+                    // Recupera gli utenti iscritti per notificarli prima dell'annullamento
+                    $stmtGetPlayers = $db->prepare("SELECT username FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+                    $stmtGetPlayers->execute(['match_id' => $matchId]);
+                    $playersToNotify = $stmtGetPlayers->fetchAll(\PDO::FETCH_COLUMN);
+
                     $db->beginTransaction();
 
                     // Aggiorna lo stato del match
@@ -1101,6 +1132,17 @@ class MatchController extends BaseController {
                     $stmtCancelRegs->execute(['match_id' => $matchId]);
 
                     $db->commit();
+
+                    // Invia notifiche
+                    $notificationModel = new \App\Models\Notification();
+                    foreach ($playersToNotify as $playerUsername) {
+                        $notificationModel->create([
+                            'user_recipient' => $playerUsername,
+                            'type' => 'match_cancellation',
+                            'message' => '⚠️ La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata automaticamente (numero iscritti insufficiente).',
+                            'link' => url('/matches/' . $matchId)
+                        ]);
+                    }
                 } catch (\Exception $e) {
                     if ($db->inTransaction()) {
                         $db->rollBack();
