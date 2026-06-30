@@ -177,3 +177,127 @@
 [data-bs-theme="light"] .table-suspicious {
     background-color: rgba(255, 193, 7, 0.05) !important;
 }
+
+/* Premium Tab Navigation Styles */
+.admin-tabs {
+    background-color: rgba(21, 34, 60, 0.45) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 1.25rem !important;
+    padding: 0.35rem !important;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.admin-tabs .nav-item {
+    margin: 0;
+}
+
+.admin-tabs .nav-link {
+    color: var(--text-secondary);
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0.75rem 1.2rem;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.admin-tabs .nav-link:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.admin-tabs .nav-link.active {
+    color: #fff !important;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--accent) 100%) !important;
+    box-shadow: 0 4px 15px var(--accent-glow) !important;
+    transform: scale(1.02);
+}
+
+/* Glassmorphism Panels and Chart Cards */
+.glass-panel {
+    background: rgba(21, 34, 60, 0.55) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.chart-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
+    border-color: rgba(36, 123, 160, 0.3) !important;
+}
+
+/* Tab Transitions */
+.tab-content > .tab-pane {
+    display: none;
+}
+.tab-content > .active {
+    display: block;
+    animation: fadeInTab 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Light Theme overrides for tabs & charts */
+[data-bs-theme="light"] .admin-tabs {
+    background-color: rgba(226, 232, 240, 0.5) !important;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+}
+
+[data-bs-theme="light"] .admin-tabs .nav-link {
+    color: var(--text-secondary);
+}
+
+[data-bs-theme="light"] .admin-tabs .nav-link:hover {
+    color: var(--text-primary);
+    background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-bs-theme="light"] .admin-tabs .nav-link.active {
+    color: #fff !important;
+    background: linear-gradient(135deg, #1f487e 0%, var(--accent) 100%) !important;
+    box-shadow: 0 4px 15px rgba(36, 123, 160, 0.25) !important;
+}
+
+[data-bs-theme="light"] .glass-panel {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(148, 163, 184, 0.15) !important;
+    box-shadow: var(--card-shadow);
+}
+
+[data-bs-theme="light"] .chart-card:hover {
+    box-shadow: 0 12px 30px rgba(148, 163, 184, 0.2) !important;
+    border-color: rgba(36, 123, 160, 0.3) !important;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .admin-tabs {
+        flex-direction: column;
+        border-radius: 1rem !important;
+        padding: 0.5rem !important;
+    }
+    .admin-tabs .nav-link {
+        justify-content: flex-start;
+        padding: 0.6rem 1rem;
+    }
+}

@@ -13,8 +13,40 @@
     </div>
 </div>
 
-<?php // =================== STATS CARDS =================== ?>
-<div class="stats-grid mb-5">
+<?php // =================== TABS =================== ?>
+<ul class="nav nav-pills nav-fill admin-tabs mb-4 p-1 rounded-4 shadow-sm border border-secondary-subtle" id="adminDashboardTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill fw-bold" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-section" type="button" role="tab" aria-controls="overview-section" aria-selected="true">
+            📊 Panoramica
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-section" type="button" role="tab" aria-controls="users-section" aria-selected="false">
+            👥 Gestione Utenti
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports-section" type="button" role="tab" aria-controls="reports-section" aria-selected="false">
+            🚩 Segnalazioni
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="matches-tab" data-bs-toggle="tab" data-bs-target="#matches-section" type="button" role="tab" aria-controls="matches-section" aria-selected="false">
+            ⚽ Partite
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold" id="trust-tab" data-bs-toggle="tab" data-bs-target="#trust-section" type="button" role="tab" aria-controls="trust-section" aria-selected="false">
+            📜 Log Attività
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="adminDashboardTabsContent">
+    <!-- Tab 1: Panoramica -->
+    <div class="tab-pane fade show active" id="overview-section" role="tabpanel" aria-labelledby="overview-tab">
+        <?php // =================== STATS CARDS =================== ?>
+        <div class="stats-grid mb-5">
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-primary">
             <i class="bi bi-people-fill"></i>
@@ -66,10 +98,12 @@
     </div>
 </div>
 
-<?php require VIEW_PATH . '/admin/partials/charts.php'; ?>
+        <?php require VIEW_PATH . '/admin/partials/charts.php'; ?>
+    </div>
 
-<?php // =================== USERS TABLE =================== ?>
-<div id="users-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 2: Gestione Utenti -->
+    <div class="tab-pane fade" id="users-section" role="tabpanel" aria-labelledby="users-tab">
+        <div id="users-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Gestione Utenti</h5>
     </div>
@@ -306,9 +340,12 @@
             </div>
         </div>
     <?php endif; ?>
-</div>
+        </div>
+    </div>
 
-<div id="reports-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 3: Segnalazioni -->
+    <div class="tab-pane fade" id="reports-section" role="tabpanel" aria-labelledby="reports-tab">
+        <div id="reports-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3 d-flex justify-content-between align-items-center">
         <h5 class="fw-bold mb-0"><i class="bi bi-flag-fill me-2 text-danger"></i>Gestione Segnalazioni</h5>
         <?php if($stats['pending_reports'] > 0): ?>
@@ -572,10 +609,12 @@
             </div>
         </div>
     <?php endif; ?>
-</div>
+        </div>
+    </div>
 
-<?php // =================== MATCHES TABLE =================== ?>
-<div id="matches-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 4: Partite -->
+    <div class="tab-pane fade" id="matches-section" role="tabpanel" aria-labelledby="matches-tab">
+        <div id="matches-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event-fill me-2 text-success"></i>Gestione Partite</h5>
     </div>
@@ -762,10 +801,12 @@
             </div>
         </div>
     <?php endif; ?>
-</div>
+        </div>
+    </div>
 
-<?php // =================== TRUST HISTORY LOG =================== ?>
-<div id="trust-section" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
+    <!-- Tab 5: Log Attività -->
+    <div class="tab-pane fade" id="trust-section" role="tabpanel" aria-labelledby="trust-tab">
+        <div id="trust-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-info"></i>Ultimi Eventi Trust Score</h5>
     </div>
@@ -849,4 +890,46 @@
             </div>
         </div>
     <?php endif; ?>
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Ripristina il tab attivo dall'hash dell'URL o da localStorage
+    const hash = window.location.hash;
+    let activeTabTrigger = null;
+
+    if (hash) {
+        // Cerca il bottone del tab che punta a questo hash
+        activeTabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+    }
+
+    if (!activeTabTrigger) {
+        // Fallback su localStorage se presente, altrimenti default sul primo tab
+        const savedTab = localStorage.getItem('admin_active_tab');
+        if (savedTab) {
+            activeTabTrigger = document.querySelector(`button[data-bs-target="${savedTab}"]`);
+        }
+    }
+
+    if (activeTabTrigger) {
+        const tab = new bootstrap.Tab(activeTabTrigger);
+        tab.show();
+    }
+
+    // 2. Registra l'evento al cambio di tab per salvare lo stato e aggiornare l'hash
+    const tabButtons = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('shown.bs.tab', function(e) {
+            const targetHash = e.target.getAttribute('data-bs-target');
+            
+            // Salva lo stato in localStorage
+            localStorage.setItem('admin_active_tab', targetHash);
+            
+            // Aggiorna l'hash dell'URL senza causare il salto della pagina
+            history.pushState(null, null, targetHash);
+        });
+    });
+});
+</script>

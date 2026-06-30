@@ -29,6 +29,38 @@ class AdminController extends BaseController {
             'pending_reports' => $pendingReports
         ];
 
+        // 1b. Additional stats for interactive charts
+        // User registrations trend (grouped by date)
+        $regTrend = $db->query("
+            SELECT DATE(created_at) as reg_date, COUNT(*) as count 
+            FROM users 
+            WHERE created_at IS NOT NULL 
+            GROUP BY DATE(created_at) 
+            ORDER BY reg_date ASC
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        // Preferred roles distribution
+        $rolesDist = $db->query("
+            SELECT COALESCE(NULLIF(preferred_role, ''), 'Non specificato') as preferred_role, COUNT(*) as count 
+            FROM users 
+            GROUP BY preferred_role
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        // Trust score brackets for active users
+        $trustBracketsRaw = $db->query("
+            SELECT 
+                SUM(CASE WHEN trust_score >= 80 AND is_banned = 0 THEN 1 ELSE 0 END) as high,
+                SUM(CASE WHEN trust_score >= 50 AND trust_score < 80 AND is_banned = 0 THEN 1 ELSE 0 END) as medium,
+                SUM(CASE WHEN trust_score < 50 AND is_banned = 0 THEN 1 ELSE 0 END) as low
+            FROM users
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        $trustBrackets = [
+            'high' => (int)($trustBracketsRaw['high'] ?? 0),
+            'medium' => (int)($trustBracketsRaw['medium'] ?? 0),
+            'low' => (int)($trustBracketsRaw['low'] ?? 0)
+        ];
+
         // 2. Users Table with sorting, searching, and pagination
         $search = $_GET['search'] ?? '';
         $roleFilter = $_GET['role'] ?? '';
@@ -306,7 +338,12 @@ class AdminController extends BaseController {
             'trust_logs' => $trustLogsList,
             'totalTrust' => $totalTrust,
             'totalPagesTrust' => $totalPagesTrust,
-            'pageTrust' => $trustPage
+            'pageTrust' => $trustPage,
+
+            // Charts Data
+            'regTrend' => $regTrend,
+            'rolesDist' => $rolesDist,
+            'trustBrackets' => $trustBrackets
         ]);
     }
 
