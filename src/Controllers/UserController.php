@@ -105,18 +105,37 @@ class UserController extends BaseController {
             $ring_class = 'border-danger text-danger';
         }
 
-        view('profile', [
-            'title' => 'Profilo di ' . e($viewedUser['name']) . ' - AlmaKick',
-            'user' => $viewedUser,
-            'is_own_profile' => $is_own_profile,
-            'friendship' => $friendship,
-            'matches_hosted' => $matches_hosted,
-            'matchHistory' => $matchHistory,
-            'pendingRequests' => $pendingRequests,
-            'friends' => $friends,
-            'trust_score' => $trust_score,
-            'ring_class' => $ring_class
-        ]);
+        if (!$is_own_profile) {
+            // Calcola variabili helper per il profilo pubblico
+            $is_friend = ($friendship && $friendship['status'] === 'accepted');
+            $sent_request = ($friendship && $friendship['status'] === 'pending' && $friendship['sender_username'] === $_SESSION['user']['username']);
+            $received_request = ($friendship && $friendship['status'] === 'pending' && $friendship['sender_username'] !== $_SESSION['user']['username']);
+            
+            view('public_profile', [
+                'title' => 'Profilo di ' . e($viewedUser['name']) . ' - AlmaKick',
+                'user' => $viewedUser,
+                'is_friend' => $is_friend,
+                'sent_request' => $sent_request,
+                'received_request' => $received_request,
+                'friendship' => $friendship,
+                'matches_played' => $viewedUser['matches_played'] ?? 0,
+                'friends_count' => count($friends),
+                'trust_score' => $trust_score
+            ]);
+        } else {
+            view('profile', [
+                'title' => 'Profilo di ' . e($viewedUser['name']) . ' - AlmaKick',
+                'user' => $viewedUser,
+                'is_own_profile' => $is_own_profile,
+                'friendship' => $friendship,
+                'matches_hosted' => $matches_hosted,
+                'matchHistory' => $matchHistory,
+                'pendingRequests' => $pendingRequests,
+                'friends' => $friends,
+                'trust_score' => $trust_score,
+                'ring_class' => $ring_class
+            ]);
+        }
     }
 
     public function updateAvatar() {
@@ -395,5 +414,53 @@ class UserController extends BaseController {
         $userModel->deleteFriendship($myUsername, $username);
         $_SESSION['success'] = "Amico rimosso.";
         $this->redirect('/profile');
+    }
+
+    public function storeReport() {
+        $this->validateCsrf();
+
+        if (!isset($_SESSION['user'])) {
+            $_SESSION['error'] = "Accesso negato.";
+            $this->redirect('/login');
+        }
+
+        $reporter = $_SESSION['user']['username'];
+        $reported = trim($_POST['reported_username'] ?? $_POST['reported_id'] ?? '');
+        $reason = trim($_POST['reason'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+
+        if (empty($reported) || empty($reason)) {
+            $_SESSION['error'] = "Campi obbligatori mancanti per la segnalazione.";
+            $this->redirect('/profile');
+        }
+
+        // Verifica che l'utente segnalato esista
+        $userModel = new User();
+        $viewedUser = $userModel->find($reported);
+        if (!$viewedUser) {
+            $_SESSION['error'] = "Giocatore da segnalare non trovato.";
+            $this->redirect('/profile');
+        }
+
+        $db = \App\Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            INSERT INTO reports (reporter_username, reported_username, reason, description, status, created_at, updated_at)
+            VALUES (:reporter, :reported, :reason, :description, 'pending', NOW(), NOW())
+        ");
+        
+        $success = $stmt->execute([
+            'reporter' => $reporter,
+            'reported' => $reported,
+            'reason' => $reason,
+            'description' => $description
+        ]);
+
+        if ($success) {
+            $_SESSION['success'] = "Segnalazione inviata con successo agli amministratori.";
+        } else {
+            $_SESSION['error'] = "Impossibile inviare la segnalazione.";
+        }
+
+        $this->redirect('/profile?username=' . urlencode($reported));
     }
 }

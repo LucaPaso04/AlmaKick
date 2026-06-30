@@ -94,6 +94,8 @@ $router->add('POST', '/friends/accept/{username}', 'UserController@acceptFriend'
 $router->add('POST', '/friends/reject/{username}', 'UserController@rejectFriend', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/friends/block/{username}', 'UserController@blockFriend', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/friends/remove/{username}', 'UserController@removeFriend', [\App\Middleware\AuthMiddleware::class]);
+$router->add('POST', '/reports', 'UserController@storeReport', [\App\Middleware\AuthMiddleware::class]);
+
 
 // ROTTE AMMINISTRATORE
 $router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
