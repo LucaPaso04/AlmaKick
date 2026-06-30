@@ -187,6 +187,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationsList = document.getElementById('notificationsList');
     const notificationsEmpty = document.getElementById('notificationsEmpty');
     const markAllReadBtn = document.getElementById('markAllReadBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const notificationsHeaderDivider = document.getElementById('notificationsHeaderDivider');
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
     if (notificationsBell) {
@@ -201,6 +203,16 @@ document.addEventListener('DOMContentLoaded', function() {
             markAllReadBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 markAllNotificationsAsRead();
+            });
+        }
+
+        // Click su "Svuota tutto"
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (confirm('Sei sicuro di voler eliminare tutte le notifiche?')) {
+                    clearAllNotifications();
+                }
             });
         }
     }
@@ -245,7 +257,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const notifications = data.notifications || [];
-        if (notifications.length === 0) {
+        
+        // Gestione visibilità divider e pulsante svuota tutto
+        if (notifications.length > 0) {
+            if (clearAllBtn) clearAllBtn.classList.remove('d-none');
+            if (notificationsHeaderDivider && count > 0) {
+                notificationsHeaderDivider.classList.remove('d-none');
+            } else if (notificationsHeaderDivider) {
+                notificationsHeaderDivider.classList.add('d-none');
+            }
+        } else {
+            if (clearAllBtn) clearAllBtn.classList.add('d-none');
+            if (notificationsHeaderDivider) notificationsHeaderDivider.classList.add('d-none');
+            
             notificationsList.innerHTML = `
                 <div class="text-center py-4 text-muted small" id="notificationsEmpty">
                     <i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></i>
@@ -292,13 +316,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="notification-time">${n.time_ago}</div>
                     </div>
                     ${statusDot}
+                    <button type="button" class="notification-delete-btn" data-id="${n.id}" title="Elimina notifica">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </a>
             `;
         });
 
         notificationsList.innerHTML = html;
 
-        // Click handler su ciascun elemento
+        // Click handler su ciascun elemento di notifica
         notificationsList.querySelectorAll('.notification-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 const id = this.getAttribute('data-id');
@@ -316,6 +343,52 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                     .finally(() => {
                         window.location.href = link;
+                    });
+                }
+            });
+        });
+
+        // Click handler sul pulsante "X" per eliminare la singola notifica
+        notificationsList.querySelectorAll('.notification-delete-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const id = this.getAttribute('data-id');
+                const item = this.closest('.notification-item');
+                
+                if (id && item) {
+                    // Animazione di uscita
+                    item.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(20px)';
+                    
+                    fetch(baseUrl + '/api/notifications/' + id + '/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'csrf_token=' + encodeURIComponent(csrfToken)
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Errore di rete');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            setTimeout(() => {
+                                fetchNotifications();
+                            }, 250);
+                        } else {
+                            // Ripristina l'elemento se fallisce
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateX(0)';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Errore durante l\'eliminazione della notifica:', err);
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
                     });
                 }
             });
@@ -353,5 +426,38 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(err => console.error('Errore nel segnare le notifiche come lette:', err));
+    }
+
+    function clearAllNotifications() {
+        let baseUrl = '';
+        const homeLink = document.querySelector('a[href*="/welcome"], a[href*="/matches"]');
+        if (homeLink) {
+            const href = homeLink.getAttribute('href');
+            if (href) {
+                if (href.includes('/welcome')) {
+                    baseUrl = href.split('/welcome')[0];
+                } else if (href.includes('/matches')) {
+                    baseUrl = href.split('/matches')[0];
+                }
+            }
+        }
+
+        fetch(baseUrl + '/api/notifications/clear-all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'csrf_token=' + encodeURIComponent(csrfToken)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Errore di rete');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                fetchNotifications();
+            }
+        })
+        .catch(err => console.error('Errore durante lo svuotamento delle notifiche:', err));
     }
 });

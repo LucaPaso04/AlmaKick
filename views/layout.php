@@ -178,11 +178,17 @@ if (isset($_SESSION['user'])) {
                             </button>
                             
                             <div class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0 notifications-dropdown fade-down" aria-labelledby="notificationsBell" style="width: 320px; max-width: 90vw;">
-                                <div class="notifications-header d-flex justify-content-between align-items-center p-3 border-bottom border-secondary-subtle">
+                                 <div class="notifications-header d-flex justify-content-between align-items-center p-3 border-bottom border-secondary-subtle">
                                     <h6 class="fw-bold mb-0 text-body" style="font-size: 0.95rem;">Notifiche</h6>
-                                    <button class="btn btn-link btn-sm text-decoration-none p-0 text-primary fw-semibold d-none" id="markAllReadBtn" style="font-size: 0.8rem;">
-                                        Segna come lette
-                                    </button>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-link btn-sm text-decoration-none p-0 text-primary fw-semibold d-none" id="markAllReadBtn" style="font-size: 0.8rem;">
+                                            Segna come lette
+                                        </button>
+                                        <span class="text-secondary small d-none" id="notificationsHeaderDivider">|</span>
+                                        <button class="btn btn-link btn-sm text-decoration-none p-0 text-danger fw-semibold d-none" id="clearAllBtn" style="font-size: 0.8rem;">
+                                            Svuota tutto
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="notifications-list" id="notificationsList" style="max-height: 350px; overflow-y: auto;">
                                     <div class="text-center py-4 text-muted small" id="notificationsEmpty">

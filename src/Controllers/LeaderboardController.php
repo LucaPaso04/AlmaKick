@@ -23,12 +23,14 @@ class LeaderboardController extends BaseController {
         $friendsScorers = [];
         $friendsMVPs = [];
         $friendsRated = [];
+        $friendsCount = 0;
         
         if (isset($_SESSION['user'])) {
             $username = $_SESSION['user']['username'];
             $friendsScorers = $userModel->getFriendsScorers($username);
             $friendsMVPs = $userModel->getFriendsMVPs($username);
             $friendsRated = $userModel->getFriendsRated($username);
+            $friendsCount = $userModel->getFriendsCount($username);
         }
         
         view('leaderboard', [
@@ -38,7 +40,8 @@ class LeaderboardController extends BaseController {
             'topRated' => $topRated,
             'friendsScorers' => $friendsScorers,
             'friendsMVPs' => $friendsMVPs,
-            'friendsRated' => $friendsRated
+            'friendsRated' => $friendsRated,
+            'friendsCount' => $friendsCount
         ]);
     }
 }

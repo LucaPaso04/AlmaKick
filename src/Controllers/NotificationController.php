@@ -78,6 +78,44 @@ class NotificationController extends BaseController {
     }
 
     /**
+     * Elimina una notifica
+     */
+    public function delete($id) {
+        $this->validateCsrf();
+        header('Content-Type: application/json');
+
+        $username = $_SESSION['user']['username'] ?? null;
+        if (!$username) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Non autorizzato']);
+            return;
+        }
+
+        $success = $this->notificationModel->delete((int)$id, $username);
+        
+        echo json_encode(['success' => $success]);
+    }
+
+    /**
+     * Svuota tutte le notifiche dell'utente
+     */
+    public function clearAll() {
+        $this->validateCsrf();
+        header('Content-Type: application/json');
+
+        $username = $_SESSION['user']['username'] ?? null;
+        if (!$username) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Non autorizzato']);
+            return;
+        }
+
+        $success = $this->notificationModel->clearAll($username);
+
+        echo json_encode(['success' => $success]);
+    }
+
+    /**
      * Funzione di utility per calcolare il tempo trascorso (es. "5 minuti fa")
      */
     private function timeAgo($datetime) {

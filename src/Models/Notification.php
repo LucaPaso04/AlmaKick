@@ -44,6 +44,19 @@ class Notification {
      * Recupera le ultime notifiche per un utente
      */
     public function getLatest(string $username, int $limit = 5): array {
+        // Auto-pulizia: Elimina le notifiche già lette più vecchie di 7 giorni
+        try {
+            $stmtPurge = $this->db->prepare("
+                DELETE FROM notifications 
+                WHERE user_recipient = :username 
+                  AND is_read = 1 
+                  AND created_at < DATE_SUB(NOW(), INTERVAL 7 DAY)
+            ");
+            $stmtPurge->execute(['username' => $username]);
+        } catch (\PDOException $e) {
+            // Fallback silenzioso
+        }
+
         $stmt = $this->db->prepare("
             SELECT * FROM notifications 
             WHERE user_recipient = :username 
@@ -79,6 +92,31 @@ class Notification {
             UPDATE notifications 
             SET is_read = 1 
             WHERE user_recipient = :username AND is_read = 0
+        ");
+        return $stmt->execute(['username' => $username]);
+    }
+
+    /**
+     * Elimina fisicamente una singola notifica
+     */
+    public function delete(int $id, string $username): bool {
+        $stmt = $this->db->prepare("
+            DELETE FROM notifications 
+            WHERE id = :id AND user_recipient = :username
+        ");
+        return $stmt->execute([
+            'id' => $id,
+            'username' => $username
+        ]);
+    }
+
+    /**
+     * Elimina fisicamente tutte le notifiche di un utente (svuota tutto)
+     */
+    public function clearAll(string $username): bool {
+        $stmt = $this->db->prepare("
+            DELETE FROM notifications 
+            WHERE user_recipient = :username
         ");
         return $stmt->execute(['username' => $username]);
     }

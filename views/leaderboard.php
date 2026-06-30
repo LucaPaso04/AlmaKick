@@ -45,7 +45,7 @@
         <?php if (isset($_SESSION['user'])): ?>
         <!-- TAB AMICI -->
         <div class="tab-pane fade" id="friends" role="tabpanel" aria-labelledby="friends-tab" tabindex="0">
-            <?php if (count($friendsScorers) <= 1): ?>
+            <?php if ($friendsCount === 0): ?>
                 <div class="alert alert-info text-center border-0 shadow-sm rounded-4 py-5 mb-4 d-flex flex-column align-items-center">
                     <div class="bg-body rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3 leaderboards-empty-icon">
                         <i class="bi bi-person-plus fs-1 text-info" aria-hidden="true"></i>
@@ -53,13 +53,14 @@
                     <h5 class="fw-bold alert-heading">Non hai ancora aggiunto amici!</h5>
                     <p class="mb-0">Aggiungi amici usando il loro Codice Amico per confrontare le tue statistiche con le loro.</p>
                 </div>
+            <?php else: ?>
+                <?php 
+                $scorers = $friendsScorers;
+                $mvps = $friendsMVPs;
+                $rated = $friendsRated;
+                require VIEW_PATH . '/leaderboards/partials/columns.php'; 
+                ?>
             <?php endif; ?>
-            <?php 
-            $scorers = $friendsScorers;
-            $mvps = $friendsMVPs;
-            $rated = $friendsRated;
-            require VIEW_PATH . '/leaderboards/partials/columns.php'; 
-            ?>
         </div>
         <?php endif; ?>
 

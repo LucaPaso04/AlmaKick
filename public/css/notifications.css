@@ -5,15 +5,20 @@
 }
 
 #notificationsBell {
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
 #notificationsBell:hover {
     transform: scale(1.1);
 }
 
+#notificationsBell.show {
+    color: var(--accent) !important;
+}
+
 #notificationsBellIcon {
     font-size: 1.25rem;
+    transition: color 0.2s ease;
 }
 
 .notifications-dropdown {
@@ -31,15 +36,21 @@
     background: rgba(var(--twilight-rgb), 0.15);
 }
 
+.notifications-list {
+    overflow-x: hidden;
+}
+
 .notification-item {
     display: flex;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
+    padding-right: 2.2rem;
     border-bottom: 1px solid rgba(var(--twilight-rgb), 0.15);
     text-decoration: none !important;
     color: var(--text-primary) !important;
     transition: background-color 0.25s ease, transform 0.2s ease;
     font-size: 0.85rem;
+    position: relative;
 }
 
 .notification-item:last-child {
@@ -67,6 +78,32 @@
     background-color: var(--accent);
     align-self: center;
     flex-shrink: 0;
+}
+
+.notification-delete-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%) scale(0.9);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    z-index: 10;
+}
+
+.notification-item:hover .notification-delete-btn {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(1);
+}
+
+.notification-delete-btn:hover {
+    opacity: 1 !important;
+    color: var(--danger) !important;
 }
 
 .notification-icon-wrapper {
