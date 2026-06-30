@@ -8,12 +8,14 @@ CREATE DATABASE IF NOT EXISTS `almakick` DEFAULT CHARACTER SET utf8mb4 COLLATE u
 USE `almakick`;
 
 DROP TABLE IF EXISTS `friendships`;
+DROP TABLE IF EXISTS `notifications`;
 DROP TABLE IF EXISTS `reports`;
 DROP TABLE IF EXISTS `trust_history`;
 DROP TABLE IF EXISTS `evaluations`;
 DROP TABLE IF EXISTS `registrations`;
 DROP TABLE IF EXISTS `matches`;
 DROP TABLE IF EXISTS `users`;
+
 
 -- --------------------------------------------------------
 -- 1. Tabella `users` (Ora con username come Chiave Primaria e last_name)
@@ -475,6 +477,22 @@ INSERT INTO trust_history (username, match_id, score_change, reason, created_at)
 ('giuseppe_turchese', 16, -5, 'Segnalazione pollice in giù da un compagno di squadra.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
 ('francesco_blu', NULL, -15, 'Ritiro iscrizione a meno di 24 ore dalla partita.', DATE_SUB(NOW(), INTERVAL 6 DAY)),
 ('francesco_blu', NULL, -15, 'Ritiro iscrizione a meno di 24 ore dalla partita.', DATE_SUB(NOW(), INTERVAL 10 DAY)),
-('francesco_blu', NULL, -40, 'Partita annullata a meno di 24h dall''inizio.', DATE_SUB(NOW(), INTERVAL 15 DAY));
+('francesco_blu', NULL, -40, 'Partita annullata a meno di 24h dall\'inizio.', DATE_SUB(NOW(), INTERVAL 15 DAY));
+
+-- --------------------------------------------------------
+-- 8. Tabella `notifications`
+CREATE TABLE `notifications` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_recipient` varchar(50) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `notifications_user_recipient_foreign` (`user_recipient`),
+  KEY `notifications_is_read_index` (`is_read`),
+  CONSTRAINT `notifications_user_recipient_foreign` FOREIGN KEY (`user_recipient`) REFERENCES `users` (`username`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

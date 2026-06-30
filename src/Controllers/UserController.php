@@ -315,6 +315,7 @@ class UserController extends BaseController {
         }
 
         $existing = $userModel->getFriendshipStatus($myUsername, $recipient['username']);
+        $sent = false;
         if ($existing) {
             if ($existing['status'] === 'accepted') {
                 $_SESSION['error'] = "Siete già amici.";
@@ -325,11 +326,24 @@ class UserController extends BaseController {
             } else {
                 // Se era rifiutata o altro, la riattiviamo
                 $userModel->addFriendRequest($myUsername, $recipient['username']);
+                $sent = true;
                 $_SESSION['success'] = "Richiesta di amicizia inviata!";
             }
         } else {
             $userModel->addFriendRequest($myUsername, $recipient['username']);
+            $sent = true;
             $_SESSION['success'] = "Richiesta di amicizia inviata!";
+        }
+
+        if ($sent) {
+            // Crea una notifica persistente per il destinatario
+            $notificationModel = new \App\Models\Notification();
+            $notificationModel->create([
+                'user_recipient' => $recipient['username'],
+                'type' => 'friend_request',
+                'message' => '👋 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ti ha inviato una richiesta di amicizia!',
+                'link' => url('/profile?tab=social')
+            ]);
         }
 
         $this->redirect('/profile');
@@ -347,6 +361,19 @@ class UserController extends BaseController {
 
         // Accetta la richiesta inviata da $username a me
         $userModel->acceptFriendRequest($username, $myUsername);
+
+        // Notifica il mittente che la richiesta è stata accettata
+        $notificationModel = new \App\Models\Notification();
+        $notificationModel->create([
+            'user_recipient' => $username,
+            'type' => 'friend_accept',
+            'message' => '🤝 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
+            'link' => url('/profile?username=' . urlencode($myUsername))
+        ]);
+
+        // Segna come letta la notifica di richiesta ricevuta
+        $notificationModel->markFriendRequestAsRead($username, $myUsername);
+
         $_SESSION['success'] = "Richiesta di amicizia accettata!";
         $this->redirect('/profile');
     }
@@ -363,6 +390,11 @@ class UserController extends BaseController {
 
         // Elimina record di amicizia in sospeso
         $userModel->deleteFriendship($username, $myUsername);
+
+        // Segna come letta la notifica di richiesta ricevuta
+        $notificationModel = new \App\Models\Notification();
+        $notificationModel->markFriendRequestAsRead($username, $myUsername);
+
         $_SESSION['success'] = "Richiesta di amicizia rifiutata.";
         $this->redirect('/profile');
     }
@@ -378,6 +410,11 @@ class UserController extends BaseController {
         $userModel = new User();
 
         $userModel->blockUser($myUsername, $username);
+
+        // Segna come letta la notifica di richiesta ricevuta (se c'era)
+        $notificationModel = new \App\Models\Notification();
+        $notificationModel->markFriendRequestAsRead($username, $myUsername);
+
         $_SESSION['success'] = "Giocatore bloccato.";
         $this->redirect('/profile');
     }
@@ -393,7 +430,14 @@ class UserController extends BaseController {
         $userModel = new User();
 
         $userModel->deleteFriendship($myUsername, $username);
+
+        // Segna come letta la notifica di richiesta ricevuta (se c'era)
+        $notificationModel = new \App\Models\Notification();
+        $notificationModel->markFriendRequestAsRead($username, $myUsername);
+        $notificationModel->markFriendRequestAsRead($myUsername, $username);
+
         $_SESSION['success'] = "Amico rimosso.";
         $this->redirect('/profile');
     }
+
 }

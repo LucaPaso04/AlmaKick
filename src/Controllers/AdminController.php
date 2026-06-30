@@ -387,10 +387,39 @@ class AdminController extends BaseController {
         if (!empty($matchId)) {
             $db = \App\Database::getInstance()->getConnection();
             
-            $stmt = $db->prepare("UPDATE matches SET status = 'cancelled', cancellation_reason = 'Annullata da amministratore', updated_at = NOW() WHERE id = :id");
-            $stmt->execute(['id' => $matchId]);
-            
-            $_SESSION['success'] = "Partita #{$matchId} annullata forzatamente.";
+            // Recupera dettagli del match prima dell'annullamento
+            $stmtMatch = $db->prepare("SELECT location, date FROM matches WHERE id = :id");
+            $stmtMatch->execute(['id' => $matchId]);
+            $match = $stmtMatch->fetch(PDO::FETCH_ASSOC);
+
+            if ($match) {
+                // Recupera gli utenti iscritti per notificarli
+                $stmtGetPlayers = $db->prepare("SELECT username FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+                $stmtGetPlayers->execute(['match_id' => $matchId]);
+                $playersToNotify = $stmtGetPlayers->fetchAll(PDO::FETCH_COLUMN);
+
+                // Aggiorna lo stato del match
+                $stmt = $db->prepare("UPDATE matches SET status = 'cancelled', cancellation_reason = 'Annullata da amministratore', updated_at = NOW() WHERE id = :id");
+                $stmt->execute(['id' => $matchId]);
+
+                // Cancella le registrazioni
+                $db->prepare("UPDATE registrations SET status = 'cancelled', updated_at = NOW() WHERE match_id = :match_id")->execute(['match_id' => $matchId]);
+
+                // Invia notifiche
+                $notificationModel = new \App\Models\Notification();
+                foreach ($playersToNotify as $playerUsername) {
+                    $notificationModel->create([
+                        'user_recipient' => $playerUsername,
+                        'type' => 'match_cancellation',
+                        'message' => '⚠️ La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata forzatamente dall\'amministratore.',
+                        'link' => url('/matches/' . $matchId)
+                    ]);
+                }
+
+                $_SESSION['success'] = "Partita #{$matchId} annullata forzatamente.";
+            } else {
+                $_SESSION['error'] = "Partita non trovata.";
+            }
         } else {
             $_SESSION['error'] = "Azione non valida.";
         }

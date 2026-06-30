@@ -1,0 +1,110 @@
+/* Stili per le Notifiche Premium */
+
+.notifications-dropdown-wrapper {
+    position: relative;
+}
+
+#notificationsBell {
+    transition: transform 0.2s ease;
+}
+
+#notificationsBell:hover {
+    transform: scale(1.1);
+}
+
+#notificationsBellIcon {
+    font-size: 1.25rem;
+}
+
+.notifications-dropdown {
+    background: var(--card-bg);
+    border: 1px solid var(--border) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 1rem !important;
+    overflow: hidden;
+    animation: fadeDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--card-shadow) !important;
+}
+
+.notifications-header {
+    background: rgba(var(--twilight-rgb), 0.15);
+}
+
+.notification-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(var(--twilight-rgb), 0.15);
+    text-decoration: none !important;
+    color: var(--text-primary) !important;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+    font-size: 0.85rem;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background-color: var(--card-hover-bg);
+    transform: translateX(2px);
+}
+
+.notification-item.unread {
+    background-color: rgba(var(--twilight-rgb), 0.25);
+    font-weight: 500;
+}
+
+.notification-item.unread:hover {
+    background-color: rgba(var(--twilight-rgb), 0.35);
+}
+
+.notification-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    align-self: center;
+    flex-shrink: 0;
+}
+
+.notification-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(var(--twilight-rgb), 0.4);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.notification-message {
+    margin-bottom: 0.2rem;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.notification-time {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+/* Animazioni */
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
