@@ -10,6 +10,7 @@ class MatchController extends BaseController {
         $this->resolveExpiredMvps();
         $this->autoCancelExpiredMatches();
         $this->resolveExpiredWaitlistOffers();
+        $this->autoCloseUnreportedMatches();
         $matchModel = new SoccerMatch();
         
         $filters = [
@@ -140,6 +141,7 @@ class MatchController extends BaseController {
         $this->resolveExpiredMvps();
         $this->autoCancelExpiredMatches();
         $this->resolveExpiredWaitlistOffers();
+        $this->autoCloseUnreportedMatches();
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
 
@@ -1370,5 +1372,136 @@ class MatchController extends BaseController {
 
         $_SESSION['success'] = "Offerta rifiutata. Posto liberato per il panchinaro successivo.";
         $this->redirectToMatch($id);
+    }
+
+    private function autoCloseUnreportedMatches() {
+        $db = \App\Database::getInstance()->getConnection();
+
+        // 1. Trova tutte le partite iniziate da più di 48 ore non refertate e non cancellate
+        $stmt = $db->prepare("
+            SELECT id, host_username, date, time, location
+            FROM matches
+            WHERE status IN ('open', 'full', 'finished')
+              AND (result_home IS NULL OR result_away IS NULL)
+              AND CONCAT(date, ' ', time) <= DATE_SUB(NOW(), INTERVAL 48 HOUR)
+        ");
+        $stmt->execute();
+        $expiredMatches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($expiredMatches)) {
+            return;
+        }
+
+        $notificationModel = new \App\Models\Notification();
+
+        foreach ($expiredMatches as $match) {
+            $matchId = $match['id'];
+            $host = $match['host_username'];
+            $location = $match['location'];
+            $dateFormatted = date('d/m/Y', strtotime($match['date']));
+
+            try {
+                $db->beginTransaction();
+
+                // 2. Aggiorna lo stato della partita, i risultati d'ufficio (0-0) e la scadenza per la votazione MVP (24 ore da adesso)
+                $stmtUpdateMatch = $db->prepare("
+                    UPDATE matches 
+                    SET status = 'finished', 
+                        result_home = 0, 
+                        result_away = 0, 
+                        mvp_deadline = DATE_ADD(NOW(), INTERVAL 24 HOUR), 
+                        updated_at = NOW() 
+                    WHERE id = :id
+                ");
+                $stmtUpdateMatch->execute(['id' => $matchId]);
+
+                // 3. Ricalcola total_goals e matches_played per tutti i partecipanti del match
+                $stmtUpdateStats = $db->prepare("
+                    UPDATE users u
+                    SET 
+                      u.total_goals = (
+                          SELECT COALESCE(SUM(r.goals_scored), 0)
+                          FROM registrations r
+                          JOIN matches m ON r.match_id = m.id
+                          WHERE r.username = u.username 
+                            AND r.status = 'registered' 
+                            AND m.status = 'finished'
+                      ),
+                      u.matches_played = (
+                          SELECT COUNT(*)
+                          FROM registrations r
+                          JOIN matches m ON r.match_id = m.id
+                          WHERE r.username = u.username 
+                            AND r.status = 'registered' 
+                            AND m.status = 'finished'
+                      )
+                    WHERE u.username IN (
+                        SELECT DISTINCT username 
+                        FROM registrations 
+                        WHERE match_id = :match_id 
+                          AND status = 'registered'
+                    )
+                ");
+                $stmtUpdateStats->execute(['match_id' => $matchId]);
+
+                // 4. Detrazione di 15 punti sul Trust Score dell'host
+                $penalty = -15;
+                $stmtPenalty = $db->prepare("
+                    UPDATE users 
+                    SET trust_score = GREATEST(0, CAST(trust_score AS SIGNED) + :penalty), 
+                        updated_at = NOW() 
+                    WHERE username = :host
+                ");
+                $stmtPenalty->execute(['penalty' => $penalty, 'host' => $host]);
+
+                // Inserimento del log di Trust Score
+                $stmtLog = $db->prepare("
+                    INSERT INTO trust_history (username, match_id, score_change, reason, created_at) 
+                    VALUES (:host, :match_id, :change, 'Mancato inserimento tabellino entro 48h', NOW())
+                ");
+                $stmtLog->execute([
+                    'host' => $host,
+                    'match_id' => $matchId,
+                    'change' => $penalty
+                ]);
+
+                $db->commit();
+
+                // 5. Invia notifiche
+                // Notifica per l'host
+                $notificationModel->create([
+                    'user_recipient' => $host,
+                    'type' => 'match_autoclose_host',
+                    'message' => '⚠️ La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio per mancato inserimento del tabellino entro 48 ore. Hai ricevuto una penalità di -15 al Trust Score.',
+                    'link' => url('/matches/' . $matchId)
+                ]);
+
+                // Recupera tutti gli altri partecipanti registrati
+                $stmtPlayers = $db->prepare("
+                    SELECT username 
+                    FROM registrations 
+                    WHERE match_id = :match_id 
+                      AND status = 'registered' 
+                      AND username != :host
+                ");
+                $stmtPlayers->execute(['match_id' => $matchId, 'host' => $host]);
+                $players = $stmtPlayers->fetchAll(\PDO::FETCH_COLUMN);
+
+                foreach ($players as $player) {
+                    $notificationModel->create([
+                        'user_recipient' => $player,
+                        'type' => 'match_autoclose_player',
+                        'message' => '📢 La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio senza risultato (tabellino mancante). Ora puoi votare per i compagni e per l\'MVP!',
+                        'link' => url('/matches/' . $matchId)
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                if ($db->inTransaction()) {
+                    $db->rollBack();
+                }
+                // Silently log or ignore error to not block page loading
+            }
+        }
     }
 }

@@ -30,8 +30,45 @@ class NotificationController extends BaseController {
         // Formatta la data per renderla più leggibile
         foreach ($notifications as &$n) {
             $n['time_ago'] = $this->timeAgo($n['created_at']);
+            $n['is_actionable'] = false;
         }
         unset($n);
+
+        // Aggiungi notifiche d'azione non-cancellabili per partite da refertare o votare
+        $soccerMatchModel = new \App\Models\SoccerMatch();
+        $matchesToReport = $soccerMatchModel->getMatchesToReport($username);
+        $matchesToVote = $soccerMatchModel->getMatchesToVote($username);
+
+        $actionableNotifications = [];
+        foreach ($matchesToReport as $mr) {
+            $actionableNotifications[] = [
+                'id' => 'report_' . $mr['id'],
+                'user_recipient' => $username,
+                'type' => 'match_report_needed',
+                'message' => '📋 Compila il tabellino per la partita a ' . $mr['location'] . ' del ' . date('d/m/Y', strtotime($mr['date'])),
+                'link' => url('/matches/' . $mr['id'] . '?from=matches'),
+                'is_read' => 0,
+                'created_at' => $mr['date'] . ' ' . $mr['time'],
+                'time_ago' => $this->timeAgo($mr['date'] . ' ' . $mr['time']),
+                'is_actionable' => true
+            ];
+        }
+        foreach ($matchesToVote as $mv) {
+            $actionableNotifications[] = [
+                'id' => 'vote_' . $mv['id'],
+                'user_recipient' => $username,
+                'type' => 'match_vote_needed',
+                'message' => '⭐ Vota i tuoi compagni per la partita a ' . $mv['location'] . ' del ' . date('d/m/Y', strtotime($mv['date'])),
+                'link' => url('/matches/' . $mv['id'] . '?from=matches'),
+                'is_read' => 0,
+                'created_at' => $mv['date'] . ' ' . $mv['time'],
+                'time_ago' => $this->timeAgo($mv['date'] . ' ' . $mv['time']),
+                'is_actionable' => true
+            ];
+        }
+
+        $unreadCount += count($actionableNotifications);
+        $notifications = array_merge($actionableNotifications, $notifications);
 
         echo json_encode([
             'unread_count' => $unreadCount,
