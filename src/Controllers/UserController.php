@@ -95,6 +95,7 @@ class UserController extends BaseController {
 
         $pendingRequests = $userModel->getPendingRequests($username);
         $friends = $userModel->getFriends($username);
+        $trend_votes = $userModel->getRecentVotesTrend($username);
 
         $trust_score = (int)$viewedUser['trust_score'];
         if ($trust_score >= 90) {
@@ -120,7 +121,8 @@ class UserController extends BaseController {
                 'friendship' => $friendship,
                 'matches_played' => $viewedUser['matches_played'] ?? 0,
                 'friends_count' => count($friends),
-                'trust_score' => $trust_score
+                'trust_score' => $trust_score,
+                'trend_votes' => $trend_votes
             ]);
         } else {
             view('profile', [
@@ -133,7 +135,8 @@ class UserController extends BaseController {
                 'pendingRequests' => $pendingRequests,
                 'friends' => $friends,
                 'trust_score' => $trust_score,
-                'ring_class' => $ring_class
+                'ring_class' => $ring_class,
+                'trend_votes' => $trend_votes
             ]);
         }
     }
