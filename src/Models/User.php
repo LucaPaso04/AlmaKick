@@ -74,9 +74,10 @@ class User {
     }
 
     public function updateInfo(string $username, array $data): bool {
-        $stmt = $this->db->prepare("UPDATE users SET name = :name, phone = :phone, preferred_role = :preferred_role, updated_at = NOW() WHERE username = :username");
+        $stmt = $this->db->prepare("UPDATE users SET name = :name, last_name = :last_name, phone = :phone, preferred_role = :preferred_role, updated_at = NOW() WHERE username = :username");
         return $stmt->execute([
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
             'phone' => $data['phone'],
             'preferred_role' => $data['preferred_role'],
             'username' => $username
@@ -113,12 +114,42 @@ class User {
         return (int)$stmt->fetchColumn();
     }
 
+    public function getRecentVotesTrend(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT e.match_id, AVG(e.skill_vote) as avg_vote
+            FROM evaluations e
+            JOIN matches m ON e.match_id = m.id
+            WHERE e.evaluated_username = :username AND e.skill_vote IS NOT NULL
+            GROUP BY e.match_id, m.date, m.time
+            ORDER BY m.date DESC, m.time DESC
+            LIMIT 5
+        ");
+        $stmt->execute(['username' => $username]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        
+        return array_reverse(array_map(function($row) {
+            return (float)$row['avg_vote'];
+        }, $results));
+    }
+
     public function getPendingRequests(string $username): array {
         $stmt = $this->db->prepare("
             SELECT u.* 
             FROM friendships f 
             JOIN users u ON f.sender_username = u.username 
             WHERE f.recipient_username = :username AND f.status = 'pending'
+            ORDER BY f.created_at DESC
+        ");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getSentPendingRequests(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* 
+            FROM friendships f 
+            JOIN users u ON f.recipient_username = u.username 
+            WHERE f.sender_username = :username AND f.status = 'pending'
             ORDER BY f.created_at DESC
         ");
         $stmt->execute(['username' => $username]);
@@ -158,17 +189,29 @@ class User {
     }
 
     public function addFriendRequest(string $sender, string $recipient): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO friendships (sender_username, recipient_username, status, created_at)
-            VALUES (:sender, :recipient, 'pending', NOW())
-            ON DUPLICATE KEY UPDATE status = 'pending', sender_username = :sender2, recipient_username = :recipient2, created_at = NOW()
-        ");
-        return $stmt->execute([
-            'sender' => $sender,
-            'recipient' => $recipient,
-            'sender2' => $sender,
-            'recipient2' => $recipient
-        ]);
+        $existing = $this->getFriendshipStatus($sender, $recipient);
+        if ($existing) {
+            $stmt = $this->db->prepare("
+                UPDATE friendships 
+                SET status = 'pending', sender_username = :sender, recipient_username = :recipient, created_at = NOW()
+                WHERE sender_username = :old_sender AND recipient_username = :old_recipient
+            ");
+            return $stmt->execute([
+                'sender' => $sender,
+                'recipient' => $recipient,
+                'old_sender' => $existing['sender_username'],
+                'old_recipient' => $existing['recipient_username']
+            ]);
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO friendships (sender_username, recipient_username, status, created_at)
+                VALUES (:sender, :recipient, 'pending', NOW())
+            ");
+            return $stmt->execute([
+                'sender' => $sender,
+                'recipient' => $recipient
+            ]);
+        }
     }
 
     public function acceptFriendRequest(string $sender, string $recipient): bool {
@@ -192,15 +235,29 @@ class User {
     }
 
     public function blockUser(string $user1, string $user2): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO friendships (sender_username, recipient_username, status, created_at)
-            VALUES (:u1, :u2, 'blocked', NOW())
-            ON DUPLICATE KEY UPDATE status = 'blocked', sender_username = :u3, recipient_username = :u4, created_at = NOW()
-        ");
-        return $stmt->execute([
-            'u1' => $user1, 'u2' => $user2,
-            'u3' => $user1, 'u4' => $user2
-        ]);
+        $existing = $this->getFriendshipStatus($user1, $user2);
+        if ($existing) {
+            $stmt = $this->db->prepare("
+                UPDATE friendships 
+                SET status = 'blocked', sender_username = :user1, recipient_username = :user2, created_at = NOW()
+                WHERE sender_username = :old_sender AND recipient_username = :old_recipient
+            ");
+            return $stmt->execute([
+                'user1' => $user1,
+                'user2' => $user2,
+                'old_sender' => $existing['sender_username'],
+                'old_recipient' => $existing['recipient_username']
+            ]);
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO friendships (sender_username, recipient_username, status, created_at)
+                VALUES (:u1, :u2, 'blocked', NOW())
+            ");
+            return $stmt->execute([
+                'u1' => $user1,
+                'u2' => $user2
+            ]);
+        }
     }
 
     public function getTopScorers(int $limit = 10): array {
