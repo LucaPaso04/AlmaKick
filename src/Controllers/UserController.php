@@ -95,6 +95,8 @@ class UserController extends BaseController {
 
         $pendingRequests = $userModel->getPendingRequests($username);
         $friends = $userModel->getFriends($username);
+        $trend_votes = $userModel->getRecentVotesTrend($username);
+        $sentPendingRequests = $userModel->getSentPendingRequests($username);
 
         $trust_score = (int)$viewedUser['trust_score'];
         if ($trust_score >= 90) {
@@ -120,7 +122,8 @@ class UserController extends BaseController {
                 'friendship' => $friendship,
                 'matches_played' => $viewedUser['matches_played'] ?? 0,
                 'friends_count' => count($friends),
-                'trust_score' => $trust_score
+                'trust_score' => $trust_score,
+                'trend_votes' => $trend_votes
             ]);
         } else {
             view('profile', [
@@ -131,9 +134,11 @@ class UserController extends BaseController {
                 'matches_hosted' => $matches_hosted,
                 'matchHistory' => $matchHistory,
                 'pendingRequests' => $pendingRequests,
+                'sentPendingRequests' => $sentPendingRequests,
                 'friends' => $friends,
                 'trust_score' => $trust_score,
-                'ring_class' => $ring_class
+                'ring_class' => $ring_class,
+                'trend_votes' => $trend_votes
             ]);
         }
     }
@@ -284,21 +289,28 @@ class UserController extends BaseController {
         // 3. Caso Modifica Informazioni Generali
         if (isset($_POST['name'])) {
             $name = trim($_POST['name']);
+            $lastName = trim($_POST['last_name'] ?? '');
             $phone = trim($_POST['phone'] ?? '');
             $preferredRole = trim($_POST['preferred_role'] ?? 'Jolly');
 
             if (empty($name)) {
-                $_SESSION['error'] = "Il campo Nome e Cognome è obbligatorio.";
+                $_SESSION['error'] = "Il campo Nome è obbligatorio.";
+                $this->redirect('/profile');
+            }
+            if (empty($lastName)) {
+                $_SESSION['error'] = "Il campo Cognome è obbligatorio.";
                 $this->redirect('/profile');
             }
 
             $userModel->updateInfo($username, [
                 'name' => $name,
+                'last_name' => $lastName,
                 'phone' => $phone ? $phone : null,
                 'preferred_role' => $preferredRole
             ]);
 
             $_SESSION['user']['name'] = $name; // aggiorna sessione
+            $_SESSION['user']['last_name'] = $lastName; // aggiorna sessione
             $_SESSION['success'] = "Informazioni personali aggiornate con successo.";
             $this->redirect('/profile');
         }
@@ -339,7 +351,25 @@ class UserController extends BaseController {
             if ($existing['status'] === 'accepted') {
                 $_SESSION['error'] = "Siete già amici.";
             } elseif ($existing['status'] === 'pending') {
-                $_SESSION['error'] = "C'è già una richiesta di amicizia in attesa.";
+                if ($existing['sender_username'] === $myUsername) {
+                    $_SESSION['error'] = "C'è già una richiesta di amicizia in sospeso.";
+                } else {
+                    // L'altro utente ha già inviato una richiesta a me: accetto automaticamente!
+                    $userModel->acceptFriendRequest($recipient['username'], $myUsername);
+                    
+                    // Notifica il mittente originale
+                    $notificationModel = new \App\Models\Notification();
+                    $notificationModel->create([
+                        'user_recipient' => $recipient['username'],
+                        'type' => 'friend_accept',
+                        'message' => '🤝 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
+                        'link' => url('/profile?username=' . urlencode($myUsername))
+                    ]);
+                    // Segna come letta la notifica di richiesta ricevuta
+                    $notificationModel->markFriendRequestAsRead($recipient['username'], $myUsername);
+                    
+                    $_SESSION['success'] = "Richiesta di amicizia accettata automaticamente!";
+                }
             } elseif ($existing['status'] === 'blocked') {
                 $_SESSION['error'] = "Operazione non consentita.";
             } else {

@@ -185,3 +185,61 @@
 .badge-modal-btn-close {
     filter: var(--bs-theme-filter-close-btn);
 }
+
+/* Golden Luminescent Border & Holographic Glow for High Stats */
+.stat-card-glow-gold {
+    position: relative;
+    border: 2px solid #ffd700 !important;
+    background: linear-gradient(135deg, var(--card-bg), rgba(255, 215, 0, 0.05)) !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.25), inset 0 0 10px rgba(255, 215, 0, 0.05) !important;
+    overflow: hidden;
+}
+
+.stat-card-glow-gold::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 45%,
+        rgba(255, 215, 0, 0.25) 50%,
+        transparent 55%
+    );
+    transform: rotate(45deg);
+    animation: holo-shine 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes holo-shine {
+    0% {
+        transform: translate(-30%, -30%) rotate(45deg);
+    }
+    100% {
+        transform: translate(30%, 30%) rotate(45deg);
+    }
+}
+
+/* Trust Score Glow Classes */
+.trust-glow-green {
+    filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.8));
+    animation: trust-pulse-green 2s infinite alternate;
+}
+.trust-glow-orange {
+    filter: drop-shadow(0 0 4px rgba(255, 159, 10, 0.4));
+}
+.trust-glow-red {
+    filter: drop-shadow(0 0 4px rgba(255, 69, 58, 0.5));
+}
+
+@keyframes trust-pulse-green {
+    0% {
+        filter: drop-shadow(0 0 4px rgba(0, 255, 102, 0.6));
+    }
+    100% {
+        filter: drop-shadow(0 0 10px rgba(0, 255, 102, 1));
+    }
+}

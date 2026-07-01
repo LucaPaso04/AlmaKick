@@ -122,6 +122,10 @@
                     </div>
                 <?php endif; ?>
 
+                <?php
+                $is_skill_exceptional = (float)($user['skill_rating'] ?? 0) > 4.5;
+                $is_mvp_exceptional = (int)($user['mvp_count'] ?? 0) > 5;
+                ?>
                 <div class="row text-center mt-4 g-3">
                     <div class="col-6 col-md-4">
                         <div class="stat-card rounded-4 p-3 h-100 shadow-sm">
@@ -151,7 +155,7 @@
                         </div>
                     </div>
                     <div class="col-6 col-md-4">
-                        <div class="stat-card rounded-4 p-3 h-100 shadow-sm">
+                        <div class="stat-card rounded-4 p-3 h-100 shadow-sm <?= $is_skill_exceptional ? 'stat-card-glow-gold' : '' ?>">
                             <div class="icon-circle icon-warning">
                                 <i class="bi bi-star-fill"></i>
                             </div>
@@ -162,7 +166,7 @@
                         </div>
                     </div>
                     <div class="col-6 col-md-4">
-                        <div class="stat-card rounded-4 p-3 h-100 shadow-sm">
+                        <div class="stat-card rounded-4 p-3 h-100 shadow-sm <?= $is_mvp_exceptional ? 'stat-card-glow-gold' : '' ?>">
                             <div class="icon-circle icon-info">
                                 <i class="bi bi-award-fill"></i>
                             </div>
@@ -172,12 +176,111 @@
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="stat-card rounded-4 p-3 h-100 shadow-sm d-flex flex-column justify-content-center align-items-center">
-                            <div class="<?= $ring_class ?> mb-2 shadow-sm bg-body profile-trust-score">
-                                <?= $trust_score ?>
+                            <?php
+                            $ts = (int)$trust_score;
+                            $circumference = 157;
+                            $dashoffset = $circumference * (1 - $ts / 100);
+
+                            if ($ts === 100) {
+                                $stroke_color = '#00ff66';
+                                $glow_class = 'trust-glow-green';
+                            } elseif ($ts >= 70) {
+                                $stroke_color = '#ff9f0a';
+                                $glow_class = 'trust-glow-orange';
+                            } else {
+                                $stroke_color = '#ff453a';
+                                $glow_class = 'trust-glow-red';
+                            }
+                            ?>
+                            <div class="trust-circle-container <?= $glow_class ?> mb-2 position-relative shadow-sm bg-body rounded-circle" style="width: 60px; height: 60px;">
+                                <svg width="60" height="60" viewBox="0 0 60 60" style="transform: rotate(-90deg);">
+                                    <circle cx="30" cy="30" r="25" fill="transparent" stroke="rgba(120, 120, 120, 0.15)" stroke-width="4.5" />
+                                    <circle cx="30" cy="30" r="25" fill="transparent" 
+                                            stroke="<?= $stroke_color ?>" stroke-width="4.5" 
+                                            stroke-dasharray="<?= $circumference ?>" 
+                                            stroke-dashoffset="<?= $dashoffset ?>" 
+                                            stroke-linecap="round"
+                                            style="transition: stroke-dashoffset 0.5s ease-in-out;" />
+                                </svg>
+                                <div class="position-absolute top-50 start-50 translate-middle fw-bold text-center" style="font-size: 0.85rem; color: var(--bs-body-color);">
+                                    <?= $ts ?>%
+                                </div>
                             </div>
                             <small class="text-muted text-uppercase fw-semibold stat-card-label">Trust Score</small>
                         </div>
                     </div>
+                </div>
+
+                <!-- Trend/Sparkline Widget -->
+                <div class="mt-4 p-3 bg-body border rounded-4 shadow-sm text-start">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-semibold text-muted text-uppercase tracking-wide" style="font-size: 0.75rem;"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold" style="font-size: 0.75rem;">Stato di Forma</span>
+                    </div>
+                    <?php if (empty($trend_votes)): ?>
+                        <div class="text-center py-2 text-muted small">
+                            <i class="bi bi-info-circle me-1"></i>Non ci sono valutazioni sufficienti per calcolare il trend.
+                        </div>
+                    <?php else: ?>
+                        <?php
+                        $width = 300;
+                        $height = 80;
+                        $padding_x = 35; // margin for left labels
+                        $padding_y = 15;
+                        
+                        $count = count($trend_votes);
+                        $min_val = 1.0;
+                        $max_val = 5.0;
+                        
+                        $step_x = $count > 1 ? ($width - $padding_x - 20) / ($count - 1) : 0;
+                        
+                        $points_array = [];
+                        $points = [];
+                        foreach ($trend_votes as $i => $val) {
+                            $x = $padding_x + $i * $step_x;
+                            // Y goes from top to bottom, so high ratings (5.0) are at the top (lower y values)
+                            $y = $padding_y + (1 - ($val - $min_val) / ($max_val - $min_val)) * ($height - 2 * $padding_y);
+                            $points[] = "$x,$y";
+                            $points_array[] = ['x' => $x, 'y' => $y, 'val' => $val];
+                        }
+                        
+                        $path_d = "M " . implode(" L ", $points);
+                        $fill_d = $path_d . " L " . ($padding_x + ($count - 1) * $step_x) . "," . ($height - $padding_y) . " L " . $padding_x . "," . ($height - $padding_y) . " Z";
+                        
+                        // Reference lines: 3.0 and 4.5
+                        $y_3_0 = $padding_y + (1 - (3.0 - $min_val) / ($max_val - $min_val)) * ($height - 2 * $padding_y);
+                        $y_4_5 = $padding_y + (1 - (4.5 - $min_val) / ($max_val - $min_val)) * ($height - 2 * $padding_y);
+                        ?>
+                        <div class="d-flex align-items-center justify-content-center py-2">
+                            <div style="width: 100%; max-width: 320px;">
+                                <svg viewBox="0 0 <?= $width ?> <?= $height ?>" class="w-100" style="height: 80px; overflow: visible;">
+                                    <defs>
+                                        <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="var(--bs-primary)" stop-opacity="0.25" />
+                                            <stop offset="100%" stop-color="var(--bs-primary)" stop-opacity="0.0" />
+                                        </linearGradient>
+                                    </defs>
+                                    
+                                    <!-- Grid lines and labels -->
+                                    <line x1="<?= $padding_x - 5 ?>" y1="<?= $y_3_0 ?>" x2="<?= $width - 15 ?>" y2="<?= $y_3_0 ?>" stroke="rgba(120, 120, 120, 0.15)" stroke-width="1" stroke-dasharray="3,3" />
+                                    <line x1="<?= $padding_x - 5 ?>" y1="<?= $y_4_5 ?>" x2="<?= $width - 15 ?>" y2="<?= $y_4_5 ?>" stroke="rgba(120, 120, 120, 0.15)" stroke-width="1" stroke-dasharray="3,3" />
+                                    <text x="<?= $padding_x - 8 ?>" y="<?= $y_3_0 + 3 ?>" text-anchor="end" font-size="8" font-weight="bold" fill="var(--bs-secondary)" opacity="0.6">3.0</text>
+                                    <text x="<?= $padding_x - 8 ?>" y="<?= $y_4_5 + 3 ?>" text-anchor="end" font-size="8" font-weight="bold" fill="var(--bs-secondary)" opacity="0.6">4.5</text>
+                                    
+                                    <!-- Area fill -->
+                                    <path d="<?= $fill_d ?>" fill="url(#sparklineGrad)" />
+                                    <!-- Line path -->
+                                    <path d="<?= $path_d ?>" fill="none" stroke="var(--bs-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    
+                                    <!-- Value markers & Text -->
+                                    <?php foreach ($points_array as $pt): ?>
+                                        <circle cx="<?= $pt['x'] ?>" cy="<?= $pt['y'] ?>" r="3.5" fill="#ffffff" stroke="var(--bs-primary)" stroke-width="2" />
+                                        <text x="<?= $pt['x'] ?>" y="<?= $pt['y'] - 8 ?>" text-anchor="middle" font-size="8.5" font-weight="bold" fill="var(--bs-emphasis-color)" style="paint-order: stroke; stroke: var(--bs-body-bg); stroke-width: 3px; stroke-linejoin: round;"><?= number_format($pt['val'], 1) ?></text>
+                                    <?php endforeach; ?>
+                                </svg>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -352,38 +455,103 @@
                             </div>
                         <?php endif; ?>
 
-                        <div class="card shadow-sm border rounded-4 p-4 <?= ($is_own_profile && empty($pendingRequests)) ? 'h-100' : '' ?>">
-                            <h5 class="fw-bold mb-4"><i class="bi bi-people-fill text-success me-2"></i>Amici di <?= e($user['name']) ?> (<?= count($friends) ?>)</h5>
+                        <div class="card shadow-sm border rounded-4 p-4 <?= ($is_own_profile && empty($pendingRequests) && empty($sentPendingRequests)) ? 'h-100' : '' ?>">
+                            <h5 class="fw-bold mb-4"><i class="bi bi-people-fill text-success me-2"></i>Amici di <?= e($user['name']) ?></h5>
 
-                            <?php if(empty($friends)): ?>
+                            <?php if(empty($friends) && empty($pendingRequests) && empty($sentPendingRequests)): ?>
                                 <div class="text-center py-4 bg-body-tertiary rounded-3">
                                     <i class="bi bi-emoji-frown fs-2 text-muted mb-2"></i>
-                                    <p class="text-muted mb-0">Nessun amico trovato in lista.</p>
+                                    <p class="text-muted mb-0">Nessun amico o richiesta in lista.</p>
                                 </div>
                             <?php else: ?>
                                 <div class="list-group list-group-flush profile-scrollable-list-large">
+                                    
+                                    <!-- Richieste Ricevute (Da accettare) -->
+                                    <?php foreach($pendingRequests as $richiesta): ?>
+                                        <div class="list-group-item px-0 py-3 border-bottom border-light">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-warning text-dark rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar">
+                                                        <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold">
+                                                            <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
+                                                        </h6>
+                                                        <small class="text-muted">
+                                                            <?= e($richiesta['preferred_role'] ?? 'Giocatore') ?> • 
+                                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 font-size-2xs">Richiesta Ricevuta</span>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <form action="<?= url('/friends/accept/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0">
+                                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold shadow-sm px-3" title="Accetta"><i class="bi bi-check-lg me-1"></i>Accetta</button>
+                                                    </form>
+                                                    <form action="<?= url('/friends/reject/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0">
+                                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold shadow-sm px-2" title="Rifiuta"><i class="bi bi-x-lg"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+
+                                    <!-- Richieste Inviate (In attesa) -->
+                                    <?php foreach($sentPendingRequests as $richiesta): ?>
+                                        <div class="list-group-item px-0 py-3 border-bottom border-light">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-secondary bg-opacity-20 text-secondary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar">
+                                                        <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold">
+                                                            <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
+                                                        </h6>
+                                                        <small class="text-muted">
+                                                            <?= e($richiesta['preferred_role'] ?? 'Giocatore') ?> • 
+                                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 font-size-2xs">Richiesta Inviata (In attesa)</span>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <form action="<?= url('/friends/remove/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0"
+                                                          onsubmit="return confirm('Sei sicuro di voler annullare questa richiesta di amicizia?');">
+                                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold px-3 shadow-sm" title="Annulla Richiesta">Annulla</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+
+                                    <!-- Amici Accettati -->
                                     <?php foreach($friends as $amico): ?>
                                         <div class="list-group-item px-0 py-3 border-bottom border-light">
-                                            <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                                                 <div class="d-flex align-items-center">
                                                     <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar">
                                                         <?= strtoupper(substr($amico['name'], 0, 1)) ?>
                                                     </div>
-                                                    <div class="flex-grow-1">
+                                                    <div>
                                                         <h6 class="mb-0 fw-bold">
                                                             <a href="<?= url('/profile?username=' . urlencode($amico['username'])) ?>" class="text-decoration-none text-body"><?= e($amico['name']) ?></a>
                                                         </h6>
-                                                        <small class="text-muted"><?= e($amico['preferred_role'] ?? 'Giocatore') ?> •
-                                                             <i class="bi bi-star-fill text-warning"></i>
-                                                             <?= $amico['skill_rating'] > 0 ? number_format($amico['skill_rating'], 1) : '-' ?></small>
+                                                        <small class="text-muted">
+                                                            <?= e($amico['preferred_role'] ?? 'Giocatore') ?> •
+                                                            <i class="bi bi-star-fill text-warning"></i>
+                                                            <?= $amico['skill_rating'] > 0 ? number_format($amico['skill_rating'], 1) : '-' ?>
+                                                        </small>
                                                     </div>
                                                 </div>
                                                 <?php if ($is_own_profile): ?>
                                                     <form action="<?= url('/friends/remove/' . urlencode($amico['username'])) ?>" method="POST"
-                                                        class="me-2"
+                                                        class="m-0"
                                                         onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');">
                                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2 shadow-sm" title="Rimuovi"><i class="bi bi-person-dash"></i></button>
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2 shadow-sm" title="Rimuovi"><i class="bi bi-person-dash"></i> Rimuovi</button>
                                                     </form>
                                                 <?php endif; ?>
                                             </div>
@@ -413,7 +581,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <h6 class="fw-bold mb-0 text-uppercase text-muted settings-section-header">Informazioni Personali</h6>
                                                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm"
-                                                    data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                                    data-bs-toggle="modal" data-bs-target="#settingsModal" onclick="switchSettingsTab('modal-info-tab')">
                                                     <i class="bi bi-pencil-square me-1"></i>Modifica
                                                 </button>
                                             </div>
@@ -443,7 +611,7 @@
                                                     <span class="text-muted"><?= e($user['email']) ?></span>
                                                 </div>
                                                 <button class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm"
-                                                    data-bs-toggle="modal" type="button" data-bs-target="#changeEmailModal">
+                                                    data-bs-toggle="modal" type="button" data-bs-target="#settingsModal" onclick="switchSettingsTab('modal-email-tab')">
                                                     <i class="bi bi-envelope me-2"></i>Cambia Email
                                                 </button>
                                             </div>
@@ -454,7 +622,7 @@
                                                     <span class="text-muted">************</span>
                                                 </div>
                                                 <button class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm"
-                                                    data-bs-toggle="modal" type="button" data-bs-target="#changePasswordModal">
+                                                    data-bs-toggle="modal" type="button" data-bs-target="#settingsModal" onclick="switchSettingsTab('modal-pwd-tab')">
                                                     <i class="bi bi-key me-2"></i>Cambia Password
                                                 </button>
                                             </div>
@@ -477,104 +645,118 @@
 </div>
 
 <?php if ($is_own_profile): ?>
-    <!-- Modal Modifica Profilo -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <!-- Modal Gestione Account (Schede Unificate) -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-4">
                 <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="editProfileModalLabel">Modifica Informazioni</h5>
+                    <h5 class="modal-title fw-bold" id="settingsModalLabel">Impostazioni Account</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
                 </div>
-                <form action="<?= url('/profile/info') ?>" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label fw-semibold">Nome e Cognome</label>
-                            <input type="text" class="form-control" id="name" name="name" value="<?= e($user['name']) ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label fw-semibold">Numero di Telefono</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" value="<?= e($user['phone'] ?? '') ?>" placeholder="es. 3331234567">
-                        </div>
-                        <div class="mb-3">
-                            <label for="preferred_role" class="form-label fw-semibold">Ruolo Preferito</label>
-                            <select class="form-select" id="preferred_role" name="preferred_role">
-                                <option value="Jolly" <?= $user['preferred_role'] === 'Jolly' ? 'selected' : '' ?>>Jolly</option>
-                                <option value="Portiere" <?= $user['preferred_role'] === 'Portiere' ? 'selected' : '' ?>>Portiere</option>
-                                <option value="Difensore" <?= $user['preferred_role'] === 'Difensore' ? 'selected' : '' ?>>Difensore</option>
-                                <option value="Centrocampista" <?= $user['preferred_role'] === 'Centrocampista' ? 'selected' : '' ?>>Centrocampista</option>
-                                <option value="Attaccante" <?= $user['preferred_role'] === 'Attaccante' ? 'selected' : '' ?>>Attaccante</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top-0 pt-0">
-                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Annulla</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Salva Modifiche</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                
+                <div class="px-3 pt-3">
+                    <ul class="nav nav-tabs border-bottom-0 gap-1 bg-light p-1 rounded-3" id="settingsModalTabs" role="tablist" style="font-size: 0.85rem;">
+                        <li class="nav-item flex-grow-1 text-center" role="presentation">
+                            <button class="nav-link active rounded-2 border-0 w-100 fw-semibold" id="modal-info-tab" data-bs-toggle="tab" data-bs-target="#modal-info-pane" type="button" role="tab" aria-controls="modal-info-pane" aria-selected="true">
+                                <i class="bi bi-person me-1"></i>Profilo
+                            </button>
+                        </li>
+                        <li class="nav-item flex-grow-1 text-center" role="presentation">
+                            <button class="nav-link rounded-2 border-0 w-100 fw-semibold" id="modal-email-tab" data-bs-toggle="tab" data-bs-target="#modal-email-pane" type="button" role="tab" aria-controls="modal-email-pane" aria-selected="false">
+                                <i class="bi bi-envelope me-1"></i>Email
+                            </button>
+                        </li>
+                        <li class="nav-item flex-grow-1 text-center" role="presentation">
+                            <button class="nav-link rounded-2 border-0 w-100 fw-semibold" id="modal-pwd-tab" data-bs-toggle="tab" data-bs-target="#modal-pwd-pane" type="button" role="tab" aria-controls="modal-pwd-pane" aria-selected="false">
+                                <i class="bi bi-key me-1"></i>Password
+                            </button>
+                        </li>
+                    </ul>
+                </div>
 
-    <!-- Modal Cambia Email -->
-    <div class="modal fade" id="changeEmailModal" tabindex="-1" aria-labelledby="changeEmailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-4">
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="changeEmailModalLabel">Cambia Indirizzo Email</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
-                </div>
-                <form action="<?= url('/profile/info') ?>" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                    <div class="modal-body">
-                        <p class="text-muted small">Per motivi di sicurezza, ti chiediamo di confermare la tua password attuale.</p>
-                        <div class="mb-3">
-                            <label for="new_email" class="form-label fw-semibold">Nuova Email</label>
-                            <input type="email" class="form-control" id="new_email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="current_password_email" class="form-label fw-semibold">Password Attuale</label>
-                            <input type="password" class="form-control" id="current_password_email" name="current_password" required>
-                        </div>
+                <div class="tab-content" id="settingsModalTabsContent">
+                    <!-- Tab: Modifica Info -->
+                    <div class="tab-pane fade show active" id="modal-info-pane" role="tabpanel" aria-labelledby="modal-info-tab">
+                        <form action="<?= url('/profile/info') ?>" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                            <div class="modal-body pt-3">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label fw-semibold">Nome</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="<?= e($user['name']) ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="last_name" class="form-label fw-semibold">Cognome</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" value="<?= e($user['last_name'] ?? '') ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label fw-semibold">Numero di Telefono</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" value="<?= e($user['phone'] ?? '') ?>" placeholder="es. 3331234567">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="preferred_role" class="form-label fw-semibold">Ruolo Preferito</label>
+                                    <select class="form-select" id="preferred_role" name="preferred_role">
+                                        <option value="Jolly" <?= $user['preferred_role'] === 'Jolly' ? 'selected' : '' ?>>Jolly</option>
+                                        <option value="Portiere" <?= $user['preferred_role'] === 'Portiere' ? 'selected' : '' ?>>Portiere</option>
+                                        <option value="Difensore" <?= $user['preferred_role'] === 'Difensore' ? 'selected' : '' ?>>Difensore</option>
+                                        <option value="Centrocampista" <?= $user['preferred_role'] === 'Centrocampista' ? 'selected' : '' ?>>Centrocampista</option>
+                                        <option value="Attaccante" <?= $user['preferred_role'] === 'Attaccante' ? 'selected' : '' ?>>Attaccante</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 pt-0">
+                                <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Salva Modifiche</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer border-top-0 pt-0">
-                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Annulla</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Aggiorna Email</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal Cambia Password -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-4">
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-danger" id="changePasswordModalLabel">Cambia Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                    <!-- Tab: Cambia Email -->
+                    <div class="tab-pane fade" id="modal-email-pane" role="tabpanel" aria-labelledby="modal-email-tab">
+                        <form action="<?= url('/profile/info') ?>" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                            <div class="modal-body pt-3">
+                                <p class="text-muted small">Per motivi di sicurezza, ti chiediamo di confermare la tua password attuale.</p>
+                                <div class="mb-3">
+                                    <label for="new_email" class="form-label fw-semibold">Nuova Email</label>
+                                    <input type="email" class="form-control" id="new_email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="current_password_email" class="form-label fw-semibold">Password Attuale</label>
+                                    <input type="password" class="form-control" id="current_password_email" name="current_password" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 pt-0">
+                                <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Aggiorna Email</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tab: Cambia Password -->
+                    <div class="tab-pane fade" id="modal-pwd-pane" role="tabpanel" aria-labelledby="modal-pwd-tab">
+                        <form action="<?= url('/profile/info') ?>" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                            <div class="modal-body pt-3">
+                                <div class="mb-3">
+                                    <label for="current_password" class="form-label fw-semibold">Password Attuale</label>
+                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_password" class="form-label fw-semibold">Nuova Password</label>
+                                    <input type="password" class="form-control" id="new_password" name="password" required minlength="6">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password_confirmation" class="form-label fw-semibold">Conferma Nuova Password</label>
+                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 pt-0">
+                                <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Aggiorna Password</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <form action="<?= url('/profile/info') ?>" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="current_password" class="form-label fw-semibold">Password Attuale</label>
-                            <input type="password" class="form-control" id="current_password" name="current_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password" class="form-label fw-semibold">Nuova Password</label>
-                            <input type="password" class="form-control" id="new_password" name="password" required minlength="6">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label fw-semibold">Conferma Nuova Password</label>
-                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required minlength="6">
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top-0 pt-0">
-                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Annulla</button>
-                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Aggiorna Password</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -597,5 +779,13 @@
         }).catch(err => {
             console.error("Errore durante la copia negli appunti: ", err);
         });
+    }
+
+    function switchSettingsTab(tabId) {
+        const tabEl = document.getElementById(tabId);
+        if (tabEl) {
+            const tab = new bootstrap.Tab(tabEl);
+            tab.show();
+        }
     }
 </script>
