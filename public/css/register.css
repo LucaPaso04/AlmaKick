@@ -214,6 +214,7 @@
     color: var(--bs-secondary) !important;
 }
 
+
 /* Heading Styles */
 .register-card h1,
 .register-card h2 {
@@ -357,4 +358,54 @@
 .link-primary:focus-visible {
     outline: 2px solid var(--bs-primary);
     outline-offset: 2px;
+}
+
+/* Password Checker */
+
+
+.password-strength {
+    height: 0.45rem;
+    width: 100%;
+    background-color: var(--bs-secondary-bg);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 0.4rem;
+}
+
+.password-strength-bar {
+    display: block;
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background-color: var(--bs-border-color);
+    transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.password-strength-text {
+    min-height: 1.25rem;
+    margin-top: 0.35rem;
+}
+
+.password-strength-bar.strength-weak {
+    background-color: #dc3545 !important; 
+}
+
+.password-strength-bar.strength-medium {
+    background-color: #ffc107 !important; 
+}
+
+.password-strength-bar.strength-strong {
+    background-color: #198754 !important; 
+}
+
+.text-danger-custom {
+    color: #dc3545 !important;
+}
+
+.text-warning-custom {
+    color: #b58100 !important; 
+}
+
+.text-success-custom {
+    color: #198754 !important;
 }
