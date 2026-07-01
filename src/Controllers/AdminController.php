@@ -61,6 +61,10 @@ class AdminController extends BaseController {
             'low' => (int)($trustBracketsRaw['low'] ?? 0)
         ];
 
+        // Report stats for chart
+        $resolvedReports = (int) $db->query("SELECT COUNT(*) FROM reports WHERE status = 'resolved'")->fetchColumn();
+        $dismissedReports = (int) $db->query("SELECT COUNT(*) FROM reports WHERE status = 'dismissed'")->fetchColumn();
+
         // 2. Users Table with sorting, searching, and pagination
         $search = $_GET['search'] ?? '';
         $roleFilter = $_GET['role'] ?? '';
@@ -335,7 +339,9 @@ class AdminController extends BaseController {
             // Charts Data
             'regTrend' => $regTrend,
             'rolesDist' => $rolesDist,
-            'trustBrackets' => $trustBrackets
+            'trustBrackets' => $trustBrackets,
+            'resolvedReports' => $resolvedReports,
+            'dismissedReports' => $dismissedReports
         ]);
     }
 

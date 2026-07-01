@@ -60,38 +60,6 @@
     margin-bottom: 0.8rem;
 }
 
-.input-icon-group {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.input-icon-group .form-icon {
-    flex-shrink: 0;
-    color: var(--bs-secondary-color);
-    pointer-events: none;
-    z-index: 4;
-    font-size: 1.1rem;
-    line-height: 1;
-}
-
-.input-icon-group .form-floating {
-    flex: 1 1 auto;
-    position: relative;
-}
-
-.input-icon-group .form-control,
-.input-icon-group .form-select {
-    padding-left: 1rem !important;
-}
-
-.input-icon-group .form-floating > label {
-    left: 0 !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    width: 100%;
-    z-index: 2;
-}
 
 .register-card .form-floating .form-control,
 .register-card .form-floating .form-select {
@@ -239,16 +207,6 @@
     }
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

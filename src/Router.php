@@ -72,8 +72,8 @@ class Router {
 
     private function sendNotFound(): void {
         http_response_code(404);
-        if (file_exists(VIEW_PATH . '/errors/404.php')) {
-            require_view('errors/404');
+        if (function_exists('view') && file_exists(VIEW_PATH . '/errors/404.php')) {
+            view('errors/404', ['title' => '404 - AlmaKick']);
         } else {
             echo "<h1>404 Pagina Non Trovata</h1><p>La risorsa richiesta non esiste.</p>";
         }

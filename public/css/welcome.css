@@ -1,10 +1,5 @@
 /* Welcome Page Styles */
 
-.navbar {
-    background: rgba(3, 9, 26, 0.7) !important;
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
 
 .welcome-container {
     padding: 0;

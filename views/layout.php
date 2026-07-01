@@ -17,43 +17,18 @@ if (empty($current_path)) {
 
 $isHomeActive = (isset($_SESSION['user']) && ($current_path === '/matches' || $current_path === '/')) || (!isset($_SESSION['user']) && $current_path === '/');
 
-$userAvatar = null;
+$userAvatar = $layoutUserAvatar ?? null;
+$pendingRequestsCount = $layoutPendingRequestsCount ?? 0;
+$pendingReportsCount = $layoutPendingReportsCount ?? 0;
 $avatarUrl = null;
-$pendingRequestsCount = 0;
-$pendingReportsCount = 0;
 
-if (isset($_SESSION['user'])) {
-    try {
-        $db = \App\Database::getInstance()->getConnection();
-        
-        // Carica l'avatar dell'utente corrente dal DB
-        $stmt = $db->prepare("SELECT avatar FROM users WHERE username = :username");
-        $stmt->execute(['username' => $_SESSION['user']['username']]);
-        $userAvatar = $stmt->fetchColumn();
-        
-        if ($userAvatar) {
-            if (strpos($userAvatar, 'http://') === 0 || strpos($userAvatar, 'https://') === 0) {
-                $avatarUrl = $userAvatar;
-            } elseif (strpos($userAvatar, 'uploads/') === 0) {
-                $avatarUrl = url('/' . $userAvatar);
-            } else {
-                $avatarUrl = url('/uploads/' . ltrim($userAvatar, '/'));
-            }
-        }
-
-        // Carica il conteggio delle richieste di amicizia in attesa
-        $stmtCount = $db->prepare("SELECT COUNT(*) FROM friendships WHERE recipient_username = :username AND status = 'pending'");
-        $stmtCount->execute(['username' => $_SESSION['user']['username']]);
-        $pendingRequestsCount = (int)$stmtCount->fetchColumn();
-
-        // Carica il conteggio delle segnalazioni in attesa per l'admin
-        if ($_SESSION['user']['role'] === 'super_admin') {
-            $stmtReports = $db->prepare("SELECT COUNT(*) FROM reports WHERE status = 'pending'");
-            $stmtReports->execute();
-            $pendingReportsCount = (int)$stmtReports->fetchColumn();
-        }
-    } catch (\PDOException $e) {
-        // Fallback silenzioso in caso di problemi col DB
+if ($userAvatar) {
+    if (strpos($userAvatar, 'http://') === 0 || strpos($userAvatar, 'https://') === 0) {
+        $avatarUrl = $userAvatar;
+    } elseif (strpos($userAvatar, 'uploads/') === 0) {
+        $avatarUrl = url('/' . $userAvatar);
+    } else {
+        $avatarUrl = url('/uploads/' . ltrim($userAvatar, '/'));
     }
 }
 ?>

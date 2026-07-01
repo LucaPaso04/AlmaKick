@@ -1,7 +1,4 @@
 <?php
-$db = \App\Database::getInstance()->getConnection();
-$resolvedReports = (int) $db->query("SELECT COUNT(*) FROM reports WHERE status = 'resolved'")->fetchColumn();
-$dismissedReports = (int) $db->query("SELECT COUNT(*) FROM reports WHERE status = 'dismissed'")->fetchColumn();
 $pendingReports = $stats['pending_reports'];
 ?>
 
