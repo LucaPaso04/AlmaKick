@@ -31,8 +31,73 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
             <?php if ($is_registered && $my_registration): ?>
                 
                 <?php if ($my_registration['status'] === 'waitlist'): ?>
-                    <p class="text-warning fw-bold mb-3"><span class="bi bi-hourglass-split me-2"></span>Sei in Panchina (Lista d'attesa)!</p>
-                    <small class="d-block mb-3 text-muted">Subentrerai automaticamente in caso di ritiri.</small>
+                    <?php if (!empty($my_registration['offer_expires_at']) && strtotime($my_registration['offer_expires_at']) > time()): ?>
+                        <?php 
+                        $secondsLeft = strtotime($my_registration['offer_expires_at']) - time();
+                        $minutesLeft = ceil($secondsLeft / 60);
+                        ?>
+                        <div class="alert alert-warning border border-warning border-opacity-25 shadow-sm rounded-4 p-4 mb-3 position-relative overflow-hidden lastminute-offer-card" style="border-left: 5px solid #ffb300 !important;">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center p-2 me-3 shadow-sm" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-lightning-charge-fill fs-5 animate-pulse"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bolder text-warning mb-0 fs-5 text-start">⚡ Posto Disponibile Last-Minute!</h5>
+                                    <small class="text-warning-emphasis opacity-75 d-block text-start">Si è liberato un posto attivo in squadra.</small>
+                                </div>
+                            </div>
+                            <p class="small mb-3 text-start text-warning-emphasis opacity-90">Un giocatore si è ritirato. Poiché la partita inizia a breve, ti offriamo l'opportunità di scendere in campo! Devi decidere entro il tempo limite indicato sotto.</p>
+                            
+                            <div class="bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-pill py-2 px-3 d-inline-flex align-items-center gap-2 mb-3 shadow-sm" id="offer-timer" data-expires="<?= strtotime($my_registration['offer_expires_at']) ?>">
+                                <i class="bi bi-alarm-fill text-warning"></i>
+                                <span class="fw-bold text-warning-emphasis font-monospace" style="font-size: 0.95rem; letter-spacing: 0.5px;">Tempo rimasto: <?= $minutesLeft ?>m</span>
+                            </div>
+                            
+                            <div class="d-flex flex-wrap justify-content-center gap-2">
+                                <form action="<?= url('/matches/' . $match['id'] . '/accept-offer?from=' . urlencode($from)) ?>" method="POST" class="m-0">
+                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                    <button type="submit" class="btn btn-warning text-dark rounded-pill px-4 py-2 fw-bold shadow-sm hover-scale transition-all">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Accetta Posto
+                                    </button>
+                                </form>
+                                <form action="<?= url('/matches/' . $match['id'] . '/reject-offer?from=' . urlencode($from)) ?>" method="POST" class="m-0"
+                                    onsubmit="return confirm('Sei sicuro di voler rifiutare? Rifiutando verrai rimosso dalla panchina.');">
+                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                    <button type="submit" class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm hover-scale transition-all">
+                                        <i class="bi bi-x-circle me-1"></i> Rifiuta
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const timerEl = document.getElementById("offer-timer");
+                            if (timerEl) {
+                                const expires = parseInt(timerEl.getAttribute("data-expires"), 10) * 1000;
+                                const span = timerEl.querySelector("span");
+                                function updateTimer() {
+                                    const now = new Date().getTime();
+                                    const distance = expires - now;
+                                    if (distance < 0) {
+                                        span.innerText = "Tempo scaduto!";
+                                        span.classList.add("text-danger");
+                                        setTimeout(() => { window.location.reload(); }, 1500);
+                                        return;
+                                    }
+                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                    span.innerText = "Tempo rimasto: " + minutes + "m " + seconds + "s";
+                                    setTimeout(updateTimer, 1000);
+                                }
+                                updateTimer();
+                            }
+                        });
+                        </script>
+                    <?php else: ?>
+                        <p class="text-warning fw-bold mb-3"><span class="bi bi-hourglass-split me-2"></span>Sei in Panchina (Lista d'attesa)!</p>
+                        <small class="d-block mb-3 text-muted">Subentrerai automaticamente in caso di ritiri.</small>
+                    <?php endif; ?>
                 <?php else: ?>
                     <p class="text-success fw-bold mb-3"><span class="bi bi-check-circle-fill me-2"></span>Sei Iscritto!</p>
                     <?php if($my_registration['has_guest']): ?>
@@ -43,11 +108,13 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <form action="<?= url('/matches/' . $match['id'] . '/leave?from=' . urlencode($from)) ?>" method="POST"
-                    onsubmit="return confirm('Sei sicuro di volerti ritirare? Potresti perdere Trust Score se mancano meno di 24h.');">
-                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                    <button type="submit" class="btn btn-outline-danger shadow-sm rounded-pill px-4 mt-2">Ritirati dalla partita</button>
-                </form>
+                <?php if (!$is_host): ?>
+                    <form action="<?= url('/matches/' . $match['id'] . '/leave?from=' . urlencode($from)) ?>" method="POST"
+                        onsubmit="return confirm('Sei sicuro di volerti ritirare? Potresti perdere Trust Score se mancano meno di 24h.');">
+                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                        <button type="submit" class="btn btn-outline-danger shadow-sm rounded-pill px-4 mt-2">Ritirati dalla partita</button>
+                    </form>
+                <?php endif; ?>
             <?php else: ?>
                 <?php if (!isset($_SESSION['user'])): ?>
                     <p class="text-muted mb-3">Accedi per partecipare a questa partita.</p>

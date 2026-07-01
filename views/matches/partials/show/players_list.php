@@ -1,3 +1,10 @@
+<style>
+@keyframes pulse-animation-badge {
+    0% { opacity: 0.6; transform: scale(0.98); }
+    50% { opacity: 1; transform: scale(1.02); }
+    100% { opacity: 0.6; transform: scale(0.98); }
+}
+</style>
 <?php
 // views/matches/partials/show/players_list.php
 
@@ -5,7 +12,10 @@ $activePlayers = [];
 $benchPlayers = [];
 foreach ($registrations as $reg) {
     if ($reg['status'] === 'cancelled') continue;
-    if ($reg['status'] === 'waitlist') {
+    $isOfferActive = ($reg['status'] === 'waitlist' && !empty($reg['offer_expires_at']) && strtotime($reg['offer_expires_at']) > time());
+    if ($isOfferActive) {
+        $activePlayers[] = $reg;
+    } elseif ($reg['status'] === 'waitlist') {
         $benchPlayers[] = $reg;
     } else {
         $activePlayers[] = $reg;
@@ -51,8 +61,9 @@ foreach ($registrations as $reg) {
                 }
             }
             $isPlayerHost = ($reg['username'] === $match['host_username']);
+            $isOfferActive = ($reg['status'] === 'waitlist' && !empty($reg['offer_expires_at']) && strtotime($reg['offer_expires_at']) > time());
             ?>
-            <div class="list-group-item border-0 border-bottom d-flex justify-content-between align-items-center py-3 bg-body hover-scale transition-all" role="listitem">
+            <div class="list-group-item border-0 border-bottom d-flex justify-content-between align-items-center py-3 bg-body hover-scale transition-all <?= $isOfferActive ? 'border-start border-3 border-warning opacity-75' : '' ?>" role="listitem">
                 <div class="d-flex align-items-center">
                     <div class="bg-<?= $reg['team'] === 'home' ? 'danger' : ($reg['team'] === 'away' ? 'primary' : 'secondary') ?> text-white rounded-circle d-flex justify-content-center align-items-center me-3 fs-5 fw-bold shadow-sm border border-2 border-white match-show-avatar"
                         style="<?= $regAvatarUrl ? 'background-image: url(' . htmlspecialchars($regAvatarUrl) . '); background-size: cover; background-position: center;' : '' ?>" aria-hidden="true">
@@ -70,6 +81,9 @@ foreach ($registrations as $reg) {
                             <?php endif; ?>
                             <?php if($isPlayerHost): ?>
                                 <span class="badge bg-secondary shadow-sm"><span class="bi bi-star-fill text-warning me-1" aria-hidden="true"></span>Host</span>
+                            <?php endif; ?>
+                            <?php if($isOfferActive): ?>
+                                <span class="badge bg-warning text-dark shadow-sm d-inline-flex align-items-center" style="animation: pulse-animation-badge 1.5s infinite;"><i class="bi bi-lightning-fill me-1"></i>Da confermare</span>
                             <?php endif; ?>
                             <?php if($reg['team']): ?>
                                 <span class="badge bg-<?= $reg['team'] === 'home' ? 'danger' : 'primary' ?> shadow-sm"><?= ucfirst($reg['team']) ?></span>

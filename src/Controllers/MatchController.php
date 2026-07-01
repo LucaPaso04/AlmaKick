@@ -9,6 +9,9 @@ class MatchController extends BaseController {
     public function index() {
         $this->resolveExpiredMvps();
         $this->autoCancelExpiredMatches();
+        $this->resolveExpiredWaitlistOffers();
+        $this->autoFinishPastMatches();
+        $this->autoCloseUnreportedMatches();
         $matchModel = new SoccerMatch();
         
         $filters = [
@@ -138,6 +141,9 @@ class MatchController extends BaseController {
     public function show($id) {
         $this->resolveExpiredMvps();
         $this->autoCancelExpiredMatches();
+        $this->resolveExpiredWaitlistOffers();
+        $this->autoFinishPastMatches();
+        $this->autoCloseUnreportedMatches();
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
 
@@ -165,7 +171,8 @@ class MatchController extends BaseController {
         // Calcolo posti e quote
         $occupied_seats = 0;
         foreach ($registrations as $reg) {
-            if ($reg['status'] === 'registered') {
+            $isOfferActive = ($reg['status'] === 'waitlist' && !empty($reg['offer_expires_at']) && strtotime($reg['offer_expires_at']) > time());
+            if ($reg['status'] === 'registered' || $isOfferActive) {
                 $occupied_seats += 1 + (int)$reg['has_guest'];
             }
         }
@@ -229,6 +236,7 @@ class MatchController extends BaseController {
     }
 
     public function join($id) {
+        $this->resolveExpiredWaitlistOffers();
         $this->validateCsrf();
         $username = $_SESSION['user']['username'] ?? null;
         if (!$username) {
@@ -276,8 +284,13 @@ class MatchController extends BaseController {
         $stmtCheck->execute(['match_id' => $id, 'username' => $username]);
         $existing = $stmtCheck->fetch();
 
-        // Calcola posti occupati
-        $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        // Calcola posti occupati (compresi quelli con offerta attiva in panchina)
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
         $stmtCount->execute(['match_id' => $id]);
         $occupied = (int)$stmtCount->fetchColumn();
 
@@ -334,6 +347,16 @@ class MatchController extends BaseController {
 
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
+
+        if (!$match) {
+            $_SESSION['error'] = "Partita non trovata.";
+            $this->redirectToMatch($id);
+        }
+
+        if ($match['host_username'] === $username) {
+            $_SESSION['error'] = "L'organizzatore non può ritirarsi dalla partita.";
+            $this->redirectToMatch($id);
+        }
         
         // Penalità di Trust Score se manca meno di 24h all'inizio ed era iscritto attivo
         $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
@@ -354,49 +377,7 @@ class MatchController extends BaseController {
 
         // Se era un iscritto attivo, prova a promuovere chi entra nei posti rimasti in panchina
         if ($reg['status'] === 'registered') {
-            // Ricalcola i posti occupati escludendo il record appena cancellato
-            $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
-            $stmtCount->execute(['match_id' => $id]);
-            $occupied = (int)$stmtCount->fetchColumn();
-
-            $freeSeats = max(0, (int)$match['max_players'] - $occupied);
-
-            if ($freeSeats > 0) {
-                // Recupera la lista d'attesa ordinata cronologicamente
-                $stmtWaitlist = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND status = 'waitlist' ORDER BY created_at ASC");
-                $stmtWaitlist->execute(['match_id' => $id]);
-                $waitlist = $stmtWaitlist->fetchAll(\PDO::FETCH_ASSOC);
-
-                foreach ($waitlist as $next) {
-                    $needed = 1 + (int)$next['has_guest'];
-                    if ($needed <= $freeSeats) {
-                        // Promuovi questo panchinaro a titolare
-                        $db->prepare("UPDATE registrations SET status = 'registered', updated_at = NOW() WHERE id = :id")->execute(['id' => $next['id']]);
-                        
-                        // Invia notifica di promozione
-                        $notificationModel = new \App\Models\Notification();
-                        $notificationModel->create([
-                            'user_recipient' => $next['username'],
-                            'type' => 'match_promotion',
-                            'message' => '🔔 Congratulazioni! Sei stato promosso a giocatore attivo per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '.',
-                            'link' => url('/matches/' . $id)
-                        ]);
-
-                        $freeSeats -= $needed;
-                        $occupied += $needed;
-                        if ($freeSeats <= 0) {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Ricalcola se la partita è di nuovo disponibile o piena
-            if ($occupied < (int)$match['max_players']) {
-                $db->prepare("UPDATE matches SET status = 'open' WHERE id = :id")->execute(['id' => $id]);
-            } else {
-                $db->prepare("UPDATE matches SET status = 'full' WHERE id = :id")->execute(['id' => $id]);
-            }
+            $this->promoteNextWaitlistPlayer($id);
         }
 
         $_SESSION['success'] = "Ritiro effettuato." . ($scorePenalty < 0 ? " Hai ricevuto una penalità di $scorePenalty punti sul tuo Trust Score per ritiro tardivo." : "");
@@ -524,8 +505,13 @@ class MatchController extends BaseController {
         $motivoMeteo = (isset($_POST['motivo_meteo']) && $_POST['motivo_meteo'] == 1) ? 1 : 0;
         $motivoGiocatori = (isset($_POST['motivo_giocatori']) && $_POST['motivo_giocatori'] == 1) ? 1 : 0;
 
-        // Recupera iscritti attivi
-        $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        // Recupera iscritti attivi (compresi quelli con offerta attiva in panchina)
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
         $stmtCount->execute(['match_id' => $id]);
         $occupied = (int)$stmtCount->fetchColumn();
 
@@ -1148,6 +1134,407 @@ class MatchController extends BaseController {
                         $db->rollBack();
                     }
                 }
+            }
+        }
+    }
+
+    private function resolveExpiredWaitlistOffers() {
+        $db = \App\Database::getInstance()->getConnection();
+        
+        // Trova offerte scadute
+        $stmt = $db->prepare("
+            SELECT r.*, m.location, m.date 
+            FROM registrations r
+            JOIN matches m ON r.match_id = m.id
+            WHERE r.status = 'waitlist' 
+              AND r.offer_expires_at IS NOT NULL 
+              AND r.offer_expires_at <= NOW()
+        ");
+        $stmt->execute();
+        $expired = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($expired)) {
+            return;
+        }
+
+        $notificationModel = new \App\Models\Notification();
+
+        foreach ($expired as $reg) {
+            // Aggiorna a cancellato e rimuovi scadenza
+            $db->prepare("
+                UPDATE registrations 
+                SET status = 'cancelled', offer_expires_at = NULL, updated_at = NOW() 
+                WHERE id = :id
+            ")->execute(['id' => $reg['id']]);
+
+            // Invia notifica di scadenza offerta
+            $notificationModel->create([
+                'user_recipient' => $reg['username'],
+                'type' => 'offer_expired',
+                'message' => '⏰ L\'offerta per partecipare alla partita a ' . $reg['location'] . ' del ' . date('d/m/Y', strtotime($reg['date'])) . ' è scaduta.',
+                'link' => url('/matches/' . $reg['match_id'])
+            ]);
+
+            // Promuovi o offri al prossimo panchinaro
+            $this->promoteNextWaitlistPlayer($reg['match_id']);
+        }
+    }
+
+    private function promoteNextWaitlistPlayer($matchId) {
+        $db = \App\Database::getInstance()->getConnection();
+        
+        $stmtMatch = $db->prepare("SELECT * FROM matches WHERE id = :id");
+        $stmtMatch->execute(['id' => $matchId]);
+        $match = $stmtMatch->fetch(\PDO::FETCH_ASSOC);
+        if (!$match) {
+            return;
+        }
+
+        // Calcola posti occupati attivi
+        $stmtCountReg = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id AND status = 'registered'
+        ");
+        $stmtCountReg->execute(['match_id' => $matchId]);
+        $occupiedReg = (int)$stmtCountReg->fetchColumn();
+
+        // Calcola posti riservati da offerte attive non scadute
+        $stmtCountPending = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND status = 'waitlist' 
+              AND offer_expires_at IS NOT NULL 
+              AND offer_expires_at > NOW()
+        ");
+        $stmtCountPending->execute(['match_id' => $matchId]);
+        $occupiedPending = (int)$stmtCountPending->fetchColumn();
+
+        $occupied = $occupiedReg + $occupiedPending;
+        $freeSeats = max(0, (int)$match['max_players'] - $occupied);
+
+        if ($freeSeats <= 0) {
+            // Aggiorna stato match a full
+            $db->prepare("UPDATE matches SET status = 'full', updated_at = NOW() WHERE id = :id")->execute(['id' => $matchId]);
+            return;
+        }
+
+        // Recupera panchina ordinata cronologicamente (escludendo chi ha già offerte attive)
+        $stmtWaitlist = $db->prepare("
+            SELECT * FROM registrations 
+            WHERE match_id = :match_id 
+              AND status = 'waitlist' 
+              AND (offer_expires_at IS NULL OR offer_expires_at <= NOW()) 
+            ORDER BY created_at ASC
+        ");
+        $stmtWaitlist->execute(['match_id' => $matchId]);
+        $waitlist = $stmtWaitlist->fetchAll(\PDO::FETCH_ASSOC);
+
+        $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
+        $timeDiff = $matchDateTime - time();
+        $isLastMinute = ($timeDiff > 0 && $timeDiff < 24 * 3600);
+
+        $notificationModel = new \App\Models\Notification();
+
+        foreach ($waitlist as $next) {
+            $needed = 1 + (int)$next['has_guest'];
+            if ($needed <= $freeSeats) {
+                if ($isLastMinute) {
+                    // Notifica offerta non automatica (15 min)
+                    $db->prepare("
+                        UPDATE registrations 
+                        SET offer_expires_at = DATE_ADD(NOW(), INTERVAL 15 MINUTE), updated_at = NOW() 
+                        WHERE id = :id
+                    ")->execute(['id' => $next['id']]);
+
+                    $notificationModel->create([
+                        'user_recipient' => $next['username'],
+                        'type' => 'match_offer',
+                        'message' => '⚡ Si è liberato un posto per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '! Hai 15 minuti per accettare.',
+                        'link' => url('/matches/' . $matchId)
+                    ]);
+                } else {
+                    // Promozione automatica immediata
+                    $db->prepare("
+                        UPDATE registrations 
+                        SET status = 'registered', offer_expires_at = NULL, updated_at = NOW() 
+                        WHERE id = :id
+                    ")->execute(['id' => $next['id']]);
+
+                    $notificationModel->create([
+                        'user_recipient' => $next['username'],
+                        'type' => 'match_promotion',
+                        'message' => '🔔 Congratulazioni! Sei stato promosso a giocatore attivo per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '.',
+                        'link' => url('/matches/' . $matchId)
+                    ]);
+                }
+
+                $freeSeats -= $needed;
+                $occupied += $needed;
+                if ($freeSeats <= 0) {
+                    break;
+                }
+            }
+        }
+
+        // Ricalcola se la partita è di nuovo disponibile o piena
+        if ($occupied < (int)$match['max_players']) {
+            $db->prepare("UPDATE matches SET status = 'open', updated_at = NOW() WHERE id = :id")->execute(['id' => $matchId]);
+        } else {
+            $db->prepare("UPDATE matches SET status = 'full', updated_at = NOW() WHERE id = :id")->execute(['id' => $matchId]);
+        }
+    }
+
+    public function acceptOffer($id) {
+        $this->validateCsrf();
+        $username = $_SESSION['user']['username'] ?? null;
+        if (!$username) {
+            $_SESSION['error'] = "Devi effettuare l'accesso per accettare l'offerta.";
+            $this->redirect(url('/login'));
+        }
+
+        $db = \App\Database::getInstance()->getConnection();
+        
+        $stmt = $db->prepare("
+            SELECT * FROM registrations 
+            WHERE match_id = :match_id 
+              AND username = :username 
+              AND status = 'waitlist' 
+              AND offer_expires_at IS NOT NULL 
+              AND offer_expires_at > NOW()
+        ");
+        $stmt->execute(['match_id' => $id, 'username' => $username]);
+        $reg = $stmt->fetch();
+
+        if (!$reg) {
+            $_SESSION['error'] = "Nessuna offerta attiva trovata o tempo scaduto.";
+            $this->redirectToMatch($id);
+        }
+
+        $db->prepare("
+            UPDATE registrations 
+            SET status = 'registered', offer_expires_at = NULL, updated_at = NOW() 
+            WHERE id = :id
+        ")->execute(['id' => $reg['id']]);
+
+        $matchModel = new SoccerMatch();
+        $match = $matchModel->find($id);
+
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
+        $stmtCount->execute(['match_id' => $id]);
+        $occupied = (int)$stmtCount->fetchColumn();
+
+        if ($occupied >= (int)$match['max_players']) {
+            $db->prepare("UPDATE matches SET status = 'full', updated_at = NOW() WHERE id = :id")->execute(['id' => $id]);
+        }
+
+        $_SESSION['success'] = "Offerta accettata! Ora sei un giocatore attivo per questo match.";
+        $this->redirectToMatch($id);
+    }
+
+    public function rejectOffer($id) {
+        $this->validateCsrf();
+        $username = $_SESSION['user']['username'] ?? null;
+        if (!$username) {
+            $_SESSION['error'] = "Devi effettuare l'accesso per rifiutare l'offerta.";
+            $this->redirect(url('/login'));
+        }
+
+        $db = \App\Database::getInstance()->getConnection();
+
+        $stmt = $db->prepare("
+            SELECT * FROM registrations 
+            WHERE match_id = :match_id 
+              AND username = :username 
+              AND status = 'waitlist' 
+              AND offer_expires_at IS NOT NULL 
+              AND offer_expires_at > NOW()
+        ");
+        $stmt->execute(['match_id' => $id, 'username' => $username]);
+        $reg = $stmt->fetch();
+
+        if (!$reg) {
+            $_SESSION['error'] = "Nessuna offerta attiva trovata o tempo scaduto.";
+            $this->redirectToMatch($id);
+        }
+
+        $db->prepare("
+            UPDATE registrations 
+            SET status = 'cancelled', offer_expires_at = NULL, updated_at = NOW() 
+            WHERE id = :id
+        ")->execute(['id' => $reg['id']]);
+
+        $this->promoteNextWaitlistPlayer($id);
+
+        $_SESSION['success'] = "Offerta rifiutata. Posto liberato per il panchinaro successivo.";
+        $this->redirectToMatch($id);
+    }
+
+    private function autoFinishPastMatches() {
+        $db = \App\Database::getInstance()->getConnection();
+
+        // 1. Trova tutte le partite 'open' o 'full' iniziate da più di 2 ore
+        $stmt = $db->prepare("
+            SELECT id, host_username, location, date, time
+            FROM matches
+            WHERE status IN ('open', 'full')
+              AND CONCAT(date, ' ', time) <= DATE_SUB(NOW(), INTERVAL 2 HOUR)
+        ");
+        $stmt->execute();
+        $pastMatches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($pastMatches)) {
+            return;
+        }
+
+        foreach ($pastMatches as $match) {
+            $matchId = $match['id'];
+            try {
+                // Imposta lo stato a 'finished' per avviare il processo di refertazione
+                $db->prepare("
+                    UPDATE matches 
+                    SET status = 'finished', updated_at = NOW() 
+                    WHERE id = :id
+                ")->execute(['id' => $matchId]);
+            } catch (\Exception $e) {
+                // Ignore to not block page load
+            }
+        }
+    }
+
+    private function autoCloseUnreportedMatches() {
+        $db = \App\Database::getInstance()->getConnection();
+
+        // 1. Trova tutte le partite iniziate da più di 48 ore non refertate e non cancellate
+        $stmt = $db->prepare("
+            SELECT id, host_username, date, time, location
+            FROM matches
+            WHERE status IN ('open', 'full', 'finished')
+              AND (result_home IS NULL OR result_away IS NULL)
+              AND CONCAT(date, ' ', time) <= DATE_SUB(NOW(), INTERVAL 48 HOUR)
+        ");
+        $stmt->execute();
+        $expiredMatches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($expiredMatches)) {
+            return;
+        }
+
+        $notificationModel = new \App\Models\Notification();
+
+        foreach ($expiredMatches as $match) {
+            $matchId = $match['id'];
+            $host = $match['host_username'];
+            $location = $match['location'];
+            $dateFormatted = date('d/m/Y', strtotime($match['date']));
+
+            try {
+                $db->beginTransaction();
+
+                // 2. Aggiorna lo stato della partita, i risultati d'ufficio (0-0) e la scadenza per la votazione MVP (24 ore da adesso)
+                $stmtUpdateMatch = $db->prepare("
+                    UPDATE matches 
+                    SET status = 'finished', 
+                        result_home = 0, 
+                        result_away = 0, 
+                        mvp_deadline = DATE_ADD(NOW(), INTERVAL 24 HOUR), 
+                        updated_at = NOW() 
+                    WHERE id = :id
+                ");
+                $stmtUpdateMatch->execute(['id' => $matchId]);
+
+                // 3. Ricalcola total_goals e matches_played per tutti i partecipanti del match
+                $stmtUpdateStats = $db->prepare("
+                    UPDATE users u
+                    SET 
+                      u.total_goals = (
+                          SELECT COALESCE(SUM(r.goals_scored), 0)
+                          FROM registrations r
+                          JOIN matches m ON r.match_id = m.id
+                          WHERE r.username = u.username 
+                            AND r.status = 'registered' 
+                            AND m.status = 'finished'
+                      ),
+                      u.matches_played = (
+                          SELECT COUNT(*)
+                          FROM registrations r
+                          JOIN matches m ON r.match_id = m.id
+                          WHERE r.username = u.username 
+                            AND r.status = 'registered' 
+                            AND m.status = 'finished'
+                      )
+                    WHERE u.username IN (
+                        SELECT DISTINCT username 
+                        FROM registrations 
+                        WHERE match_id = :match_id 
+                          AND status = 'registered'
+                    )
+                ");
+                $stmtUpdateStats->execute(['match_id' => $matchId]);
+
+                // 4. Detrazione di 15 punti sul Trust Score dell'host
+                $penalty = -15;
+                $stmtPenalty = $db->prepare("
+                    UPDATE users 
+                    SET trust_score = GREATEST(0, CAST(trust_score AS SIGNED) + :penalty), 
+                        updated_at = NOW() 
+                    WHERE username = :host
+                ");
+                $stmtPenalty->execute(['penalty' => $penalty, 'host' => $host]);
+
+                // Inserimento del log di Trust Score
+                $stmtLog = $db->prepare("
+                    INSERT INTO trust_history (username, match_id, score_change, reason, created_at) 
+                    VALUES (:host, :match_id, :change, 'Mancato inserimento tabellino entro 48h', NOW())
+                ");
+                $stmtLog->execute([
+                    'host' => $host,
+                    'match_id' => $matchId,
+                    'change' => $penalty
+                ]);
+
+                $db->commit();
+
+                // 5. Invia notifiche
+                // Notifica per l'host
+                $notificationModel->create([
+                    'user_recipient' => $host,
+                    'type' => 'match_autoclose_host',
+                    'message' => '⚠️ La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio per mancato inserimento del tabellino entro 48 ore. Hai ricevuto una penalità di -15 al Trust Score.',
+                    'link' => url('/matches/' . $matchId)
+                ]);
+
+                // Recupera tutti gli altri partecipanti registrati
+                $stmtPlayers = $db->prepare("
+                    SELECT username 
+                    FROM registrations 
+                    WHERE match_id = :match_id 
+                      AND status = 'registered' 
+                      AND username != :host
+                ");
+                $stmtPlayers->execute(['match_id' => $matchId, 'host' => $host]);
+                $players = $stmtPlayers->fetchAll(\PDO::FETCH_COLUMN);
+
+                foreach ($players as $player) {
+                    $notificationModel->create([
+                        'user_recipient' => $player,
+                        'type' => 'match_autoclose_player',
+                        'message' => '📢 La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio senza risultato (tabellino mancante). Ora puoi votare per i compagni e per l\'MVP!',
+                        'link' => url('/matches/' . $matchId)
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                if ($db->inTransaction()) {
+                    $db->rollBack();
+                }
+                // Silently log or ignore error to not block page loading
             }
         }
     }
