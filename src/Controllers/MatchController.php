@@ -337,6 +337,16 @@ class MatchController extends BaseController {
 
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
+
+        if (!$match) {
+            $_SESSION['error'] = "Partita non trovata.";
+            $this->redirectToMatch($id);
+        }
+
+        if ($match['host_username'] === $username) {
+            $_SESSION['error'] = "L'organizzatore non può ritirarsi dalla partita.";
+            $this->redirectToMatch($id);
+        }
         
         // Penalità di Trust Score se manca meno di 24h all'inizio ed era iscritto attivo
         $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
