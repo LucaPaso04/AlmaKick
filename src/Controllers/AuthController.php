@@ -40,6 +40,7 @@ class AuthController extends BaseController {
             $_SESSION['user'] = [
                 'username' => $user['username'],
                 'name' => $user['name'],
+                'last_name' => $user['last_name'],
                 'email' => $user['email'],
                 'role' => $user['role'],
                 'friend_code' => $user['friend_code']
