@@ -489,8 +489,12 @@
                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="name" class="form-label fw-semibold">Nome e Cognome</label>
+                            <label for="name" class="form-label fw-semibold">Nome</label>
                             <input type="text" class="form-control" id="name" name="name" value="<?= e($user['name']) ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label fw-semibold">Cognome</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="<?= e($user['last_name'] ?? '') ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label fw-semibold">Numero di Telefono</label>

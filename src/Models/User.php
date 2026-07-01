@@ -74,9 +74,10 @@ class User {
     }
 
     public function updateInfo(string $username, array $data): bool {
-        $stmt = $this->db->prepare("UPDATE users SET name = :name, phone = :phone, preferred_role = :preferred_role, updated_at = NOW() WHERE username = :username");
+        $stmt = $this->db->prepare("UPDATE users SET name = :name, last_name = :last_name, phone = :phone, preferred_role = :preferred_role, updated_at = NOW() WHERE username = :username");
         return $stmt->execute([
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
             'phone' => $data['phone'],
             'preferred_role' => $data['preferred_role'],
             'username' => $username

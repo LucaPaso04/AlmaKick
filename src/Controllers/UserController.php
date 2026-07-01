@@ -284,21 +284,28 @@ class UserController extends BaseController {
         // 3. Caso Modifica Informazioni Generali
         if (isset($_POST['name'])) {
             $name = trim($_POST['name']);
+            $lastName = trim($_POST['last_name'] ?? '');
             $phone = trim($_POST['phone'] ?? '');
             $preferredRole = trim($_POST['preferred_role'] ?? 'Jolly');
 
             if (empty($name)) {
-                $_SESSION['error'] = "Il campo Nome e Cognome è obbligatorio.";
+                $_SESSION['error'] = "Il campo Nome è obbligatorio.";
+                $this->redirect('/profile');
+            }
+            if (empty($lastName)) {
+                $_SESSION['error'] = "Il campo Cognome è obbligatorio.";
                 $this->redirect('/profile');
             }
 
             $userModel->updateInfo($username, [
                 'name' => $name,
+                'last_name' => $lastName,
                 'phone' => $phone ? $phone : null,
                 'preferred_role' => $preferredRole
             ]);
 
             $_SESSION['user']['name'] = $name; // aggiorna sessione
+            $_SESSION['user']['last_name'] = $lastName; // aggiorna sessione
             $_SESSION['success'] = "Informazioni personali aggiornate con successo.";
             $this->redirect('/profile');
         }
