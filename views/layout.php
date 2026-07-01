@@ -15,7 +15,7 @@ if (empty($current_path)) {
     $current_path = '/';
 }
 
-$isHomeActive = (isset($_SESSION['user']) && ($current_path === '/matches' || $current_path === '/')) || (!isset($_SESSION['user']) && ($current_path === '/welcome' || $current_path === '/'));
+$isHomeActive = (isset($_SESSION['user']) && ($current_path === '/matches' || $current_path === '/')) || (!isset($_SESSION['user']) && $current_path === '/');
 
 $userAvatar = null;
 $avatarUrl = null;
@@ -74,7 +74,7 @@ if (isset($_SESSION['user'])) {
     <link rel="stylesheet" href="<?= url('/css/style.css') ?>">
     <meta name="csrf-token" content="<?= e($_SESSION['csrf_token'] ?? '') ?>">
     <!-- Page-specific Styles -->
-    <?php if ($current_path === '/welcome'): ?>
+    <?php if ($current_path === '/'): ?>
         <link rel="stylesheet" href="<?= url('/css/welcome.css') ?>">
     <?php elseif ($current_path === '/login'): ?>
         <link rel="stylesheet" href="<?= url('/css/login.css') ?>">

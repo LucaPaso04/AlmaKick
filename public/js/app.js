@@ -220,15 +220,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchNotifications() {
         // Rileva il BASE_URL in modo dinamico
         let baseUrl = '';
-        const homeLink = document.querySelector('a[href*="/welcome"], a[href*="/matches"]');
+        const homeLink = document.querySelector('a[href*="/matches"]');
         if (homeLink) {
             const href = homeLink.getAttribute('href');
-            if (href) {
-                if (href.includes('/welcome')) {
-                    baseUrl = href.split('/welcome')[0];
-                } else if (href.includes('/matches')) {
-                    baseUrl = href.split('/matches')[0];
-                }
+            if (href && href.includes('/matches')) {
+                baseUrl = href.split('/matches')[0];
             }
         }
 

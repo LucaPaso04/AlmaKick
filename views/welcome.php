@@ -81,7 +81,7 @@
             </div>
             <div class="feature-copy">
                 <span class="feature-kicker">Meteo in tempo reale</span>
-                <h3>Controlla il meteo egià prima della partita.</h3>
+                <h3>Controlla il meteo già prima della partita.</h3>
                 <p>Previsioni aggiornate e alert utili per scegliere il momento giusto e non perdere l’evento.</p>
                 <div class="feature-badge">
                     <i class="bi bi-cloud-drizzle"></i>
