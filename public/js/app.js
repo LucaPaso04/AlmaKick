@@ -246,30 +246,40 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateNotificationsUI(data, baseUrl) {
         if (!notificationsList) return;
 
+        const notifications = data.notifications || [];
+        const hasRealNotifications = notifications.some(n => !n.is_actionable);
+        const hasUnreadRealNotifications = notifications.some(n => !n.is_actionable && n.is_read == 0);
+
         const count = data.unread_count || 0;
         if (count > 0) {
             notificationsBadge.innerText = count;
             notificationsBadge.classList.remove('d-none');
-            if (markAllReadBtn) markAllReadBtn.classList.remove('d-none');
         } else {
             notificationsBadge.classList.add('d-none');
+        }
+
+        // Mostra "Segna come lette" solo se ci sono notifiche reali non lette
+        if (hasUnreadRealNotifications) {
+            if (markAllReadBtn) markAllReadBtn.classList.remove('d-none');
+        } else {
             if (markAllReadBtn) markAllReadBtn.classList.add('d-none');
         }
 
-        const notifications = data.notifications || [];
-        
-        // Gestione visibilità divider e pulsante svuota tutto
-        if (notifications.length > 0) {
+        // Mostra "Svuota tutto" solo se ci sono notifiche reali
+        if (hasRealNotifications) {
             if (clearAllBtn) clearAllBtn.classList.remove('d-none');
-            if (notificationsHeaderDivider && count > 0) {
-                notificationsHeaderDivider.classList.remove('d-none');
-            } else if (notificationsHeaderDivider) {
-                notificationsHeaderDivider.classList.add('d-none');
-            }
         } else {
             if (clearAllBtn) clearAllBtn.classList.add('d-none');
-            if (notificationsHeaderDivider) notificationsHeaderDivider.classList.add('d-none');
-            
+        }
+
+        // Mostra il divisore solo se entrambi i pulsanti sono visibili
+        if (notificationsHeaderDivider && hasUnreadRealNotifications && hasRealNotifications) {
+            notificationsHeaderDivider.classList.remove('d-none');
+        } else if (notificationsHeaderDivider) {
+            notificationsHeaderDivider.classList.add('d-none');
+        }
+
+        if (notifications.length === 0) {
             notificationsList.innerHTML = `
                 <div class="text-center py-4 text-muted small" id="notificationsEmpty">
                     <i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></i>
@@ -301,10 +311,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     iconClass = 'bi-exclamation-triangle-fill';
                     iconBgClass = 'text-danger';
                     break;
+                case 'match_report_needed':
+                    iconClass = 'bi-clipboard-data-fill';
+                    iconBgClass = 'text-success';
+                    break;
+                case 'match_vote_needed':
+                    iconClass = 'bi-star-fill';
+                    iconBgClass = 'text-warning';
+                    break;
             }
 
             const unreadClass = n.is_read == 0 ? 'unread' : '';
             const statusDot = n.is_read == 0 ? '<span class="notification-status-dot"></span>' : '';
+            
+            const deleteBtn = n.is_actionable ? '' : `
+                <button type="button" class="notification-delete-btn" data-id="${n.id}" title="Elimina notifica">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            `;
 
             html += `
                 <a href="${n.link || '#'}" class="notification-item ${unreadClass}" data-id="${n.id}">
@@ -316,9 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="notification-time">${n.time_ago}</div>
                     </div>
                     ${statusDot}
-                    <button type="button" class="notification-delete-btn" data-id="${n.id}" title="Elimina notifica">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
+                    ${deleteBtn}
                 </a>
             `;
         });
@@ -332,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isUnread = this.classList.contains('unread');
                 const link = this.getAttribute('href');
 
-                if (isUnread && id) {
+                if (isUnread && id && !isNaN(Number(id))) {
                     e.preventDefault();
                     fetch(baseUrl + '/api/notifications/' + id + '/read', {
                         method: 'POST',

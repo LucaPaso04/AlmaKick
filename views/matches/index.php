@@ -11,7 +11,6 @@ if ($username) {
 }
 
 // $myMatches is loaded cleanly and fully from the controller to avoid issues with pagination or search filters
-$hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
 ?>
 
 
@@ -54,48 +53,6 @@ $hasPendingActions = (!empty($matchesToReport)) || (!empty($matchesToVote));
     <!-- TAB 1: LA MIA BACHECA -->
     <div class="tab-pane fade <?= $activeTab === 'bacheca' ? 'show active' : '' ?>" id="bacheca" role="tabpanel"
         aria-labelledby="bacheca-tab" tabindex="0">
-
-        <!-- ACTION CENTER (Notifiche urgenti / refertazione / votazione) -->
-        <?php if ($hasPendingActions): ?>
-            <div class="mb-4">
-                <h2 class="h5 fw-bold mb-3 text-warning"><span class="bi bi-exclamation-circle-fill me-2"></span>Azioni richieste</h2>
-
-                <!-- Da refertare -->
-                <?php if (!empty($matchesToReport)): ?>
-                    <?php foreach ($matchesToReport as $mr): ?>
-                        <div class="alert alert-success d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-success border-opacity-25 rounded-4 text-success-emphasis"
-                            role="alert">
-                            <div class="text-truncate me-3">
-                                <span class="bi bi-clipboard-data-fill me-2 fs-5 text-success"></span>
-                                <span class="fw-bold me-2">Compila Tabellino:</span>
-                                <span class="small text-success-emphasis opacity-75"><?= e(date('d/m/Y', strtotime($mr['date']))) ?>
-                                    &bull;
-                                    <?= e(strlen($mr['location']) > 25 ? substr($mr['location'], 0, 25) . '...' : $mr['location']) ?></span>
-                            </div>
-                            <a href="<?= url('/matches/' . $mr['id'] . '?from=matches') ?>"
-                                class="btn btn-sm btn-success rounded-pill fw-bold px-3 text-nowrap">Gestisci</a>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-
-                <!-- Da votare -->
-                <?php if (!empty($matchesToVote)): ?>
-                    <?php foreach ($matchesToVote as $mv): ?>
-                        <div class="alert alert-warning d-flex align-items-center justify-content-between py-3 mb-2 shadow-sm border border-warning border-opacity-25 rounded-4 text-warning-emphasis"
-                            role="alert">
-                            <div class="text-truncate me-3 text-warning">
-                                <span class="bi bi-star-fill me-2 fs-5"></span>
-                                <span class="fw-bold me-2">Vota Compagni:</span>
-                                <span class="small text-body-secondary"><?= e(date('d/m/Y', strtotime($mv['date']))) ?> &bull;
-                                    <?= e(strlen($mv['location']) > 25 ? substr($mv['location'], 0, 25) . '...' : $mv['location']) ?></span>
-                            </div>
-                            <a href="<?= url('/matches/' . $mv['id'] . '?from=matches') ?>"
-                                class="btn btn-sm btn-warning rounded-pill fw-bold px-3 text-dark text-nowrap">Vota</a>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
 
         <!-- Le mie Partite in Programma -->
         <div class="mb-4">
