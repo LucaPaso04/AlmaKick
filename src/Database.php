@@ -34,18 +34,6 @@ class Database {
     }
 
     public function getConnection(): PDO {
-        static $migrated = false;
-        if (!$migrated && $this->conn !== null) {
-            $migrated = true;
-            try {
-                $stmt = $this->conn->query("SHOW COLUMNS FROM registrations LIKE 'offer_expires_at'");
-                if (!$stmt->fetch()) {
-                    $this->conn->exec("ALTER TABLE registrations ADD COLUMN offer_expires_at DATETIME DEFAULT NULL");
-                }
-            } catch (\Exception $e) {
-                // Silently ignore migration issues in case table doesn't exist yet
-            }
-        }
         return $this->conn;
     }
 

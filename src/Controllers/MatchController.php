@@ -365,7 +365,7 @@ class MatchController extends BaseController {
 
         if ($timeDiff < 24 * 3600 && $reg['status'] === 'registered') {
             $scorePenalty = -15;
-            $stmtPenalty = $db->prepare("UPDATE users SET trust_score = GREATEST(0, trust_score + :penalty) WHERE username = :username");
+            $stmtPenalty = $db->prepare("UPDATE users SET trust_score = GREATEST(0, CAST(trust_score AS SIGNED) + :penalty) WHERE username = :username");
             $stmtPenalty->execute(['penalty' => $scorePenalty, 'username' => $username]);
 
             $stmtLog = $db->prepare("INSERT INTO trust_history (username, match_id, score_change, reason, created_at) VALUES (:username, :match_id, :change, 'Ritiro tardivo (<24h)', NOW())");
@@ -537,7 +537,7 @@ class MatchController extends BaseController {
 
         if (!$esentePenalita && $timeDiff < 24 * 3600) {
             $scorePenalty = -40;
-            $stmtPenalty = $db->prepare("UPDATE users SET trust_score = GREATEST(0, trust_score + :penalty) WHERE username = :username");
+            $stmtPenalty = $db->prepare("UPDATE users SET trust_score = GREATEST(0, CAST(trust_score AS SIGNED) + :penalty) WHERE username = :username");
             $stmtPenalty->execute(['penalty' => $scorePenalty, 'username' => $username]);
 
             $stmtLog = $db->prepare("INSERT INTO trust_history (username, match_id, score_change, reason, created_at) VALUES (:username, :match_id, :change, 'Annullamento partita tardivo (<24h)', NOW())");
@@ -668,7 +668,7 @@ class MatchController extends BaseController {
 
             // Se c'è pollice in giù, applica penalità di trust score (-10)
             if ($thumbDown) {
-                $db->prepare("UPDATE users SET trust_score = GREATEST(0, trust_score - 10) WHERE username = :username")->execute(['username' => $targetUsername]);
+                $db->prepare("UPDATE users SET trust_score = GREATEST(0, CAST(trust_score AS SIGNED) - 10) WHERE username = :username")->execute(['username' => $targetUsername]);
                 $stmtLog = $db->prepare("INSERT INTO trust_history (username, match_id, score_change, reason, created_at) VALUES (:username, :match_id, -10, 'Ricevuto feedback negativo da compagno', NOW())");
                 $stmtLog->execute(['username' => $targetUsername, 'match_id' => $id]);
             }

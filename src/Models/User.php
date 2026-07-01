@@ -39,26 +39,9 @@ class User {
         return $user ?: null;
     }
 
-    public function create(array $data): bool {
-        $sql = "INSERT INTO users (username, name, last_name, email, password, phone, friend_code, role, preferred_role, trust_score, skill_rating, mvp_count, matches_played, total_goals, is_banned, created_at, updated_at) 
-                VALUES (:username, :name, :last_name, :email, :password, :phone, :friend_code, :role, 'midfielder', 100, 6.0, 0, 0, 0, 0, NOW(), NOW())";
-        
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            'username' => $data['username'],
-            'name' => $data['name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => $data['password'],
-            'phone' => $data['phone'],
-            'friend_code' => $data['friend_code'],
-            'role' => $data['role'] ?? 'user'
-        ]);
-    }
-
     public function createWithRole(array $data): bool {
         $sql = "INSERT INTO users (username, name, last_name, email, password, phone, friend_code, role, preferred_role, trust_score, skill_rating, mvp_count, matches_played, total_goals, is_banned, created_at, updated_at) 
-                VALUES (:username, :name, :last_name, :email, :password, :phone, :friend_code, :role, :preferred_role, 100, 6.0, 0, 0, 0, 0, NOW(), NOW())";
+                VALUES (:username, :name, :last_name, :email, :password, :phone, :friend_code, :role, :preferred_role, 100, 0.00, 0, 0, 0, 0, NOW(), NOW())";
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -398,21 +381,7 @@ class User {
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function countSearchUsers(string $query, string $currentUsername): int {
-        $search = '%' . $query . '%';
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) FROM users
-            WHERE is_banned = 0 
-              AND username != :current_username
-              AND (name LIKE :q1 OR last_name LIKE :q2 OR username LIKE :q3)
-        ");
-        $stmt->bindValue(':current_username', $currentUsername, PDO::PARAM_STR);
-        $stmt->bindValue(':q1', $search, PDO::PARAM_STR);
-        $stmt->bindValue(':q2', $search, PDO::PARAM_STR);
-        $stmt->bindValue(':q3', $search, PDO::PARAM_STR);
-        $stmt->execute();
-        return (int)$stmt->fetchColumn();
-    }
+
 
     public function getFriendsCount(string $username): int {
         $stmt = $this->db->prepare("
