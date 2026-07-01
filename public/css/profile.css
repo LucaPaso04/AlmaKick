@@ -243,3 +243,44 @@
         filter: drop-shadow(0 0 10px rgba(0, 255, 102, 1));
     }
 }
+
+/* Mutual Friends & Social context styles */
+.profile-social-context-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.avatar-stack {
+    display: inline-flex;
+    align-items: center;
+}
+
+.avatar-stack-item {
+    border: 2px solid var(--card-bg);
+    border-radius: 50%;
+    overflow: hidden;
+    width: 32px;
+    height: 32px;
+    transition: transform 0.2s ease, z-index 0.2s ease;
+    background-color: var(--bs-body-bg);
+}
+
+.avatar-stack-item:not(:first-child) {
+    margin-left: -10px;
+}
+
+.avatar-stack-item:hover {
+    transform: scale(1.15) translateY(-2px);
+    z-index: 100 !important;
+}
+
+/* Medium device divider */
+@media (min-width: 768px) {
+    .border-end-md {
+        border-right: 1px solid var(--border) !important;
+    }
+}
+
