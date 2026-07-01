@@ -16,26 +16,33 @@ class AuthController extends BaseController {
     public function login() {
         $this->validateCsrf();
 
-        $email = trim($_POST['email'] ?? '');
+        $identifier = trim($_POST['identifier'] ?? $_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        $rememberMe = !empty($_POST['remember_me']);
 
-        if (empty($email) || empty($password)) {
+        if (empty($identifier) || empty($password)) {
             $_SESSION['error'] = "Tutti i campi sono obbligatori.";
-            $_SESSION['old_email'] = $email;
+            $_SESSION['old_identifier'] = $identifier;
             $this->redirect('/login');
         }
 
         $userModel = new User();
-        $user = $userModel->findByEmail($email);
+        $user = $userModel->findByLoginIdentifier($identifier);
 
         if ($user && password_verify($password, $user['password'])) {
             if ($user['is_banned']) {
                 $_SESSION['error'] = "Questo account è stato sospeso o bannato.";
-                $_SESSION['old_email'] = $email;
+                $_SESSION['old_identifier'] = $identifier;
                 $this->redirect('/login');
             }
 
-            // Pulisci i vecchi valori e imposta sessione utente
+            if ($rememberMe) {
+                $this->setRememberMeCookie($user['username']);
+            } else {
+                $this->clearRememberMeCookie();
+            }
+
+            unset($_SESSION['old_identifier']);
             unset($_SESSION['old_email']);
             $_SESSION['user'] = [
                 'username' => $user['username'],
@@ -49,9 +56,18 @@ class AuthController extends BaseController {
             $this->redirect('/');
         } else {
             $_SESSION['error'] = "Credenziali non valide.";
-            $_SESSION['old_email'] = $email;
+            $_SESSION['old_identifier'] = $identifier;
             $this->redirect('/login');
         }
+    }
+
+    private function setRememberMeCookie(string $identifier): void {
+        $payload = $identifier . '|' . hash_hmac('sha256', $identifier, APP_NAME);
+        setcookie('remember_me', base64_encode($payload), time() + 60 * 60 * 24 * 30, '/', '', false, true);
+    }
+
+    private function clearRememberMeCookie(): void {
+        setcookie('remember_me', '', time() - 3600, '/', '', false, true);
     }
 
     public function showRegister() {
@@ -143,6 +159,7 @@ class AuthController extends BaseController {
 
     public function logout() {
         $this->validateCsrf();
+        $this->clearRememberMeCookie();
         unset($_SESSION['user']);
         session_destroy();
         

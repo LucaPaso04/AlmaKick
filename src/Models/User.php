@@ -26,6 +26,19 @@ class User {
         return $user ?: null;
     }
 
+    public function findByLoginIdentifier(string $identifier): ?array {
+        $identifier = trim($identifier);
+
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            return $this->findByEmail($identifier);
+        }
+
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE LOWER(username) = LOWER(:username)");
+        $stmt->execute(['username' => $identifier]);
+        $user = $stmt->fetch();
+        return $user ?: null;
+    }
+
     public function create(array $data): bool {
         $sql = "INSERT INTO users (username, name, last_name, email, password, phone, friend_code, role, preferred_role, trust_score, skill_rating, mvp_count, matches_played, total_goals, is_banned, created_at, updated_at) 
                 VALUES (:username, :name, :last_name, :email, :password, :phone, :friend_code, :role, 'midfielder', 100, 6.0, 0, 0, 0, 0, NOW(), NOW())";
