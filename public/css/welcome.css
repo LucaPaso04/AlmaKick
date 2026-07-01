@@ -170,14 +170,14 @@
     padding: 2rem;
     border-radius: 1.75rem;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(12px);
+    background: #0b1329;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+    will-change: transform;
 }
 
 .welcome-feature-card:hover {
-    transform: translateY(-6px);
+    transform: translate3d(0, -6px, 0);
     box-shadow: 0 26px 60px rgba(0, 0, 0, 0.25);
 }
 
@@ -342,6 +342,8 @@
     border-radius: 999px;
     background: linear-gradient(180deg, #38bdf8, #0f766e);
     animation: riseBars 1.5s ease-in-out infinite alternate;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .weather-bars span:nth-child(1) { height: 40%; }
