@@ -188,7 +188,20 @@ foreach ($registrations as $reg) {
                             <?php if($reg['has_guest']): ?>
                                 <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><i class="bi bi-person-plus-fill me-1"></i>+1 Ospite</span>
                             <?php endif; ?>
-                            <span class="badge bg-warning text-dark shadow-sm">In Attesa</span>
+                            <?php if(!empty($reg['offer_expires_at']) && strtotime($reg['offer_expires_at']) > time()): ?>
+                                <span class="badge bg-danger text-white shadow-sm d-inline-flex align-items-center" style="animation: pulse-animation-badge 1.5s infinite;">
+                                    <i class="bi bi-lightning-fill me-1"></i>Offerta Attiva
+                                </span>
+                                <style>
+                                @keyframes pulse-animation-badge {
+                                    0% { opacity: 0.6; transform: scale(0.98); }
+                                    50% { opacity: 1; transform: scale(1.02); }
+                                    100% { opacity: 0.6; transform: scale(0.98); }
+                                }
+                                </style>
+                            <?php else: ?>
+                                <span class="badge bg-warning text-dark shadow-sm">In Attesa</span>
+                            <?php endif; ?>
                         </h3>
                         <small class="text-muted d-flex align-items-center gap-1 mt-1">
                             <span class="bi bi-person-badge" aria-hidden="true"></span> 
