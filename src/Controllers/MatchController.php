@@ -167,7 +167,8 @@ class MatchController extends BaseController {
         // Calcolo posti e quote
         $occupied_seats = 0;
         foreach ($registrations as $reg) {
-            if ($reg['status'] === 'registered') {
+            $isOfferActive = ($reg['status'] === 'waitlist' && !empty($reg['offer_expires_at']) && strtotime($reg['offer_expires_at']) > time());
+            if ($reg['status'] === 'registered' || $isOfferActive) {
                 $occupied_seats += 1 + (int)$reg['has_guest'];
             }
         }
@@ -279,8 +280,13 @@ class MatchController extends BaseController {
         $stmtCheck->execute(['match_id' => $id, 'username' => $username]);
         $existing = $stmtCheck->fetch();
 
-        // Calcola posti occupati
-        $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        // Calcola posti occupati (compresi quelli con offerta attiva in panchina)
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
         $stmtCount->execute(['match_id' => $id]);
         $occupied = (int)$stmtCount->fetchColumn();
 
@@ -495,8 +501,13 @@ class MatchController extends BaseController {
         $motivoMeteo = (isset($_POST['motivo_meteo']) && $_POST['motivo_meteo'] == 1) ? 1 : 0;
         $motivoGiocatori = (isset($_POST['motivo_giocatori']) && $_POST['motivo_giocatori'] == 1) ? 1 : 0;
 
-        // Recupera iscritti attivi
-        $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        // Recupera iscritti attivi (compresi quelli con offerta attiva in panchina)
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
         $stmtCount->execute(['match_id' => $id]);
         $occupied = (int)$stmtCount->fetchColumn();
 
@@ -1218,7 +1229,7 @@ class MatchController extends BaseController {
 
         $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
         $timeDiff = $matchDateTime - time();
-        $isLastMinute = ($timeDiff > 0 && $timeDiff < 3 * 3600);
+        $isLastMinute = ($timeDiff > 0 && $timeDiff < 24 * 3600);
 
         $notificationModel = new \App\Models\Notification();
 
@@ -1306,7 +1317,12 @@ class MatchController extends BaseController {
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
 
-        $stmtCount = $db->prepare("SELECT COALESCE(SUM(1 + has_guest), 0) FROM registrations WHERE match_id = :match_id AND status = 'registered'");
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
         $stmtCount->execute(['match_id' => $id]);
         $occupied = (int)$stmtCount->fetchColumn();
 
