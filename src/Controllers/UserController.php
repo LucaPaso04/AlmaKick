@@ -113,9 +113,15 @@ class UserController extends BaseController {
             $sent_request = ($friendship && $friendship['status'] === 'pending' && $friendship['sender_username'] === $_SESSION['user']['username']);
             $received_request = ($friendship && $friendship['status'] === 'pending' && $friendship['sender_username'] !== $_SESSION['user']['username']);
             
+            $currentUsername = $_SESSION['user']['username'];
+            $me = $userModel->find($currentUsername);
+            $mutual_friends = $userModel->getMutualFriends($currentUsername, $username);
+            $matches_played_together = $userModel->getMatchesPlayedTogetherCount($currentUsername, $username);
+            
             view('public_profile', [
                 'title' => 'Profilo di ' . e($viewedUser['name']) . ' - AlmaKick',
                 'user' => $viewedUser,
+                'me' => $me,
                 'is_friend' => $is_friend,
                 'sent_request' => $sent_request,
                 'received_request' => $received_request,
@@ -123,7 +129,9 @@ class UserController extends BaseController {
                 'matches_played' => $viewedUser['matches_played'] ?? 0,
                 'friends_count' => count($friends),
                 'trust_score' => $trust_score,
-                'trend_votes' => $trend_votes
+                'trend_votes' => $trend_votes,
+                'mutual_friends' => $mutual_friends,
+                'matches_played_together' => $matches_played_together
             ]);
         } else {
             view('profile', [
