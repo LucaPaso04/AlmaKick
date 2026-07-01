@@ -144,6 +144,18 @@ class User {
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
+    public function getSentPendingRequests(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT u.* 
+            FROM friendships f 
+            JOIN users u ON f.recipient_username = u.username 
+            WHERE f.sender_username = :username AND f.status = 'pending'
+            ORDER BY f.created_at DESC
+        ");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
     public function getFriends(string $username): array {
         $stmt = $this->db->prepare("
             SELECT u.* 
@@ -177,17 +189,29 @@ class User {
     }
 
     public function addFriendRequest(string $sender, string $recipient): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO friendships (sender_username, recipient_username, status, created_at)
-            VALUES (:sender, :recipient, 'pending', NOW())
-            ON DUPLICATE KEY UPDATE status = 'pending', sender_username = :sender2, recipient_username = :recipient2, created_at = NOW()
-        ");
-        return $stmt->execute([
-            'sender' => $sender,
-            'recipient' => $recipient,
-            'sender2' => $sender,
-            'recipient2' => $recipient
-        ]);
+        $existing = $this->getFriendshipStatus($sender, $recipient);
+        if ($existing) {
+            $stmt = $this->db->prepare("
+                UPDATE friendships 
+                SET status = 'pending', sender_username = :sender, recipient_username = :recipient, created_at = NOW()
+                WHERE sender_username = :old_sender AND recipient_username = :old_recipient
+            ");
+            return $stmt->execute([
+                'sender' => $sender,
+                'recipient' => $recipient,
+                'old_sender' => $existing['sender_username'],
+                'old_recipient' => $existing['recipient_username']
+            ]);
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO friendships (sender_username, recipient_username, status, created_at)
+                VALUES (:sender, :recipient, 'pending', NOW())
+            ");
+            return $stmt->execute([
+                'sender' => $sender,
+                'recipient' => $recipient
+            ]);
+        }
     }
 
     public function acceptFriendRequest(string $sender, string $recipient): bool {
@@ -211,15 +235,29 @@ class User {
     }
 
     public function blockUser(string $user1, string $user2): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO friendships (sender_username, recipient_username, status, created_at)
-            VALUES (:u1, :u2, 'blocked', NOW())
-            ON DUPLICATE KEY UPDATE status = 'blocked', sender_username = :u3, recipient_username = :u4, created_at = NOW()
-        ");
-        return $stmt->execute([
-            'u1' => $user1, 'u2' => $user2,
-            'u3' => $user1, 'u4' => $user2
-        ]);
+        $existing = $this->getFriendshipStatus($user1, $user2);
+        if ($existing) {
+            $stmt = $this->db->prepare("
+                UPDATE friendships 
+                SET status = 'blocked', sender_username = :user1, recipient_username = :user2, created_at = NOW()
+                WHERE sender_username = :old_sender AND recipient_username = :old_recipient
+            ");
+            return $stmt->execute([
+                'user1' => $user1,
+                'user2' => $user2,
+                'old_sender' => $existing['sender_username'],
+                'old_recipient' => $existing['recipient_username']
+            ]);
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO friendships (sender_username, recipient_username, status, created_at)
+                VALUES (:u1, :u2, 'blocked', NOW())
+            ");
+            return $stmt->execute([
+                'u1' => $user1,
+                'u2' => $user2
+            ]);
+        }
     }
 
     public function getTopScorers(int $limit = 10): array {
