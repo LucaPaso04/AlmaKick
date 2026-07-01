@@ -160,6 +160,7 @@
         </div>
     </div>
 </section>
+<script src="<?= url('/js/passwordchecker.js') ?>"></script>
 <?php 
     // Pulisci i vecchi valori dopo averli mostrati
     unset($_SESSION['old_name']);
