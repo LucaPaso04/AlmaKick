@@ -4,58 +4,108 @@
     min-height: calc(100vh - 200px);
 }
 
-/* Card Styling */
-/*--------REMOVED MOVEMENT-------------
 .login-card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--bs-card-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--bs-border-color);
+    box-shadow: 0 24px 60px rgba(13, 110, 253, 0.12);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .login-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 30px 70px rgba(13, 110, 253, 0.16);
 }
-*/
-/* Icon Background */
+
 .login-icon-bg {
     transition: all 0.3s ease;
     animation: slideDown 0.6s ease-out;
 }
 
 .login-icon-bg:hover {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.08) rotate(4deg);
 }
 
-/* Form Styling */
 .login-form {
     animation: fadeInUp 0.8s ease-out 0.3s both;
 }
 
-.form-floating .form-control {
+.input-icon-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.input-icon-group .form-icon {
+    flex-shrink: 0;
+    color: var(--bs-secondary-color);
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.login-card .form-floating .form-control {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1rem;
+    padding: 1.15rem 1rem 0.35rem;
+    min-height: 3.5rem;
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    box-shadow: none;
 }
 
-.form-floating .form-control:focus {
-    background-color: rgba(13, 110, 253, 0.05);
+.login-card .form-floating .form-control:focus {
+    background-color: var(--bs-body-bg);
     border-color: var(--bs-primary);
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.18);
+    transform: translateY(-1px);
 }
 
-.form-floating > label {
+.login-card .form-floating > label {
     color: var(--bs-body-color);
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
-.form-floating .form-control:focus ~ label,
-.form-floating .form-control:not(:placeholder-shown) ~ label {
+.login-card .form-floating .form-control:focus ~ label,
+.login-card .form-floating .form-control:not(:placeholder-shown) ~ label {
     color: var(--bs-primary);
 }
 
-/* Login Button */
+.password-group .form-floating {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--bs-body-color);
+    cursor: pointer;
+    padding: 0.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+    color: var(--bs-primary);
+}
+
+.login-card .form-control[type="password"] {
+    padding-right: 3rem;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.18);
+}
+
 .login-btn {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1.1rem;
@@ -71,7 +121,6 @@
     transform: translateY(-1px);
 }
 
-/* Link Styling */
 .link-primary {
     transition: all 0.3s ease;
     color: var(--bs-primary);
@@ -82,7 +131,16 @@
     text-decoration: underline;
 }
 
-/* Animations */
+.login-card h2 {
+    transition: color 0.3s ease;
+    letter-spacing: -0.5px;
+}
+
+.login-card p {
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+}
+
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -105,18 +163,6 @@
     }
 }
 
-/* Heading Styles */
-.login-card h2 {
-    transition: color 0.3s ease;
-    letter-spacing: -0.5px;
-}
-
-.login-card p {
-    font-size: 0.95rem;
-    letter-spacing: 0.2px;
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
     .login-card {
         margin-top: 2rem;
@@ -130,20 +176,12 @@
         font-size: 1.75rem;
     }
 
-    .form-floating .form-control {
+    .login-card .form-floating .form-control {
         font-size: 0.95rem;
     }
 
     .login-btn {
         font-size: 1rem;
-    }
-
-    .login-icon-bg {
-        padding: 0.75rem;
-    }
-
-    .login-icon-bg i {
-        font-size: 1.5rem;
     }
 }
 
@@ -168,7 +206,7 @@
         font-size: 0.9rem;
     }
 
-    .form-floating .form-control {
+    .login-card .form-floating .form-control {
         font-size: 0.9rem;
         padding: 0.6rem 0.75rem;
     }
@@ -177,37 +215,27 @@
         padding: 0.65rem;
         font-size: 0.95rem;
     }
-
-    .login-icon-bg {
-        padding: 0.6rem;
-    }
-
-    .login-icon-bg i {
-        font-size: 1.25rem;
-    }
 }
 
-/* Dark Theme Support */
 @media (prefers-color-scheme: dark) {
     .login-card {
         background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
     }
 
-    .form-floating .form-control {
+    .login-card .form-floating .form-control {
         color: var(--bs-body-color);
-    }
-
-    .form-floating .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.12);
     }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     .login-card,
     .login-icon-bg,
     .login-form,
-    .form-floating .form-control,
+    .login-card .form-floating .form-control,
     .login-btn,
     .link-primary {
         animation: none;
@@ -215,8 +243,7 @@
     }
 }
 
-/* Focus Visible for Accessibility */
-.form-floating .form-control:focus-visible {
+.login-card .form-floating .form-control:focus-visible {
     outline: 2px solid var(--bs-primary);
     outline-offset: 2px;
 }

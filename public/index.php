@@ -52,6 +52,46 @@ function view($viewName, $data = []) {
     }
 }
 
+function restoreRememberedLogin(): void {
+    if (isset($_SESSION['user']) || empty($_COOKIE['remember_me'])) {
+        return;
+    }
+
+    $cookieValue = $_COOKIE['remember_me'];
+    $decodedValue = base64_decode($cookieValue, true);
+    if ($decodedValue === false) {
+        return;
+    }
+
+    $parts = explode('|', $decodedValue, 2);
+    if (count($parts) !== 2) {
+        return;
+    }
+
+    [$identifier, $signature] = $parts;
+    if (!hash_equals(hash_hmac('sha256', $identifier, APP_NAME), $signature)) {
+        return;
+    }
+
+    $userModel = new \App\Models\User();
+    $user = $userModel->findByLoginIdentifier($identifier);
+    if (!$user || !empty($user['is_banned'])) {
+        setcookie('remember_me', '', time() - 3600, '/', '', false, true);
+        return;
+    }
+
+    $_SESSION['user'] = [
+        'username' => $user['username'],
+        'name' => $user['name'],
+        'last_name' => $user['last_name'],
+        'email' => $user['email'],
+        'role' => $user['role'],
+        'friend_code' => $user['friend_code']
+    ];
+}
+
+restoreRememberedLogin();
+
 // Generazione Token CSRF se non esiste
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
