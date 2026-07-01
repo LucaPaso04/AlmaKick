@@ -10,6 +10,7 @@ class MatchController extends BaseController {
         $this->resolveExpiredMvps();
         $this->autoCancelExpiredMatches();
         $this->resolveExpiredWaitlistOffers();
+        $this->autoFinishPastMatches();
         $this->autoCloseUnreportedMatches();
         $matchModel = new SoccerMatch();
         
@@ -141,6 +142,7 @@ class MatchController extends BaseController {
         $this->resolveExpiredMvps();
         $this->autoCancelExpiredMatches();
         $this->resolveExpiredWaitlistOffers();
+        $this->autoFinishPastMatches();
         $this->autoCloseUnreportedMatches();
         $matchModel = new SoccerMatch();
         $match = $matchModel->find($id);
@@ -1372,6 +1374,38 @@ class MatchController extends BaseController {
 
         $_SESSION['success'] = "Offerta rifiutata. Posto liberato per il panchinaro successivo.";
         $this->redirectToMatch($id);
+    }
+
+    private function autoFinishPastMatches() {
+        $db = \App\Database::getInstance()->getConnection();
+
+        // 1. Trova tutte le partite 'open' o 'full' iniziate da più di 2 ore
+        $stmt = $db->prepare("
+            SELECT id, host_username, location, date, time
+            FROM matches
+            WHERE status IN ('open', 'full')
+              AND CONCAT(date, ' ', time) <= DATE_SUB(NOW(), INTERVAL 2 HOUR)
+        ");
+        $stmt->execute();
+        $pastMatches = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($pastMatches)) {
+            return;
+        }
+
+        foreach ($pastMatches as $match) {
+            $matchId = $match['id'];
+            try {
+                // Imposta lo stato a 'finished' per avviare il processo di refertazione
+                $db->prepare("
+                    UPDATE matches 
+                    SET status = 'finished', updated_at = NOW() 
+                    WHERE id = :id
+                ")->execute(['id' => $matchId]);
+            } catch (\Exception $e) {
+                // Ignore to not block page load
+            }
+        }
     }
 
     private function autoCloseUnreportedMatches() {
