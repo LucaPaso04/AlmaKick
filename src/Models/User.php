@@ -414,5 +414,53 @@ class User {
         ]);
         return (int)$stmt->fetchColumn();
     }
+
+    public function getMutualFriends(string $user1, string $user2): array {
+        $stmt = $this->db->prepare("
+            SELECT u.*
+            FROM users u
+            WHERE u.is_banned = 0 
+              AND u.username IN (
+                  SELECT CASE WHEN sender_username = :u1 THEN recipient_username ELSE sender_username END
+                  FROM friendships
+                  WHERE (sender_username = :u1_alt OR recipient_username = :u1_alt2) AND status = 'accepted'
+              ) 
+              AND u.username IN (
+                  SELECT CASE WHEN sender_username = :u2 THEN recipient_username ELSE sender_username END
+                  FROM friendships
+                  WHERE (sender_username = :u2_alt OR recipient_username = :u2_alt2) AND status = 'accepted'
+              )
+            ORDER BY u.name ASC, u.last_name ASC
+        ");
+        $stmt->execute([
+            'u1' => $user1,
+            'u1_alt' => $user1,
+            'u1_alt2' => $user1,
+            'u2' => $user2,
+            'u2_alt' => $user2,
+            'u2_alt2' => $user2
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function getMatchesPlayedTogetherCount(string $user1, string $user2): int {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(DISTINCT r1.match_id)
+            FROM registrations r1
+            JOIN registrations r2 ON r1.match_id = r2.match_id
+            JOIN matches m ON r1.match_id = m.id
+            WHERE r1.username = :u1
+              AND r2.username = :u2
+              AND r1.status = 'registered'
+              AND r2.status = 'registered'
+              AND m.status = 'finished'
+        ");
+        $stmt->execute([
+            'u1' => $user1,
+            'u2' => $user2
+        ]);
+        return (int)$stmt->fetchColumn();
+    }
 }
+
 

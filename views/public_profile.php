@@ -21,12 +21,33 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
             <i class="bi bi-arrow-left me-1"></i> Indietro
         </a>
 
-        <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
-            <div class="bg-primary pt-5 pb-3 px-4 position-relative">
-                <div class="position-absolute top-0 end-0 p-3">
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="bg-primary pt-5 pb-3 px-4 position-relative rounded-top-4">
+                <div class="position-absolute top-0 end-0 p-3 d-flex align-items-center gap-2" style="z-index: 1000;">
                     <?php if ($user['role'] === 'super_admin'): ?>
                         <span class="badge bg-warning text-dark"><i class="bi bi-shield-lock-fill me-1"></i>Admin</span>
                     <?php endif; ?>
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-link text-white p-0 border-0 fs-4" type="button" id="profileActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none; box-shadow: none; line-height: 1;">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down" aria-labelledby="profileActionsDropdown">
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#reportUserModal">
+                                    <i class="bi bi-flag-fill"></i> Segnala Utente
+                                </button>
+                            </li>
+                            <li>
+                                <form action="<?= url('/friends/block/' . urlencode($user['username'])) ?>" method="POST" onsubmit="return confirm('Vuoi bloccare questo utente in modo permanente? Non potrà più vedere il tuo profilo né contattarti.');" class="m-0">
+                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-body fw-semibold bg-transparent border-0 w-100 text-start">
+                                        <i class="bi bi-slash-circle text-secondary"></i> Blocca Utente
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="card-body px-4 pb-5 text-center mt-n4">
@@ -47,17 +68,17 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <?= e($user['preferred_role'] ?? 'Ruolo non specificato') ?>
                 </p>
 
-                <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+                <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
                     <?php if($is_friend): ?>
                         <span class="badge bg-success rounded-pill px-3 py-2 fs-6 shadow-sm d-flex align-items-center"><i class="bi bi-check-circle-fill me-1"></i> Amici</span>
-                        <form action="<?= url('/friends/remove/' . urlencode($user['username'])) ?>" method="POST" onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');">
+                        <form action="<?= url('/friends/remove/' . urlencode($user['username'])) ?>" method="POST" onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');" class="m-0">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                             <button type="submit" class="btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm"><i class="bi bi-person-dash me-1"></i> Rimuovi</button>
                         </form>
                     <?php elseif($sent_request): ?>
                         <button disabled class="btn btn-secondary rounded-pill px-4 fw-bold shadow-sm opacity-75"><i class="bi bi-hourglass-split me-1"></i> In attesa di conferma</button>
                     <?php elseif($received_request): ?>
-                        <div class="d-flex gap-2 align-items-center">
+                        <div class="d-flex gap-2 align-items-center flex-wrap justify-content-center">
                             <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fs-6 shadow-sm d-flex align-items-center"><i class="bi bi-person-exclamation me-1"></i> Ti ha inviato una richiesta</span>
                             <form action="<?= url('/friends/accept/' . urlencode($user['username'])) ?>" method="POST" class="m-0">
                                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -69,21 +90,87 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                             </form>
                         </div>
                     <?php else: ?>
-                        <form action="<?= url('/friends/add') ?>" method="POST">
+                        <form action="<?= url('/friends/add') ?>" method="POST" class="m-0">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                             <input type="hidden" name="friend_code" value="<?= e($user['friend_code']) ?>">
                             <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><i class="bi bi-person-plus-fill me-1"></i> Aggiungi Amico</button>
                         </form>
                     <?php endif; ?>
+                </div>
 
-                    <form action="<?= url('/friends/block/' . urlencode($user['username'])) ?>" method="POST" onsubmit="return confirm('Vuoi bloccare questo utente in modo permanente? Non potrà più vedere il tuo profilo né contattarti.');">
-                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                        <button type="submit" class="btn btn-outline-secondary rounded-pill px-3 fw-bold shadow-sm"><i class="bi bi-slash-circle me-1"></i> Blocca</button>
-                    </form>
-
-                    <button type="button" class="btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#reportUserModal">
-                        <i class="bi bi-flag-fill me-1"></i> Segnala
-                    </button>
+                <!-- Social Context: Mutual Friends & Matches Played Together -->
+                <div class="profile-social-context-card mb-4 text-start">
+                    <div class="row align-items-center g-3">
+                        <!-- Mutual Friends -->
+                        <div class="col-12 col-md-6 border-end-md">
+                            <div class="d-flex align-items-center gap-2">
+                                <?php if (!empty($mutual_friends)): ?>
+                                    <div class="avatar-stack">
+                                        <?php 
+                                        $max_avatars = 3;
+                                        $shown_friends = array_slice($mutual_friends, 0, $max_avatars);
+                                        foreach ($shown_friends as $idx => $f): 
+                                            $fAvatarUrl = null;
+                                            if (!empty($f['avatar'])) {
+                                                if (strpos($f['avatar'], 'http://') === 0 || strpos($f['avatar'], 'https://') === 0) {
+                                                    $fAvatarUrl = $f['avatar'];
+                                                } elseif (strpos($f['avatar'], 'uploads/') === 0) {
+                                                    $fAvatarUrl = url('/' . $f['avatar']);
+                                                } else {
+                                                    $fAvatarUrl = url('/uploads/' . ltrim($f['avatar'], '/'));
+                                                }
+                                            }
+                                        ?>
+                                            <div class="avatar-stack-item shadow-sm" style="z-index: <?= 10 - $idx ?>;">
+                                                <?php if ($fAvatarUrl): ?>
+                                                    <img src="<?= htmlspecialchars($fAvatarUrl) ?>" alt="<?= e($f['name']) ?>" class="w-100 h-100 object-fit-cover">
+                                                <?php else: ?>
+                                                    <div class="w-100 h-100 d-flex justify-content-center align-items-center bg-primary text-white fw-bold" style="font-size: 0.75rem;">
+                                                        <?= strtoupper(substr($f['name'] ?? '', 0, 1)) ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="small text-body">
+                                        <span class="fw-bold"><?= count($mutual_friends) ?> <?= count($mutual_friends) === 1 ? 'amico' : 'amici' ?> in comune</span>:
+                                        <?php 
+                                        $names = array_map(function($f) {
+                                            return e($f['name'] . ' ' . $f['last_name']);
+                                        }, $mutual_friends);
+                                        
+                                        if (count($names) <= 2) {
+                                            echo implode(' e ', $names);
+                                        } else {
+                                            echo $names[0] . ', ' . $names[1] . ' e altri ' . (count($names) - 2);
+                                        }
+                                        ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="rounded-circle bg-body-secondary d-flex justify-content-center align-items-center text-muted" style="width: 32px; height: 32px;">
+                                        <i class="bi bi-people-fill text-muted" style="font-size: 0.9rem;"></i>
+                                    </div>
+                                    <span class="text-muted small">Nessun amico in comune</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        
+                        <!-- Matches Played Together -->
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle bg-primary bg-opacity-10 d-flex justify-content-center align-items-center text-primary shadow-sm" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-controller" style="font-size: 1rem;"></i>
+                                </div>
+                                <div class="small text-body">
+                                    <?php if ($matches_played_together > 0): ?>
+                                        Avete giocato insieme <span class="fw-bold text-primary"><?= $matches_played_together ?> <?= $matches_played_together === 1 ? 'partita' : 'partite' ?></span>
+                                    <?php else: ?>
+                                        <span class="text-muted">Non avete ancora giocato partite insieme</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <?php
