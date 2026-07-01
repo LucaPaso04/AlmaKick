@@ -1,59 +1,119 @@
 <div class="welcome-container">
-    <div class="row align-items-center mb-5 mt-5">
-        <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
-            <h1 class="display-3 fw-bold mb-4 text-primary">Unisciti, <br>Gioca, <br><span class="text-warning">Divertiti.</span></h1>
-            <p class="lead text-muted mb-4">Non lasciare che la pioggia o le disdette dell'ultimo minuto rovinino la tua passione. AlmaKick organizza per te partite affidabili nel tuo Campus universitario.</p>
-            
-            <div class="d-flex flex-column flex-md-row gap-3 justify-content-center justify-content-lg-start mt-5">
-                <a href="<?= url('/register') ?>" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold">
-                    <i class="bi bi-person-plus-fill me-2"></i>Registrati Ora
-                </a>
-                <a href="<?= url('/login') ?>" class="btn btn-outline-secondary btn-lg rounded-pill px-4 fw-bold">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Accedi
-                </a>
+    <section class="welcome-hero">
+        <div class="container welcome-hero-content">
+            <div class="welcome-hero-card">
+                <span class="welcome-eyebrow">
+                    <i class="bi bi-lightning-charge-fill me-2"></i>AlmaKick • Organizza il tuo match in un click
+                </span>
+                <h1>Scendi in campo.<br><span>Quando vuoi, con chi vuoi.</span></h1>
+                <p>La piattaforma del tuo Campus per organizzare e trovare partite di calcetto in pochi secondi.</p>
+
+                <div class="welcome-actions">
+                    <a href="<?= url('/register') ?>" class="btn btn-lg welcome-primary-btn">
+                        <span>Inizia Ora</span>
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="<?= url('/login') ?>" class="btn btn-lg welcome-secondary-btn">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Accedi
+                    </a>
+                </div>
+
+                <div class="welcome-highlights">
+                    <span class="welcome-pill"><i class="bi bi-geo-alt-fill me-2"></i>Campi vicini</span>
+                    <span class="welcome-pill"><i class="bi bi-shield-check me-2"></i>Trust score</span>
+                    <span class="welcome-pill"><i class="bi bi-stars me-2"></i>Partite affidabili</span>
+                </div>
             </div>
         </div>
-        
-        <div class="col-lg-6">
-            <div class="position-relative">
-                <div class="card bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden transform-tilt">
-                    <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                         class="card-img welcome-hero-img opacity-50" alt="Campo di calcetto illuminato">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
-                        <h3 class="card-title fw-bold mb-1"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Trova i Campi</h3>
-                        <p class="card-text">Visualizza la posizione esatta con il nostro servizio di mappe integrato.</p>
+    </section>
+
+    <section class="welcome-features">
+        <article class="welcome-feature-card">
+            <div class="feature-copy">
+                <span class="feature-kicker">Squadre equilibrate</span>
+                <h3>Formazioni bilanciate in base al ruolo e all’affidabilità.</h3>
+                <p>Il nostro sistema crea partite più giuste e coinvolgenti, riducendo il caos dell’ultimo minuto.</p>
+                <ul class="feature-list">
+                    <li><i class="bi bi-check2-circle"></i>Matchmaking intelligente</li>
+                    <li><i class="bi bi-check2-circle"></i>Ruoli preferiti e livelli di gioco</li>
+                    <li><i class="bi bi-check2-circle"></i>Organizzazione senza stress</li>
+                </ul>
+            </div>
+            <div class="feature-visual formation-visual" aria-hidden="true">
+                <div class="formation-card">
+                    <div class="formation-pitch">
+                        <div class="formation-line line-top"></div>
+                        <div class="formation-line line-mid"></div>
+                        <div class="formation-line line-bottom"></div>
+                        <span class="player player-1"></span>
+                        <span class="player player-2"></span>
+                        <span class="player player-3"></span>
+                        <span class="player player-4"></span>
+                        <span class="player player-5"></span>
+                        <span class="player player-6"></span>
+                        <span class="player player-7"></span>
+                        <span class="player player-8"></span>
+                        <span class="player player-9"></span>
+                        <span class="player player-10"></span>
+                        <span class="player player-11"></span>
                     </div>
                 </div>
-                
-                <!-- Floating Badge -->
-                <div class="position-absolute text-white bg-success badge rounded-pill shadow fs-5 p-3 welcome-floating-badge">
-                    <i class="bi bi-shield-check me-2"></i>Sistema Trust Score
+            </div>
+        </article>
+
+        <article class="welcome-feature-card reverse">
+            <div class="feature-visual weather-visual" aria-hidden="true">
+                <div class="weather-card">
+                    <div class="weather-top">
+                        <span class="weather-icon"><i class="bi bi-cloud-sun"></i></span>
+                        <div>
+                            <strong>22°</strong>
+                            <p>Partita ideale</p>
+                        </div>
+                    </div>
+                    <div class="weather-bars">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="feature-copy">
+                <span class="feature-kicker">Meteo in tempo reale</span>
+                <h3>Controlla il meteo egià prima della partita.</h3>
+                <p>Previsioni aggiornate e alert utili per scegliere il momento giusto e non perdere l’evento.</p>
+                <div class="feature-badge">
+                    <i class="bi bi-cloud-drizzle"></i>
+                    <span>Previsioni aggiornate ogni ora</span>
+                </div>
+            </div>
+        </article>
 
-    <div class="row text-center mt-5 pt-5 mb-5 g-4 border-top">
-        <div class="col-md-4">
-            <div class="p-4 bg-body-tertiary rounded-4 h-100 shadow-sm border-0">
-                <i class="bi bi-people fs-1 text-primary mb-3"></i>
-                <h4 class="fw-bold">Squadre Equilibrate</h4>
-                <p class="text-muted">Il nostro algoritmo genera formazioni bilanciate in base al ruolo preferito e all'affidabilità dei giocatori.</p>
+        <article class="welcome-feature-card">
+            <div class="feature-copy">
+                <span class="feature-kicker">MVP & Trust Score</span>
+                <h3>Premia il talento e riconosci chi fa la differenza.</h3>
+                <p>Vota i giocatori, assegna il badge MVP e costruisci un ambiente affidabile per ogni serata.</p>
+                <div class="mvp-preview">
+                    <div class="mvp-badge">
+                        <i class="bi bi-star-fill"></i>
+                        <span>MVP della Serata</span>
+                    </div>
+                    <div class="trust-meter">
+                        <div class="trust-fill"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-4 bg-body-tertiary rounded-4 h-100 shadow-sm border-0">
-                <i class="bi bi-cloud-sun fs-1 text-warning mb-3"></i>
-                <h4 class="fw-bold">Meteo in Tempo Reale</h4>
-                <p class="text-muted">Integrazione con OpenWeatherMap per previsioni sul campo precise fino all'ora della partita.</p>
+            <div class="feature-visual mvp-visual" aria-hidden="true">
+                <div class="mvp-card">
+                    <div class="mvp-avatar">M</div>
+                    <div>
+                        <h4>Marco R.</h4>
+                        <p>4.9/5 • 12 presenze</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-4 bg-body-tertiary rounded-4 h-100 shadow-sm border-0">
-                <i class="bi bi-star-half fs-1 text-danger mb-3"></i>
-                <h4 class="fw-bold">Eleggi l'MVP</h4>
-                <p class="text-muted">A fine partita, usa le votazioni per scegliere il miglior giocatore e sanziona comportamenti antisportivi.</p>
-            </div>
-        </div>
-    </div>
+        </article>
+    </section>
 </div>
