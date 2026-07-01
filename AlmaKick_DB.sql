@@ -86,6 +86,7 @@ CREATE TABLE `registrations` (
   `has_guest` tinyint(1) NOT NULL DEFAULT 0,
   `team` enum('home','away') DEFAULT NULL,
   `goals_scored` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `offer_expires_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -295,7 +296,9 @@ INSERT INTO matches (id, host_username, date, time, format, max_players, locatio
 (8, 'giovanni_neri', DATE_SUB(CURDATE(), INTERVAL 20 DAY), '21:00:00', '5v5', 10, 'Campo Periferia', NULL, NULL, 'public', 50.00, 'cancelled', 'Meteo avverso', NULL, NULL, DATE_SUB(NOW(), INTERVAL 25 DAY), DATE_SUB(NOW(), INTERVAL 20 DAY)),
 (9, 'giovanni_neri', DATE_SUB(CURDATE(), INTERVAL 25 DAY), '21:00:00', '5v5', 10, 'Campo Periferia', NULL, NULL, 'public', 50.00, 'cancelled', 'Meteo avverso', NULL, NULL, DATE_SUB(NOW(), INTERVAL 30 DAY), DATE_SUB(NOW(), INTERVAL 25 DAY)),
 (10, 'andrea_gialli', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '22:00:00', '5v5', 10, 'Campetti San Paolo', NULL, NULL, 'public', 50.00, 'cancelled', 'Non abbiamo raggiunto il numero', NULL, NULL, DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY)),
-(19, 'vittorio_ossidiana', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '20:30:00', '5v5', 10, 'Arena Sport', 45.4642, 9.2000, 'public', 60.00, 'cancelled', 'Infortunio del campo', NULL, NULL, DATE_SUB(NOW(), INTERVAL 6 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY));
+(19, 'vittorio_ossidiana', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '20:30:00', '5v5', 10, 'Arena Sport', 45.4642, 9.2000, 'public', 60.00, 'cancelled', 'Infortunio del campo', NULL, NULL, DATE_SUB(NOW(), INTERVAL 6 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- CASISTICA 3: Partita test last-minute (sofia_corallo iscritta, admin_test in panchina, inizia tra 2 ore)
+(888, 'sofia_corallo', DATE(DATE_ADD(NOW(), INTERVAL 2 HOUR)), TIME(DATE_ADD(NOW(), INTERVAL 2 HOUR)), '5vs5', 10, 'Campo Test Manuale', NULL, NULL, 'public', 50.00, 'full', NULL, NULL, NULL, NOW(), NOW());
 
 -- ==========================================
 -- 3. ISCRIZIONI (REGISTRATIONS)
@@ -446,7 +449,19 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (8, 'giovanni_neri', 'registered', 0, NULL, 0, DATE_SUB(NOW(), INTERVAL 25 DAY), DATE_SUB(NOW(), INTERVAL 20 DAY)),
 (9, 'giovanni_neri', 'registered', 0, NULL, 0, DATE_SUB(NOW(), INTERVAL 30 DAY), DATE_SUB(NOW(), INTERVAL 25 DAY)),
 (10, 'andrea_gialli', 'registered', 0, NULL, 0, DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY)),
-(19, 'vittorio_ossidiana', 'registered', 0, NULL, 0, DATE_SUB(NOW(), INTERVAL 6 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY));
+(19, 'vittorio_ossidiana', 'registered', 0, NULL, 0, DATE_SUB(NOW(), INTERVAL 6 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- Iscrizioni Partita 888
+(888, 'sofia_corallo', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'mario_rossi', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'thomas_st', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'prof_brown', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'gertrude_b', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'luigi_verdi', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'giovanni_neri', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'marco_bianchi', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'andrea_gialli', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'paolo_marroni', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'admin_test', 'waitlist', 0, NULL, 0, NOW(), NOW());
 
 -- ==========================================
 -- 4. VALUTAZIONI POST-PARTITA (EVALUATIONS)
