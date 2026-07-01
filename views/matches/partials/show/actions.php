@@ -108,11 +108,13 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <form action="<?= url('/matches/' . $match['id'] . '/leave?from=' . urlencode($from)) ?>" method="POST"
-                    onsubmit="return confirm('Sei sicuro di volerti ritirare? Potresti perdere Trust Score se mancano meno di 24h.');">
-                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                    <button type="submit" class="btn btn-outline-danger shadow-sm rounded-pill px-4 mt-2">Ritirati dalla partita</button>
-                </form>
+                <?php if (!$is_host): ?>
+                    <form action="<?= url('/matches/' . $match['id'] . '/leave?from=' . urlencode($from)) ?>" method="POST"
+                        onsubmit="return confirm('Sei sicuro di volerti ritirare? Potresti perdere Trust Score se mancano meno di 24h.');">
+                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                        <button type="submit" class="btn btn-outline-danger shadow-sm rounded-pill px-4 mt-2">Ritirati dalla partita</button>
+                    </form>
+                <?php endif; ?>
             <?php else: ?>
                 <?php if (!isset($_SESSION['user'])): ?>
                     <p class="text-muted mb-3">Accedi per partecipare a questa partita.</p>
