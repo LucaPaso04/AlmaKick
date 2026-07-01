@@ -114,6 +114,24 @@ class User {
         return (int)$stmt->fetchColumn();
     }
 
+    public function getRecentVotesTrend(string $username): array {
+        $stmt = $this->db->prepare("
+            SELECT e.match_id, AVG(e.skill_vote) as avg_vote
+            FROM evaluations e
+            JOIN matches m ON e.match_id = m.id
+            WHERE e.evaluated_username = :username AND e.skill_vote IS NOT NULL
+            GROUP BY e.match_id, m.date, m.time
+            ORDER BY m.date DESC, m.time DESC
+            LIMIT 5
+        ");
+        $stmt->execute(['username' => $username]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        
+        return array_reverse(array_map(function($row) {
+            return (float)$row['avg_vote'];
+        }, $results));
+    }
+
     public function getPendingRequests(string $username): array {
         $stmt = $this->db->prepare("
             SELECT u.* 
