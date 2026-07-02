@@ -45,6 +45,40 @@ function view($viewName, $data = []) {
         ob_start();
         require $viewFile;
         $content = ob_get_clean();
+        
+        // --- Prepara dati globali per il layout (Evitando query SQL in layout.php) ---
+        $layoutData = [
+            'layoutUserAvatar' => null,
+            'layoutPendingRequestsCount' => 0,
+            'layoutPendingReportsCount' => 0
+        ];
+        
+        if (isset($_SESSION['user'])) {
+            try {
+                $db = \App\Database::getInstance()->getConnection();
+                
+                // Avatar
+                $stmt = $db->prepare("SELECT avatar FROM users WHERE username = :username");
+                $stmt->execute(['username' => $_SESSION['user']['username']]);
+                $layoutData['layoutUserAvatar'] = $stmt->fetchColumn();
+                
+                // Amicizie pendenti
+                $stmtCount = $db->prepare("SELECT COUNT(*) FROM friendships WHERE recipient_username = :username AND status = 'pending'");
+                $stmtCount->execute(['username' => $_SESSION['user']['username']]);
+                $layoutData['layoutPendingRequestsCount'] = (int)$stmtCount->fetchColumn();
+                
+                // Report pendenti
+                if ($_SESSION['user']['role'] === 'super_admin') {
+                    $stmtReports = $db->prepare("SELECT COUNT(*) FROM reports WHERE status = 'pending'");
+                    $stmtReports->execute();
+                    $layoutData['layoutPendingReportsCount'] = (int)$stmtReports->fetchColumn();
+                }
+            } catch (\PDOException $e) {
+                // Fallback silenzioso
+            }
+        }
+        extract($layoutData);
+        
         // Carica il layout principale passando il contenuto
         require VIEW_PATH . '/layout.php';
     } else {
