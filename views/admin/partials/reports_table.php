@@ -6,10 +6,9 @@
         <?php endif; ?>
     </div>
 
-    <?php // =================== FILTERS & SEARCH =================== ?>
+    <?php // Filters & Search ?>
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#reports-section" class="row g-2">
-            <?php // Search ?>
             <div class="col-md-8">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
@@ -18,7 +17,6 @@
                 </div>
             </div>
 
-            <?php // Status Filter ?>
             <div class="col-md-4">
                 <select name="status_report" class="form-select">
                     <option value="">Tutti gli stati</option>
@@ -28,7 +26,7 @@
                 </select>
             </div>
 
-            <?php // Conserva gli altri filtri ?>
+            <?php // Preserve other filters ?>
             <input type="hidden" name="search" value="<?= e($search) ?>">
             <input type="hidden" name="status" value="<?= e($statusFilter) ?>">
             <input type="hidden" name="role" value="<?= e($roleFilter) ?>">
@@ -127,19 +125,16 @@
                             <td class="text-end pe-4" onclick="event.stopPropagation();">
                                 <?php if($r['status'] === 'pending'): ?>
                                     <div class="d-flex justify-content-end gap-1">
-                                        <?php // Bottone Risolvi ?>
                                         <button type="button" class="btn btn-sm btn-success rounded-pill fw-bold" 
                                             data-bs-toggle="modal" data-bs-target="#resolveReportModal<?= $r['id'] ?>">
                                             <i class="bi bi-check-lg me-1"></i>Risolvi
                                         </button>
                                         
-                                        <?php // Bottone Ignora ?>
                                         <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" 
                                             data-bs-toggle="modal" data-bs-target="#dismissReportModal<?= $r['id'] ?>">
                                             <i class="bi bi-slash-circle me-1"></i>Ignora
                                         </button>
 
-                                        <?php // Bottone Banna Veloce ?>
                                         <?php if($r['reported'] && !$r['reported']['is_banned'] && $r['reported']['id'] !== $_SESSION['user']['username']): ?>
                                             <form action="<?= url('/admin/ban') ?>" method="POST" class="d-inline-block"
                                                 onsubmit="return confirm('Bannare l\'utente segnalato? Questa operazione gli impedirà l\'accesso.');">
@@ -152,7 +147,7 @@
                                         <?php endif; ?>
                                     </div>
 
-                                    <?php // Modale Risolvi per questa segnalazione ?>
+                                    <?php // Resolve modal ?>
                                     <div class="modal fade text-start" id="resolveReportModal<?= $r['id'] ?>" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
@@ -181,7 +176,7 @@
                                         </div>
                                     </div>
 
-                                    <?php // Modale Ignora per questa segnalazione ?>
+                                    <?php // Dismiss modal ?>
                                     <div class="modal fade text-start" id="dismissReportModal<?= $r['id'] ?>" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
@@ -224,12 +219,11 @@
         </table>
     </div>
 
-    <?php // =================== PAGINATION (REPORTS) =================== ?>
+    <?php // Pagination ?>
     <?php if ($totalPagesReports > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    <?php // Previous Page Link ?>
                     <?php if ($pageReports <= 1): ?>
                         <li class="page-item disabled"><span class="page-link text-danger">← Precedente</span></li>
                     <?php else: ?>
@@ -238,7 +232,6 @@
                         </li>
                     <?php endif; ?>
 
-                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesReports; $i++): ?>
                         <?php if ($i == $pageReports): ?>
                             <li class="page-item active"><span class="page-link bg-danger border-danger"><?= $i ?></span></li>
@@ -247,7 +240,6 @@
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    <?php // Next Page Link ?>
                     <?php if ($pageReports >= $totalPagesReports): ?>
                         <li class="page-item disabled"><span class="page-link text-danger">Prossima →</span></li>
                     <?php else: ?>

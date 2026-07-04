@@ -1,5 +1,5 @@
 <?php if (empty($q)): ?>
-    <!-- Contenitore Cronologia Ricerche (gestito via client-side localStorage) -->
+    <!-- Search history -->
     <div id="search-history-container" class="d-none mb-4">
         <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2 border-secondary border-opacity-10">
             <h6 class="fw-bold text-muted text-uppercase tracking-wider mb-0 fs-7">Ricerche recenti</h6>
@@ -8,7 +8,7 @@
         <div id="search-history-list" class="d-flex flex-column"></div>
     </div>
 
-    <!-- Stato Vuoto Iniziale -->
+    <!-- Initial empty state -->
     <div id="empty-search-state" class="text-center py-5">
         <div class="card bg-dark bg-opacity-25 border border-secondary border-opacity-10 rounded-4 p-5 shadow-sm">
             <i class="bi bi-search fs-1 text-primary opacity-75 mb-3 d-block"></i>
@@ -17,7 +17,7 @@
         </div>
     </div>
 <?php else: ?>
-    <!-- Risultati Ricerca Attiva in formato Lista (Stile Instagram) -->
+    <!-- Active search results -->
     <div class="d-flex flex-column" id="search-results-list">
         <?php if (!empty($users)): ?>
             <?php foreach ($users as $user): ?>

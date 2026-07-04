@@ -1,5 +1,5 @@
 <div class="row g-4">
-    <!-- Colonna 1: La Scarpa d'Oro (Gol) -->
+    <!-- Gold Shoe (Goals) -->
     <div class="col-12 col-lg-4">
         <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden card-danger">
             <header class="card-header-gradient-danger text-white p-4 text-center position-relative">
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <!-- Colonna 2: Hall of Fame (MVP) -->
+    <!-- Hall of Fame (MVP) -->
     <div class="col-12 col-lg-4">
         <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden card-warning">
             <header class="card-header-gradient-warning text-white p-4 text-center position-relative">
@@ -137,7 +137,7 @@
         </div>
     </div>
 
-    <!-- Colonna 3: Top Players (Skill) -->
+    <!-- Top Players (Skill) -->
     <div class="col-12 col-lg-4">
         <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden card-info">
             <header class="card-header-gradient-info text-white p-4 text-center position-relative">

@@ -1,11 +1,11 @@
 <?php
-// views/matches/partials/show/post_match.php
+
 
 if ($match['status'] === 'finished'):
     $matchDateTime = strtotime($match['date'] . ' ' . $match['time']);
     $isWithin24Hours = (time() < $matchDateTime + 24 * 3600);
 
-    // Trova iscrizione dell'utente corrente per verificare se è un partecipante attivo
+    // Find current user registration
     $my_reg = null;
     if (isset($_SESSION['user']['username'])) {
         $currentUser = $_SESSION['user']['username'];
@@ -18,14 +18,14 @@ if ($match['status'] === 'finished'):
     }
     ?>
 
-    <?php // Host: Report + MVP ?>
+    <?php // Host controls ?>
     <?php if ($is_host): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4 border-start border-4 border-success">
             <div class="card-body p-4">
                 <h2 class="fw-bold fs-5 mb-4"><span class="bi bi-clipboard-data-fill me-2 text-success"></span>Pannello Host Post-Partita</h2>
                 
                 <div class="d-flex flex-column gap-4">
-                    <!-- Tabellino Row -->
+                    <!-- Scoreboard section -->
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 border-bottom">
                         <div class="flex-grow-1">
                             <h3 class="h6 fw-bold mb-1"><i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i>Tabellino e Gol</h3>
@@ -44,7 +44,7 @@ if ($match['status'] === 'finished'):
                         </div>
                     </div>
 
-                    <!-- MVP Row -->
+                    <!-- MVP section -->
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                         <div class="flex-grow-1">
                             <h3 class="h6 fw-bold mb-1"><i class="bi bi-trophy-fill me-2 text-warning"></i>Gestione MVP</h3>
@@ -84,7 +84,7 @@ if ($match['status'] === 'finished'):
         </div>
     <?php endif; ?>
 
-    <?php // Voting Section (All participants) ?>
+    <?php // Voting section ?>
     <?php if ($my_reg): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4">
             <div class="card-body p-4">
@@ -98,7 +98,7 @@ if ($match['status'] === 'finished'):
                     $hasSomeoneToVote = false;
                     foreach ($registrations as $reg):
                         if ($reg['status'] === 'registered' && $reg['username'] !== $_SESSION['user']['username']):
-                            // Cerca se esiste già un voto dell'utente loggato per questo giocatore
+                            // Find existing vote
                             $existing_vote = null;
                             foreach ($evaluations as $eval) {
                                 if ($eval['evaluated_username'] === $reg['username']) {
@@ -146,7 +146,7 @@ if ($match['status'] === 'finished'):
                                         <div class="d-flex align-items-center gap-3">
                                             <input type="hidden" name="votes[<?= e($reg['username']) ?>][evaluated_username]" value="<?= e($reg['username']) ?>">
                                             
-                                            <!-- Interactive Star Rating -->
+                                            <!-- Star rating -->
                                             <input type="hidden" name="votes[<?= e($reg['username']) ?>][skill_vote]" id="vote_val_<?= e($reg['username']) ?>" value="">
                                             <div class="star-rating d-flex gap-1" data-username="<?= e($reg['username']) ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -154,7 +154,7 @@ if ($match['status'] === 'finished'):
                                                 <?php endfor; ?>
                                             </div>
 
-                                            <!-- Styled Thumb Down Checkbox -->
+                                            <!-- Thumb down checkbox -->
                                             <input type="checkbox" name="votes[<?= e($reg['username']) ?>][thumb_down]" value="1" id="td_<?= e($reg['username']) ?>" class="d-none thumb-down-check">
                                             <label class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center p-0 thumb-down-btn" for="td_<?= e($reg['username']) ?>" style="width: 32px; height: 32px;" title="Segnala comportamento grave">
                                                 <i class="bi bi-hand-thumbs-down"></i>

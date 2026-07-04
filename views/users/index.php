@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-12 col-lg-9">
 
-        <!-- Header Section -->
+        <!-- Header -->
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
             <div>
                 <h1 class="fw-bolder mb-1"><i class="bi bi-people-fill text-primary me-2"></i>Ricerca Giocatori</h1>
@@ -10,13 +10,13 @@
             </div>
         </div>
 
-        <!-- Glassmorphic Search Panel -->
+        <!-- Search panel -->
         <div class="card search-panel border-0 mb-4 rounded-4 shadow-sm">
             <div class="card-body p-4">
                 <form action="<?= url('/users') ?>" method="GET" id="search-form" class="no-spinner">
                     <div class="row g-3">
 
-                        <!-- Query Input -->
+                        <!-- Input -->
                         <div class="col-12">
                             <label for="search-input"
                                 class="form-label small fw-bold text-muted text-uppercase tracking-wider">Cerca per nome
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <!-- Dynamic Search Results Container -->
+        <!-- Results -->
         <div id="search-results">
             <?php require VIEW_PATH . '/users/partials/results.php'; ?>
         </div>
@@ -42,5 +42,5 @@
     </div>
 </div>
 
-<!-- Load Page-specific Scripts -->
+<!-- Scripts -->
 <script src="<?= url('/js/users-search.js') ?>"></script>

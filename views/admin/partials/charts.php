@@ -3,7 +3,7 @@ $pendingReports = $stats['pending_reports'];
 ?>
 
 <div class="row g-4 mb-5">
-    <!-- Card 1: Andamento Registrazioni nel Tempo (Line Chart) -->
+    <!-- Registrations chart -->
     <div class="col-12 col-xl-8">
         <div class="card border-0 shadow-sm rounded-4 p-4 glass-panel h-100 chart-card">
             <h5 class="fw-bold mb-1"><i class="bi bi-graph-up text-primary me-2"></i>Andamento Registrazioni</h5>
@@ -14,7 +14,7 @@ $pendingReports = $stats['pending_reports'];
         </div>
     </div>
 
-    <!-- Card 2: Distribuzione Ruoli Preferiti (Doughnut Chart) -->
+    <!-- Roles chart -->
     <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm rounded-4 p-4 glass-panel h-100 chart-card">
             <h5 class="fw-bold mb-1"><i class="bi bi-person-badge-fill text-warning me-2"></i>Ruoli Preferiti</h5>
@@ -25,7 +25,7 @@ $pendingReports = $stats['pending_reports'];
         </div>
     </div>
 
-    <!-- Card 3: Stato Partite (Doughnut Chart) -->
+    <!-- Matches status chart -->
     <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm rounded-4 p-4 glass-panel h-100 chart-card">
             <h5 class="fw-bold mb-1"><i class="bi bi-calendar-event text-success me-2"></i>Stato Partite</h5>
@@ -36,7 +36,7 @@ $pendingReports = $stats['pending_reports'];
         </div>
     </div>
 
-    <!-- Card 4: Stato Account e Trust (Doughnut Chart) -->
+    <!-- Trust & reliability chart -->
     <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm rounded-4 p-4 glass-panel h-100 chart-card">
             <h5 class="fw-bold mb-1"><i class="bi bi-shield-check text-info me-2"></i>Affidabilità & Ban</h5>
@@ -47,7 +47,7 @@ $pendingReports = $stats['pending_reports'];
         </div>
     </div>
 
-    <!-- Card 5: Risoluzione Segnalazioni (Doughnut Chart) -->
+    <!-- Reports status chart -->
     <div class="col-12 col-md-6 col-xl-4">
         <div class="card border-0 shadow-sm rounded-4 p-4 glass-panel h-100 chart-card">
             <h5 class="fw-bold mb-1"><i class="bi bi-flag-fill text-danger me-2"></i>Stato Segnalazioni</h5>
@@ -62,7 +62,7 @@ $pendingReports = $stats['pending_reports'];
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Inject dynamic data for Chart.js -->
+<!-- Dynamic data injection -->
 <script>
 window.adminChartsData = {
     regTrend: <?= json_encode($regTrend) ?>,

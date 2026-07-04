@@ -1,6 +1,5 @@
-/* Admin dashboard Chart.js visual configurations and themes observers */
+/* Admin charts configuration */
 (function() {
-    // Read dynamic data injected into global window state
     const data = window.adminChartsData || {};
     const regTrendRaw = data.regTrend || [];
     const rolesDistRaw = data.rolesDist || [];
@@ -23,7 +22,7 @@
 
     const theme = getThemeSettings();
 
-    // 1. Registrations Line Chart
+    // Registrations chart
     const regLabels = regTrendRaw.map(item => {
         const d = new Date(item.reg_date);
         return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' });
@@ -90,7 +89,7 @@
         });
     }
 
-    // 2. Roles Distribution Doughnut Chart
+    // Roles distribution
     const rolesLabels = rolesDistRaw.map(item => item.preferred_role);
     const rolesData = rolesDistRaw.map(item => parseInt(item.count));
     const roleColors = {
@@ -144,7 +143,7 @@
         });
     }
 
-    // 3. Matches Status Doughnut Chart
+    // Matches status
     const canvasMatches = document.getElementById('matchesStatusChart');
     let matchesChart = null;
     if (canvasMatches) {
@@ -187,7 +186,7 @@
         });
     }
 
-    // 4. Users Trust Brackets Doughnut Chart
+    // Users trust
     const canvasUsers = document.getElementById('usersBanChart');
     let usersChart = null;
     if (canvasUsers) {
@@ -230,7 +229,7 @@
         });
     }
 
-    // 5. Reports Status Doughnut Chart
+    // Reports status
     const canvasReports = document.getElementById('reportsStatusChart');
     let reportsChart = null;
     if (canvasReports) {

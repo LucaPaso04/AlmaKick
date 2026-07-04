@@ -1,12 +1,12 @@
 <?php
-// Avvia la sessione con impostazioni sicure
+// Start secure session
 ini_set('session.cookie_httponly', 1);
-ini_set('session.cookie_secure', 0); // Impostare a 1 in produzione con HTTPS
+ini_set('session.cookie_secure', 0); // Set to 1 in production with HTTPS
 ini_set('session.use_only_cookies', 1);
 
 session_start();
 
-// Rigenera ID di sessione periodicamente per evitare session fixation
+// Regenerate session ID periodically
 if (!isset($_SESSION['last_regeneration'])) {
     session_regenerate_id(true);
     $_SESSION['last_regeneration'] = time();
@@ -15,10 +15,10 @@ if (!isset($_SESSION['last_regeneration'])) {
     $_SESSION['last_regeneration'] = time();
 }
 
-// Includi file di configurazione
+// Include config
 require_once __DIR__ . '/../config.php';
 
-// Autoloader PSR-4 personalizzato per evitare dipendenza forzata da Composer all'avvio
+// Custom PSR-4 autoloader
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $base_dir = __DIR__ . '/../src/';
@@ -36,17 +36,17 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// Funzione helper per includere le viste
+// View helper
 function view($viewName, $data = []) {
     extract($data);
     $viewFile = VIEW_PATH . '/' . $viewName . '.php';
     if (file_exists($viewFile)) {
-        // Avvia il buffering dell'output
+        // Output buffering
         ob_start();
         require $viewFile;
         $content = ob_get_clean();
         
-        // --- Prepara dati globali per il layout (Evitando query SQL in layout.php) ---
+        // Prepare global layout data
         $layoutData = [
             'layoutUserAvatar' => null,
             'layoutPendingRequestsCount' => 0,
@@ -57,29 +57,28 @@ function view($viewName, $data = []) {
             try {
                 $db = \App\Database::getInstance()->getConnection();
                 
-                // Avatar
+                // Get user avatar
                 $stmt = $db->prepare("SELECT avatar FROM users WHERE username = :username");
                 $stmt->execute(['username' => $_SESSION['user']['username']]);
                 $layoutData['layoutUserAvatar'] = $stmt->fetchColumn();
                 
-                // Amicizie pendenti
+                // Get pending friendship requests
                 $stmtCount = $db->prepare("SELECT COUNT(*) FROM friendships WHERE recipient_username = :username AND status = 'pending'");
                 $stmtCount->execute(['username' => $_SESSION['user']['username']]);
                 $layoutData['layoutPendingRequestsCount'] = (int)$stmtCount->fetchColumn();
                 
-                // Report pendenti
+                // Get pending reports
                 if ($_SESSION['user']['role'] === 'super_admin') {
                     $stmtReports = $db->prepare("SELECT COUNT(*) FROM reports WHERE status = 'pending'");
                     $stmtReports->execute();
                     $layoutData['layoutPendingReportsCount'] = (int)$stmtReports->fetchColumn();
                 }
-            } catch (\PDOException $e) {
-                // Fallback silenzioso
+            } catch (\PDOException $e) { // Silent fallback
             }
         }
         extract($layoutData);
         
-        // Carica il layout principale passando il contenuto
+        // Load main layout
         require VIEW_PATH . '/layout.php';
     } else {
         echo "Vista $viewName non trovata.";
@@ -126,15 +125,15 @@ function restoreRememberedLogin(): void {
 
 restoreRememberedLogin();
 
-// Generazione Token CSRF se non esiste
+// Generate CSRF token
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Inizializza il Router
+// Initialize router
 $router = new \App\Router();
 
-// DEFINIZIONE DELLE ROTTE
+// Routes definition
 $router->add('GET', '/', 'WelcomeController@index');
 $router->add('GET', '/login', 'AuthController@showLogin');
 $router->add('POST', '/login', 'AuthController@login');
@@ -159,7 +158,7 @@ $router->add('POST', '/matches/{id}/vote', 'MatchController@vote', [\App\Middlew
 $router->add('GET', '/matches/{id}/report', 'MatchController@showReport', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/matches/{id}/report', 'MatchController@storeReport', [\App\Middleware\AuthMiddleware::class]);
 
-// ROTTE PROFILO E AMICIZIE
+// Profile & friendship routes
 $router->add('GET', '/users', 'UserController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->add('GET', '/profile', 'UserController@show', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/profile/avatar', 'UserController@updateAvatar', [\App\Middleware\AuthMiddleware::class]);
@@ -172,7 +171,7 @@ $router->add('POST', '/friends/remove/{username}', 'UserController@removeFriend'
 $router->add('POST', '/reports', 'UserController@storeReport', [\App\Middleware\AuthMiddleware::class]);
 
 
-// ROTTE NOTIFICHE
+// Notification routes
 $router->add('GET', '/api/notifications', 'NotificationController@getLatest', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/api/notifications/{id}/read', 'NotificationController@markAsRead', [\App\Middleware\AuthMiddleware::class]);
 $router->add('POST', '/api/notifications/read-all', 'NotificationController@markAllAsRead', [\App\Middleware\AuthMiddleware::class]);
@@ -180,7 +179,7 @@ $router->add('POST', '/api/notifications/{id}/delete', 'NotificationController@d
 $router->add('POST', '/api/notifications/clear-all', 'NotificationController@clearAll', [\App\Middleware\AuthMiddleware::class]);
 
 
-// ROTTE AMMINISTRATORE
+// Admin routes
 $router->add('GET', '/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/ban', 'AdminController@ban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/unban', 'AdminController@unban', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
@@ -190,5 +189,5 @@ $router->add('POST', '/admin/reports/{id}/dismiss', 'AdminController@dismissRepo
 $router->add('POST', '/admin/matches/cancel', 'AdminController@forceCancelMatch', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->add('POST', '/admin/matches/delete', 'AdminController@deleteMatch', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 
-// Esegui il Router
+// Run router
 $router->handle($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

@@ -1,6 +1,6 @@
-<?php // Dashboard Amministratore ?>
+<?php // Admin Dashboard ?>
 
-<?php // =================== HEADER =================== ?>
+<?php // Header ?>
 <div class="admin-header mb-4 d-flex align-items-center justify-content-between">
     <div>
         <h1 class="fw-bolder mb-1 text-white admin-header-subtitle">
@@ -13,7 +13,7 @@
     </div>
 </div>
 
-<?php // =================== TABS =================== ?>
+<?php // Tabs ?>
 <ul class="nav nav-pills nav-fill admin-tabs mb-4 p-1 rounded-4 shadow-sm border border-secondary-subtle" id="adminDashboardTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active rounded-pill fw-bold" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-section" type="button" role="tab" aria-controls="overview-section" aria-selected="true">
@@ -38,9 +38,9 @@
 </ul>
 
 <div class="tab-content" id="adminDashboardTabsContent">
-    <!-- Tab 1: Panoramica -->
+    <!-- Tab: Overview -->
     <div class="tab-pane fade show active" id="overview-section" role="tabpanel" aria-labelledby="overview-tab">
-        <?php // =================== STATS CARDS =================== ?>
+        <?php // Stats cards ?>
         <div class="stats-grid mb-5">
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-primary">
@@ -96,19 +96,19 @@
         <?php require VIEW_PATH . '/admin/partials/charts.php'; ?>
     </div>
 
-    <!-- Tab 2: Gestione Utenti -->
+    <!-- Tab: Users -->
     <div class="tab-pane fade" id="users-section" role="tabpanel" aria-labelledby="users-tab">
 <?php require VIEW_PATH . '/admin/partials/users_table.php'; ?>
 
     </div>
 
-    <!-- Tab 3: Segnalazioni -->
+    <!-- Tab: Reports -->
     <div class="tab-pane fade" id="reports-section" role="tabpanel" aria-labelledby="reports-tab">
 <?php require VIEW_PATH . '/admin/partials/reports_table.php'; ?>
 
     </div>
 
-    <!-- Tab 4: Partite -->
+    <!-- Tab: Matches -->
     <div class="tab-pane fade" id="matches-section" role="tabpanel" aria-labelledby="matches-tab">
 <?php require VIEW_PATH . '/admin/partials/matches_table.php'; ?>
 

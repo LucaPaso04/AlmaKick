@@ -1,6 +1,5 @@
 <?php
-// views/matches/show.php
-// Main match details view page containing modular sub-templates
+// Match details template
 ?>
 <link rel="stylesheet" href="<?= url('/css/matches-show.css') ?>">
 <?php if (!empty($match['latitude']) && !empty($match['longitude'])): ?>

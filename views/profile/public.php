@@ -101,10 +101,8 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <?php endif; ?>
                 </div>
 
-                <!-- Social Context: Mutual Friends & Matches Played Together -->
                 <div class="profile-social-context-card mb-4 text-start">
                     <div class="row align-items-center g-3">
-                        <!-- Mutual Friends -->
                         <div class="col-12 col-md-6 border-end-md">
                             <div class="d-flex align-items-center gap-2">
                                 <?php if (!empty($mutual_friends)): ?>
@@ -254,7 +252,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                         </div>
                     </div>
     
-                    <!-- Trend/Sparkline Widget -->
+                    <!-- Performance trend -->
                     <div class="mt-4 p-3 bg-body border rounded-4 shadow-sm text-start">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="fw-semibold text-muted text-uppercase tracking-wide font-size-xs"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
@@ -326,7 +324,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <!-- Locked Stats Card -->
+                    <!-- Locked stats -->
                     <div class="mt-4 p-4 bg-body-tertiary border border-secondary-subtle rounded-4 text-center shadow-sm">
                         <div class="d-inline-flex p-3 bg-primary bg-opacity-10 text-primary rounded-circle mb-3">
                             <i class="bi bi-shield-lock-fill fs-3"></i>
@@ -343,7 +341,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
     </div>
 </div>
 
-<!-- Modale di Segnalazione -->
+<!-- Report user modal -->
 <div class="modal fade" id="reportUserModal" tabindex="-1" aria-labelledby="reportUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow">
@@ -395,7 +393,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 </div>
 
 <?php if ($is_friend): ?>
-<!-- Modale Confronto Statistiche -->
+<!-- Compare stats modal -->
 <div class="modal fade" id="compareStatsModal" tabindex="-1" aria-labelledby="compareStatsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content rounded-4 border-0 shadow">
@@ -407,7 +405,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
             </div>
             
             <div class="modal-body py-4">
-                <!-- Players head to head header -->
+                <!-- Players comparison header -->
                 <div class="row align-items-center mb-4 text-center">
                     <!-- Left: Me -->
                     <div class="col-5">
@@ -459,7 +457,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                 
                 <hr class="border-secondary-subtle mb-4">
                 
-                <!-- Stat Comparisons -->
+                <!-- Stat comparisons -->
                 <?php
                 // Array of stats to compare
                 $stats_to_compare = [

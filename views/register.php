@@ -162,7 +162,7 @@
 </section>
 <script src="<?= url('/js/passwordchecker.js') ?>"></script>
 <?php 
-    // Pulisci i vecchi valori dopo averli mostrati
+    // Clear old input values
     unset($_SESSION['old_name']);
     unset($_SESSION['old_last_name']);
     unset($_SESSION['old_username']);

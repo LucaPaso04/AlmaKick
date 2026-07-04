@@ -10,7 +10,7 @@ class AdminController extends BaseController {
     public function index() {
         $db = \App\Database::getInstance()->getConnection();
 
-        // 1. Stats
+        // Get stats
         $totalUsers = (int) $db->query("SELECT COUNT(*) FROM users")->fetchColumn();
         $bannedUsers = (int) $db->query("SELECT COUNT(*) FROM users WHERE is_banned = 1")->fetchColumn();
         $totalMatches = (int) $db->query("SELECT COUNT(*) FROM matches")->fetchColumn();
@@ -29,8 +29,7 @@ class AdminController extends BaseController {
             'pending_reports' => $pendingReports
         ];
 
-        // 1b. Additional stats for interactive charts
-        // User registrations trend (grouped by date)
+        // Registrations trend
         $regTrend = $db->query("
             SELECT DATE(created_at) as reg_date, COUNT(*) as count 
             FROM users 
@@ -39,14 +38,14 @@ class AdminController extends BaseController {
             ORDER BY reg_date ASC
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        // Preferred roles distribution
+        // Roles distribution
         $rolesDist = $db->query("
             SELECT COALESCE(NULLIF(preferred_role, ''), 'Non specificato') as preferred_role, COUNT(*) as count 
             FROM users 
             GROUP BY preferred_role
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        // Trust score brackets for active users
+        // Trust brackets
         $trustBracketsRaw = $db->query("
             SELECT 
                 SUM(CASE WHEN trust_score >= 80 AND is_banned = 0 THEN 1 ELSE 0 END) as high,
@@ -61,11 +60,11 @@ class AdminController extends BaseController {
             'low' => (int)($trustBracketsRaw['low'] ?? 0)
         ];
 
-        // Report stats for chart
+        // Report stats
         $resolvedReports = (int) $db->query("SELECT COUNT(*) FROM reports WHERE status = 'resolved'")->fetchColumn();
         $dismissedReports = (int) $db->query("SELECT COUNT(*) FROM reports WHERE status = 'dismissed'")->fetchColumn();
 
-        // 2. Users Table with sorting, searching, and pagination
+        // Users search, sort & pagination
         $search = $_GET['search'] ?? '';
         $roleFilter = $_GET['role'] ?? '';
         $statusFilter = $_GET['status'] ?? '';
@@ -149,7 +148,7 @@ class AdminController extends BaseController {
         }
         unset($u);
 
-        // Preleva lo storico trust specifico per i 10 utenti visualizzati in questa pagina con un'unica query
+        // Pre-fetch trust history for page users
         $usernames = array_column($usersList, 'username');
         $trustHistories = [];
         if (!empty($usernames)) {
@@ -168,7 +167,7 @@ class AdminController extends BaseController {
 
         $allRoles = ['user', 'super_admin'];
 
-        // 3. Reports Table with pagination and filters
+        // Reports search & pagination
         $searchReport = $_GET['search_report'] ?? '';
         $statusReport = $_GET['status_report'] ?? 'pending';
         $reportsPage = isset($_GET['reports_page']) ? max(1, (int)$_GET['reports_page']) : 1;
@@ -235,7 +234,7 @@ class AdminController extends BaseController {
             $reportsList[] = $row;
         }
 
-        // 4. Matches Table with pagination and filters
+        // Matches search & pagination
         $searchMatch = $_GET['search_match'] ?? '';
         $statusMatch = $_GET['status_match'] ?? '';
         $dateMatch = $_GET['date_match'] ?? '';
@@ -422,25 +421,25 @@ class AdminController extends BaseController {
         if (!empty($matchId)) {
             $db = \App\Database::getInstance()->getConnection();
             
-            // Recupera dettagli del match prima dell'annullamento
+            // Fetch match details
             $stmtMatch = $db->prepare("SELECT location, date FROM matches WHERE id = :id");
             $stmtMatch->execute(['id' => $matchId]);
             $match = $stmtMatch->fetch(PDO::FETCH_ASSOC);
 
             if ($match) {
-                // Recupera gli utenti iscritti per notificarli
+                // Get players to notify
                 $stmtGetPlayers = $db->prepare("SELECT username FROM registrations WHERE match_id = :match_id AND status = 'registered'");
                 $stmtGetPlayers->execute(['match_id' => $matchId]);
                 $playersToNotify = $stmtGetPlayers->fetchAll(PDO::FETCH_COLUMN);
 
-                // Aggiorna lo stato del match
+                // Cancel match
                 $stmt = $db->prepare("UPDATE matches SET status = 'cancelled', cancellation_reason = 'Annullata da amministratore', updated_at = NOW() WHERE id = :id");
                 $stmt->execute(['id' => $matchId]);
 
-                // Cancella le registrazioni
+                // Cancel registrations
                 $db->prepare("UPDATE registrations SET status = 'cancelled', updated_at = NOW() WHERE match_id = :match_id")->execute(['match_id' => $matchId]);
 
-                // Invia notifiche
+                // Notify players
                 $notificationModel = new \App\Models\Notification();
                 foreach ($playersToNotify as $playerUsername) {
                     $notificationModel->create([
@@ -487,7 +486,7 @@ class AdminController extends BaseController {
         if (!empty($username) && $newTrust !== null && $newTrust >= 0 && $newTrust <= 100 && !empty($reason)) {
             $db = \App\Database::getInstance()->getConnection();
             
-            // Recupera il trust score precedente per calcolare il delta
+            // Calculate delta
             $stmtPrev = $db->prepare("SELECT trust_score FROM users WHERE username = :username");
             $stmtPrev->execute(['username' => $username]);
             $prevTrust = $stmtPrev->fetchColumn();
@@ -496,14 +495,14 @@ class AdminController extends BaseController {
                 $prevTrust = (int)$prevTrust;
                 $delta = $newTrust - $prevTrust;
                 
-                // Aggiorna il trust score dell'utente
+                // Update score
                 $stmtUpdate = $db->prepare("UPDATE users SET trust_score = :trust WHERE username = :username");
                 $stmtUpdate->execute([
                     'trust' => $newTrust,
                     'username' => $username
                 ]);
                 
-                // Registra lo storico delle variazioni
+                // Log change
                 $stmtLog = $db->prepare("
                     INSERT INTO trust_history (username, score_change, reason, created_at) 
                     VALUES (:username, :change, :reason, NOW())

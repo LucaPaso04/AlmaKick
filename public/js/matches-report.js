@@ -1,4 +1,4 @@
-/* Match post-game report Drag & Drop distributions and validation rules */
+/* Match report drag & drop and score validation */
 document.addEventListener('DOMContentLoaded', function() {
     var homeZone = document.getElementById('team-home-zone');
     var awayZone = document.getElementById('team-away-zone');
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!homeZone || !awayZone || !sourceContainer) return;
 
-    // Distribute players to their respective zones initially
+    // Distribute players
     var draggables = sourceContainer.querySelectorAll('.player-card-draggable');
     draggables.forEach(function(card) {
         var startingTeam = card.getAttribute('data-starting-team');
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Recompute total registered and weights (active players + guests)
+    // Recompute metrics
     function updateCounts() {
         var homeCount = homeZone.querySelectorAll('.player-card-draggable').length;
         var awayCount = awayZone.querySelectorAll('.player-card-draggable').length;
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updateCounts();
 
-    // Drag & Drop event bindings
+    // Drag & Drop events
     draggables.forEach(function(card) {
         card.addEventListener('dragstart', function(e) {
             card.classList.add('dragging');
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Score validation logic in real time
+    // Score validation logic
     var form = document.querySelector('form');
     var resultHomeInput = document.getElementById('result_home');
     var resultAwayInput = document.getElementById('result_away');

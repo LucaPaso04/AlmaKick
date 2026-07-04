@@ -1,11 +1,7 @@
-/**
- * AlmaKick Match Details JavaScript Integration
- * Manages Leaflet Map mounting and dynamic weather forecast loading from OpenWeatherMap.
- */
-
+/* Match details Leaflet map and weather integration */
 document.addEventListener('DOMContentLoaded', function() {
     
-    // 1. Initialize Leaflet Map
+    // Initialize map
     var mapEl = document.getElementById('match-map');
     if (mapEl) {
         var lat = parseFloat(mapEl.getAttribute('data-lat'));
@@ -14,17 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isNaN(lat) && !isNaN(lng)) {
             try {
-                // Initialize map centered at location
                 var map = L.map('match-map', {
                     scrollWheelZoom: false
                 }).setView([lat, lng], 15);
 
-                // Add OpenStreetMap tiles (always white/light as requested)
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(map);
 
-                // Add Marker
                 var marker = L.marker([lat, lng]).addTo(map);
                 marker.bindPopup(`<strong>${locationName}</strong>`).openPopup();
                 
@@ -37,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 2. Fetch Weather Info
+    // Weather integrations
     var weatherEl = document.getElementById('weather-display');
     if (weatherEl) {
         var lat = weatherEl.getAttribute('data-lat');
@@ -46,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var status = weatherEl.getAttribute('data-status');
         var dateStr = weatherEl.getAttribute('data-date');
         var timeStr = weatherEl.getAttribute('data-time');
-
         var weatherIconEl = document.getElementById('weather-icon');
 
         if (status === 'finished') {
@@ -64,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (iconWrap) iconWrap.className = 'rounded-circle bg-danger bg-opacity-10 mx-auto d-flex align-items-center justify-content-center mb-3 icon-wrap-50';
             }
         } else if (!apiKey || apiKey.trim() === '') {
-            // Se non c'è una chiave API configurata, mostra un messaggio pulito di default
             weatherEl.textContent = 'Meteo N/D';
             weatherEl.title = 'Configura OPENWEATHER_KEY in config.php per abilitare le previsioni meteo.';
         } else if (lat && lng) {
@@ -79,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(function(data) {
                     if (data.list && data.list.length > 0) {
-                        // Trova la slot oraria più vicina all'orario della partita
                         var matchTime = new Date(dateStr + 'T' + timeStr).getTime();
                         var closest = data.list[0];
                         var minDiff = Math.abs(new Date(closest.dt * 1000).getTime() - matchTime);
@@ -96,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         var desc = closest.weather[0].description;
                         var iconCode = closest.weather[0].icon;
 
-                        // Mappa l'icona OpenWeather ad un'icona Bootstrap corrispondente
                         if (weatherIconEl && iconCode) {
                             var iconClass = 'bi-cloud-sun-fill';
                             switch(iconCode) {
@@ -122,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             weatherIconEl.className = `bi ${iconClass} fs-3 text-warning`;
                         }
 
-                        // Capitalize description first letter
                         desc = desc.charAt(0).toUpperCase() + desc.slice(1);
                         weatherEl.innerHTML = `<span class="fs-4 fw-bold">${temp}°C</span><br><span class="small fw-normal text-muted d-block mt-1 text-wrap">${desc}</span>`;
                     } else {
@@ -138,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 3. Copy Link function with dynamic toast feedback
+    // Copy link
     var copyBtn = document.getElementById('copy-link-btn');
     if (copyBtn) {
         copyBtn.addEventListener('click', function() {
@@ -155,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 4. Offer Timer setup
+    // Countdown timer
     const timerEl = document.getElementById("offer-timer");
     if (timerEl) {
         const expires = parseInt(timerEl.getAttribute("data-expires"), 10) * 1000;
@@ -177,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTimer();
     }
 
-    // 5. Interactive Star Rating Logic
+    // Interactive stars rating
     document.querySelectorAll('.star-rating').forEach(function(ratingEl) {
         var username = ratingEl.getAttribute('data-username');
         var hiddenInput = document.getElementById('vote_val_' + username);
@@ -220,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 6. Thumb Down Styled Button Logic
+    // Thumb down check
     document.querySelectorAll('.thumb-down-check').forEach(function(checkbox) {
         var label = document.querySelector('label[for="' + checkbox.id + '"]');
         if (label) {
@@ -238,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// Global ICS Calendar export generator
+// Global ICS generator
 function downloadICS(btn) {
     if (!btn) return;
     var title = btn.getAttribute("data-title") || "Partita AlmaKick";

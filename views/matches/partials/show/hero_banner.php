@@ -1,5 +1,5 @@
 <?php
-// views/matches/partials/show/hero_banner.php
+
 ?>
 <div class="card border-0 mb-4 rounded-4 overflow-hidden shadow-sm position-relative match-hero-banner">
     <div class="card-body p-4 p-md-5 text-white position-relative z-1">
@@ -7,7 +7,7 @@
             <?php
             $backUrl = url('/');
             if (!empty($from)) {
-                // Se $from contiene parametri di query o è un percorso relativo locale
+                // Check back URL source
                 if (strpos($from, '/') === 0 || strpos($from, 'matches') === 0 || strpos($from, 'admin') === 0 || strpos($from, 'profile') === 0) {
                     $backUrl = url($from);
                 } elseif ($from === 'admin') {

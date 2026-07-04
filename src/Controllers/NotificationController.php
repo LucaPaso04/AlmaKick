@@ -11,9 +11,9 @@ class NotificationController extends BaseController {
         $this->notificationModel = new Notification();
     }
 
-    /**
-     * Ritorna le ultime notifiche e il numero di non lette in JSON
-     */
+     /**
+      * Get latest notifications
+      */
     public function getLatest() {
         header('Content-Type: application/json');
         
@@ -27,14 +27,14 @@ class NotificationController extends BaseController {
         $unreadCount = $this->notificationModel->getUnreadCount($username);
         $notifications = $this->notificationModel->getLatest($username, 10);
 
-        // Formatta la data per renderla più leggibile
+        // Format date
         foreach ($notifications as &$n) {
             $n['time_ago'] = $this->timeAgo($n['created_at']);
             $n['is_actionable'] = false;
         }
         unset($n);
 
-        // Aggiungi notifiche d'azione non-cancellabili per partite da refertare o votare
+        // Add actionable notifications
         $soccerMatchModel = new \App\Models\SoccerMatch();
         $matchesToReport = $soccerMatchModel->getMatchesToReport($username);
         $matchesToVote = $soccerMatchModel->getMatchesToVote($username);
@@ -76,9 +76,9 @@ class NotificationController extends BaseController {
         ]);
     }
 
-    /**
-     * Segna una notifica come letta
-     */
+     /**
+      * Mark notification as read
+      */
     public function markAsRead($id) {
         $this->validateCsrf();
         header('Content-Type: application/json');
@@ -95,9 +95,9 @@ class NotificationController extends BaseController {
         echo json_encode(['success' => $success]);
     }
 
-    /**
-     * Segna tutte le notifiche come lette
-     */
+     /**
+      * Mark all as read
+      */
     public function markAllAsRead() {
         $this->validateCsrf();
         header('Content-Type: application/json');
@@ -114,9 +114,9 @@ class NotificationController extends BaseController {
         echo json_encode(['success' => $success]);
     }
 
-    /**
-     * Elimina una notifica
-     */
+     /**
+      * Delete notification
+      */
     public function delete($id) {
         $this->validateCsrf();
         header('Content-Type: application/json');
@@ -133,9 +133,9 @@ class NotificationController extends BaseController {
         echo json_encode(['success' => $success]);
     }
 
-    /**
-     * Svuota tutte le notifiche dell'utente
-     */
+     /**
+      * Clear all notifications
+      */
     public function clearAll() {
         $this->validateCsrf();
         header('Content-Type: application/json');
@@ -152,9 +152,9 @@ class NotificationController extends BaseController {
         echo json_encode(['success' => $success]);
     }
 
-    /**
-     * Funzione di utility per calcolare il tempo trascorso (es. "5 minuti fa")
-     */
+     /**
+      * Calculate time elapsed
+      */
     private function timeAgo($datetime) {
         $timestamp = strtotime($datetime);
         $difference = time() - $timestamp;

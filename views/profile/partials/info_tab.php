@@ -7,7 +7,7 @@
 
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
-                    <!-- Profilo Base -->
+                    <!-- Basic profile -->
                     <div class="list-group-item p-4 border-bottom">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold mb-0 text-uppercase text-muted settings-section-header">Informazioni Personali</h6>
@@ -32,7 +32,7 @@
                         </div>
                     </div>
 
-                    <!-- Sicurezza -->
+                    <!-- Security -->
                     <div class="list-group-item p-4 border-bottom">
                         <h6 class="fw-bold mb-4 text-uppercase text-muted settings-section-header">Sicurezza e Accesso</h6>
 
@@ -59,7 +59,7 @@
                         </div>
                     </div>
 
-                    <!-- Footer Info -->
+                    <!-- Footer info -->
                     <div class="list-group-item p-4 bg-body-tertiary text-center">
                         <span class="text-muted small"><i class="bi bi-calendar-check me-1"></i>Iscritto a AlmaKick dal
                             <strong><?= date('d/m/Y', strtotime($user['created_at'])) ?></strong></span>
@@ -70,7 +70,7 @@
     </div>
 </div>
 
-<!-- Modal Gestione Account (Schede Unificate) -->
+<!-- Account settings modal -->
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4">
@@ -100,7 +100,7 @@
             </div>
 
             <div class="tab-content" id="settingsModalTabsContent">
-                <!-- Tab: Modifica Info -->
+                <!-- Tab: Edit Profile -->
                 <div class="tab-pane fade show active" id="modal-info-pane" role="tabpanel" aria-labelledby="modal-info-tab">
                     <form action="<?= url('/profile/info') ?>" method="POST">
                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -135,7 +135,7 @@
                     </form>
                 </div>
 
-                <!-- Tab: Cambia Email -->
+                <!-- Tab: Change Email -->
                 <div class="tab-pane fade" id="modal-email-pane" role="tabpanel" aria-labelledby="modal-email-tab">
                     <form action="<?= url('/profile/info') ?>" method="POST">
                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -157,7 +157,7 @@
                     </form>
                 </div>
 
-                <!-- Tab: Cambia Password -->
+                <!-- Tab: Change Password -->
                 <div class="tab-pane fade" id="modal-pwd-pane" role="tabpanel" aria-labelledby="modal-pwd-tab">
                     <form action="<?= url('/profile/info') ?>" method="POST">
                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">

@@ -1,5 +1,5 @@
 <?php
-// views/matches/partials/show/map_and_share.php
+
 
 $dateFormatted = date('d/m/Y H:i', strtotime($match['date'] . ' ' . $match['time']));
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
@@ -16,7 +16,7 @@ $wa_text = urlencode($waTextRaw);
 </div>
 <?php endif; ?>
 
-<!-- Share Action Buttons Grid -->
+<!-- Share action buttons -->
 <div class="row g-2 mb-2">
     <div class="col-6">
         <a href="https://wa.me/?text=<?= $wa_text ?>" target="_blank" rel="noopener"

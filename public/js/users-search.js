@@ -1,6 +1,4 @@
-/**
- * Users page JavaScript logic with AJAX live search and LocalStorage History
- */
+/* Live user search with history */
 document.addEventListener('DOMContentLoaded', function() {
     var searchForm = document.getElementById('search-form');
     var searchInput = document.getElementById('search-input');
@@ -9,14 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!searchForm || !resultsContainer) return;
 
-    // Helper to get profile URL based on form action base
+    // Get profile URL
     function getProfileUrl(username) {
         var formAction = searchForm.action;
         var baseUrl = formAction.substring(0, formAction.lastIndexOf('/users'));
         return baseUrl + '/profile?username=' + encodeURIComponent(username);
     }
 
-    // Load search history from localStorage
+    // Get search history
     function getHistory() {
         try {
             var data = localStorage.getItem(HISTORY_KEY);
@@ -27,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Save history to localStorage
+    // Save search history
     function saveHistory(history) {
         try {
             localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
@@ -36,23 +34,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Add user to history (max 10 items)
+    // Add search item to history
     function addToHistory(user) {
         var history = getHistory();
-        // Remove duplicate if exists
         history = history.filter(function(item) {
             return item.username !== user.username;
         });
-        // Add to the top
         history.unshift(user);
-        // Limit to 10
         if (history.length > 10) {
             history = history.slice(0, 10);
         }
         saveHistory(history);
     }
 
-    // Remove single user from history
+    // Remove search item from history
     function removeFromHistory(username) {
         var history = getHistory();
         history = history.filter(function(item) {
@@ -68,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderHistory();
     }
 
-    // Render history view
+    // Render search history UI
     function renderHistory() {
         var historyContainer = document.getElementById('search-history-container');
         var historyList = document.getElementById('search-history-list');
@@ -103,12 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 div.innerHTML = itemHtml.trim();
                 var rowElement = div.firstChild;
 
-                // Event listener to update history order if they click it from history again
                 rowElement.querySelector('.history-link-click').addEventListener('click', function() {
                     addToHistory(item);
                 });
 
-                // Event listener to remove item
                 rowElement.querySelector('.remove-history-btn').addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -122,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
             emptyState.classList.add('d-none');
         } else {
             historyContainer.classList.add('d-none');
-            // Show prompt only if input is actually empty
             if (searchInput.value.trim() === '') {
                 emptyState.classList.remove('d-none');
             } else {
@@ -131,23 +123,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to perform AJAX search request
+    // Perform AJAX search
     function performSearch() {
         var q = searchInput.value.trim();
         
         if (q === '') {
-            // Se vuoto, pulisci e renderizza cronologia
             resultsContainer.innerHTML = '';
-            // Ripristina l'HTML iniziale del container dei risultati
             fetch(searchForm.action + '?ajax=1&q=')
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 resultsContainer.innerHTML = data.html;
-                // Rielementi agganciati per cancellare
                 attachStaticListeners();
                 renderHistory();
             });
-            // Rimuovi la query string dall'indirizzo URL del browser
             window.history.pushState(null, '', searchForm.action);
             return;
         }
@@ -171,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function() {
             resultsContainer.innerHTML = res.html;
             resultsContainer.style.opacity = '1';
 
-            // Intercetta click sui risultati di ricerca per salvarli in cronologia
             var resultItems = resultsContainer.querySelectorAll('.search-result-item');
             resultItems.forEach(function(item) {
                 item.querySelector('a').addEventListener('click', function() {
@@ -195,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Bind clean events for static items (like "Cancella tutto")
+    // Bind static event listeners
     function attachStaticListeners() {
         var clearBtn = document.getElementById('clear-all-history');
         if (clearBtn) {
@@ -206,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Debounce text input keyup/input to search as you type
     if (searchInput) {
         var debounceTimeout = null;
         searchInput.addEventListener('input', function() {
@@ -217,15 +203,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Intercept form submit
     searchForm.addEventListener('submit', function(e) {
         e.preventDefault();
         performSearch();
     });
 
-    // Inizializza al caricamento pagina
     attachStaticListeners();
     renderHistory();
 });
-
-

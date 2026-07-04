@@ -69,7 +69,7 @@
                     <i class="bi bi-person-vcard me-1"></i><?= e($user['preferred_role'] ?? 'Ruolo non specificato') ?>
                 </p>
 
-                <!-- Social Actions for Visitor Views -->
+                <!-- Social Actions -->
                 <?php if (!$is_own_profile): ?>
                     <div class="mb-4">
                         <?php if (!$friendship): ?>
@@ -211,7 +211,7 @@
                     </div>
                 </div>
 
-                <!-- Trend/Sparkline Widget -->
+                <!-- Performance trend -->
                 <div class="mt-4 p-3 bg-body border rounded-4 shadow-sm text-start">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="fw-semibold text-muted text-uppercase tracking-wide font-size-xs"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
@@ -285,7 +285,7 @@
             </div>
         </div>
 
-        <!-- TABS NAVIGATION -->
+        <!-- Tabs navigation -->
         <ul class="nav nav-pills nav-fill bg-body shadow-sm rounded-4 p-2 mb-4 border" id="profileTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active rounded-pill fw-bold" id="activity-tab" data-bs-toggle="pill"
@@ -306,10 +306,10 @@
             <?php endif; ?>
         </ul>
 
-        <!-- TABS CONTENT -->
+        <!-- Tabs content -->
         <div class="tab-content" id="profileTabsContent">
 
-            <!-- TAB: PANORAMICA -->
+            <!-- Tab: Overview -->
             <div class="tab-pane fade show active" id="activity" role="tabpanel" aria-labelledby="activity-tab"
                 tabindex="0">
                 <?php require VIEW_PATH . '/profile/partials/badges.php'; ?>
@@ -317,13 +317,13 @@
 
             </div>
 
-            <!-- TAB: SOCIAL E AMICI -->
+            <!-- Tab: Social & Friends -->
             <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab" tabindex="0">
                 <?php require VIEW_PATH . '/profile/partials/social_tab.php'; ?>
 
             </div>
 
-            <!-- TAB: IMPOSTAZIONI (OWN ONLY) -->
+            <!-- Tab: Settings -->
             <?php if ($is_own_profile): ?>
                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab" tabindex="0">
                     <?php require VIEW_PATH . '/profile/partials/info_tab.php'; ?>
