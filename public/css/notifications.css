@@ -1,5 +1,4 @@
-/* Stili per le Notifiche Premium */
-
+/* Header notification bell dropdown layout */
 .notifications-dropdown-wrapper {
     position: relative;
 }
@@ -12,8 +11,8 @@
     transform: scale(1.1);
 }
 
-#notificationsBell.show {
-    color: var(--accent) !important;
+body #notificationsBell.show {
+    color: var(--accent);
 }
 
 #notificationsBellIcon {
@@ -21,15 +20,16 @@
     transition: color 0.2s ease;
 }
 
-.notifications-dropdown {
+/* Notification dropdown wrapper */
+body .notifications-dropdown {
     background: var(--card-bg);
-    border: 1px solid var(--border) !important;
+    border: 1px solid var(--border);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-radius: 1rem !important;
+    border-radius: 1rem;
     overflow: hidden;
     animation: fadeDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: var(--card-shadow) !important;
+    box-shadow: var(--card-shadow);
 }
 
 .notifications-header {
@@ -40,14 +40,15 @@
     overflow-x: hidden;
 }
 
-.notification-item {
+/* Individual notification list item */
+body .notification-item {
     display: flex;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
     padding-right: 2.2rem;
     border-bottom: 1px solid rgba(var(--twilight-rgb), 0.15);
-    text-decoration: none !important;
-    color: var(--text-primary) !important;
+    text-decoration: none;
+    color: var(--text-primary);
     transition: background-color 0.25s ease, transform 0.2s ease;
     font-size: 0.85rem;
     position: relative;
@@ -71,6 +72,7 @@
     background-color: rgba(var(--twilight-rgb), 0.35);
 }
 
+/* Notification indicator and action controls */
 .notification-status-dot {
     width: 6px;
     height: 6px;
@@ -101,11 +103,12 @@
     transform: translateY(-50%) scale(1);
 }
 
-.notification-delete-btn:hover {
-    opacity: 1 !important;
-    color: var(--danger) !important;
+body .notification-delete-btn:hover {
+    opacity: 1;
+    color: var(--danger);
 }
 
+/* Icon box and content wrapping */
 .notification-icon-wrapper {
     display: flex;
     align-items: center;
@@ -134,7 +137,7 @@
     color: var(--text-secondary);
 }
 
-/* Animazioni */
+/* Fade animation rules */
 @keyframes fadeDown {
     from {
         opacity: 0;

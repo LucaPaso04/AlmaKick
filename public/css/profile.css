@@ -1,5 +1,4 @@
-/* Profile Page Custom Styles */
-
+/* User profile layout banner and avatar image wraps */
 .profile-banner {
     background: linear-gradient(135deg, var(--bg-gradient-start), var(--accent));
     height: 140px;
@@ -20,7 +19,7 @@
     transition: transform 0.2s ease;
 }
 
-/* Stat Cards */
+/* User stats indicators cards */
 .stat-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -74,7 +73,7 @@
     opacity: 0.8;
 }
 
-/* Trust Score Circle */
+/* Circular trust score layout indicator */
 .profile-trust-score {
     width: 48px;
     height: 48px;
@@ -87,7 +86,7 @@
     border: 3.5px solid;
 }
 
-/* Scrollable Lists */
+/* Scrollable users list and containers */
 .profile-scrollable-list {
     max-height: 300px;
     overflow-y: auto;
@@ -100,7 +99,6 @@
     padding-right: 5px;
 }
 
-/* Custom Scrollbar for scrollable lists */
 .profile-scrollable-list::-webkit-scrollbar,
 .profile-scrollable-list-large::-webkit-scrollbar {
     width: 6px;
@@ -123,13 +121,13 @@
     font-size: 1.15rem;
 }
 
-/* Settings styling */
+/* Settings and user information section headers */
 .settings-section-header {
     font-size: 0.8rem;
     letter-spacing: 0.05em;
 }
 
-/* Badges section styling */
+/* Badges cards container and items */
 .badge-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -170,8 +168,8 @@
     height: 8px;
 }
 
-.border-dashed {
-    border-style: dashed !important;
+body .border-dashed {
+    border-style: dashed;
 }
 
 .animate-hover {
@@ -186,12 +184,12 @@
     filter: var(--bs-theme-filter-close-btn);
 }
 
-/* Golden Luminescent Border & Holographic Glow for High Stats */
-.stat-card-glow-gold {
+/* High ratings gold holographic decoration effects */
+body .stat-card-glow-gold {
     position: relative;
-    border: 2px solid #ffd700 !important;
-    background: linear-gradient(135deg, var(--card-bg), rgba(255, 215, 0, 0.05)) !important;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.25), inset 0 0 10px rgba(255, 215, 0, 0.05) !important;
+    border: 2px solid #ffd700;
+    background: linear-gradient(135deg, var(--card-bg), rgba(255, 215, 0, 0.05));
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.25), inset 0 0 10px rgba(255, 215, 0, 0.05);
     overflow: hidden;
 }
 
@@ -223,7 +221,7 @@
     }
 }
 
-/* Trust Score Glow Classes */
+/* Trust score indicator dynamic pulse rules */
 .trust-glow-green {
     filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.8));
     animation: trust-pulse-green 2s infinite alternate;
@@ -244,7 +242,7 @@
     }
 }
 
-/* Mutual Friends & Social context styles */
+/* Mutual friends stacking component */
 .profile-social-context-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -272,33 +270,31 @@
     margin-left: -10px;
 }
 
-.avatar-stack-item:hover {
+body .avatar-stack-item:hover {
     transform: scale(1.15) translateY(-2px);
-    z-index: 100 !important;
+    z-index: 100;
 }
 
-/* Medium device divider */
+/* Medium layout devices dividers */
 @media (min-width: 768px) {
-    .border-end-md {
-        border-right: 1px solid var(--border) !important;
+    body .border-end-md {
+        border-right: 1px solid var(--border);
     }
 }
 
-/* Stats Comparison Modal custom styles */
+/* Stats comparison modal popup component */
 .transition-all {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#compareStatsModal .progress {
-    background-color: var(--bs-secondary-bg) !important;
+body #compareStatsModal .progress {
+    background-color: var(--bs-secondary-bg);
 }
 
-#compareStatsModal .badge {
-    background-color: var(--bs-tertiary-bg) !important;
+body #compareStatsModal .badge {
+    background-color: var(--bs-tertiary-bg);
 }
 
 #compareStatsModal .modal-body hr {
     opacity: 0.15;
 }
-
-
