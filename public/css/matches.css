@@ -1,33 +1,33 @@
-/* Matches page specific styling */
-.matches-empty-state {
+/* Empty state layout and icons for matches page */
+body .matches-empty-state {
     padding: 3rem 1.5rem;
     border-radius: 1rem;
-    background: rgba(var(--twilight-rgb), 0.2) !important;
-    border-color: var(--border) !important;
+    background: rgba(var(--twilight-rgb), 0.2);
+    border-color: var(--border);
 }
 
-.matches-empty-icon {
+body .matches-empty-icon {
     width: 64px;
     height: 64px;
-    background: rgba(var(--twilight-rgb), 0.4) !important;
-    border-color: var(--border) !important;
+    background: rgba(var(--twilight-rgb), 0.4);
+    border-color: var(--border);
 }
 
-.matches-empty-text-wrap, 
-.matches-empty-text-wrap-sm {
+body .matches-empty-text-wrap, 
+body .matches-empty-text-wrap-sm {
     max-width: 480px;
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
-.matches-empty-state h5 {
-    color: var(--text-primary) !important;
+body .matches-empty-state h5 {
+    color: var(--text-primary);
 }
 
-.matches-empty-icon i {
-    color: var(--text-primary) !important;
+body .matches-empty-icon i {
+    color: var(--text-primary);
 }
 
-/* FAB Floating Action Button */
+/* Floating Action Button for creating new matches */
 .fab-container {
     position: fixed;
     bottom: 2rem;
@@ -36,14 +36,14 @@
 }
 
 @media (max-width: 991.98px) {
-    .fab-container {
-        bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
-        right: 16px !important;
-        z-index: 1040 !important;
+    body .fab-container {
+        bottom: calc(85px + env(safe-area-inset-bottom, 0px));
+        right: 16px;
+        z-index: 1040;
     }
 }
 
-.fab-btn {
+body .fab-btn {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -52,58 +52,58 @@
     justify-content: center;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
     transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
-    background-color: var(--accent) !important;
-    border: none !important;
-    color: #fff !important;
+    background-color: var(--accent);
+    border: none;
+    color: #fff;
 }
 
-.fab-btn:hover {
+body .fab-btn:hover {
     transform: scale(1.08) translateY(-2px);
     box-shadow: 0 12px 30px var(--accent-glow);
 }
 
-/* Filter form custom design to blend with premium dark mode */
-.filter-form {
-    background: rgba(var(--twilight-rgb), 0.35) !important;
-    border: 1px solid var(--border) !important;
+/* Filters panel forms controls and search bar */
+body .filter-form {
+    background: rgba(var(--twilight-rgb), 0.35);
+    border: 1px solid var(--border);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
 
-.filter-form .input-group-text {
-    background: rgba(var(--twilight-rgb), 0.2) !important;
-    border-color: var(--border) !important;
-    color: var(--text-secondary) !important;
+body .filter-form .input-group-text {
+    background: rgba(var(--twilight-rgb), 0.2);
+    border-color: var(--border);
+    color: var(--text-secondary);
 }
 
-.filter-form .form-control,
-.filter-form .form-select {
-    background: rgba(var(--twilight-rgb), 0.4) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
+body .filter-form .form-control,
+body .filter-form .form-select {
+    background: rgba(var(--twilight-rgb), 0.4);
+    border-color: var(--border);
+    color: var(--text-primary);
 }
 
-.filter-form .form-control:focus,
-.filter-form .form-select:focus {
-    background: rgba(var(--twilight-rgb), 0.55) !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 8px var(--accent-glow) !important;
+body .filter-form .form-control:focus,
+body .filter-form .form-select:focus {
+    background: rgba(var(--twilight-rgb), 0.55);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
 }
 
-.filter-form .form-check-input {
-    background-color: rgba(var(--twilight-rgb), 0.5) !important;
-    border-color: var(--border) !important;
+body .filter-form .form-check-input {
+    background-color: rgba(var(--twilight-rgb), 0.5);
+    border-color: var(--border);
 }
 
-.filter-form .form-check-input:checked {
-    background-color: var(--accent) !important;
-    border-color: var(--accent) !important;
+body .filter-form .form-check-input:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
 }
 
-/* Tabs customization */
-#homeTabs {
-    background: rgba(var(--twilight-rgb), 0.25) !important;
-    border-color: var(--border) !important;
+/* Matches page filter tab pill switchers */
+body #homeTabs {
+    background: rgba(var(--twilight-rgb), 0.25);
+    border-color: var(--border);
 }
 
 #homeTabs .nav-link {
@@ -117,308 +117,298 @@
     background-color: rgba(var(--twilight-rgb), 0.2);
 }
 
-#homeTabs .nav-link.active {
-    background-color: var(--accent) !important;
-    color: #fff !important;
+body #homeTabs .nav-link.active {
+    background-color: var(--accent);
+    color: #fff;
     box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-/* Premium Match Card styling */
-.match-card, .card-partita {
-    background: var(--card-bg) !important; /* Solid premium background to eliminate scroll lag */
-    border: 1px solid var(--border) !important;
+/* Match listing cards component */
+body .match-card, body .card-partita {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.5rem;
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.match-card:hover, .card-partita:hover {
+body .match-card:hover, body .card-partita:hover {
     transform: translateY(-6px) scale(1.015);
-    border-color: var(--accent) !important;
+    border-color: var(--accent);
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 
                 0 0 20px var(--accent-glow),
-                0 0 40px rgba(56, 189, 248, 0.15) !important;
-    background: var(--card-hover-bg) !important; /* Solid hover background */
+                0 0 40px rgba(56, 189, 248, 0.15);
+    background: var(--card-hover-bg);
 }
 
-/* Card title overrides to ensure location name doesn't truncate and is always readable */
-.card-partita .card-title,
-.match-card .card-title {
-    color: var(--text-primary) !important;
-    font-size: 1.2rem !important;
-    white-space: normal !important; /* Allow wrapping */
-    overflow: visible !important;
-    text-overflow: clip !important;
+body .card-partita .card-title,
+body .match-card .card-title {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
 }
 
-.card-partita .card-title span,
-.match-card .card-title span {
-    white-space: normal !important;
-    overflow: visible !important;
-    max-width: 100% !important;
+body .card-partita .card-title span,
+body .match-card .card-title span {
+    white-space: normal;
+    overflow: visible;
+    max-width: 100%;
     display: inline-block;
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
-/* Override Bootstrap text color classes inside cards for readability */
-.card-partita .text-body,
-.match-card .text-body {
-    color: var(--text-primary) !important;
+body .card-partita .text-body,
+body .match-card .text-body {
+    color: var(--text-primary);
 }
 
-.card-partita .text-body-secondary,
-.match-card .text-body-secondary,
-.card-partita .text-secondary,
-.match-card .text-secondary {
-    color: var(--text-secondary) !important;
+body .card-partita .text-body-secondary,
+body .match-card .text-body-secondary,
+body .card-partita .text-secondary,
+body .match-card .text-secondary {
+    color: var(--text-secondary);
 }
 
-.card-partita .text-muted,
-.match-card .text-muted {
-    color: var(--text-secondary) !important;
+body .card-partita .text-muted,
+body .match-card .text-muted {
+    color: var(--text-secondary);
 }
 
-/* Calendar and metadata badges */
-.card-partita .badge.bg-body-secondary,
-.match-card .badge.bg-body-secondary {
-    background-color: rgba(var(--twilight-rgb), 0.3) !important;
-    border-color: var(--border) !important;
-    color: var(--text-primary) !important;
+body .card-partita .badge.bg-body-secondary,
+body .match-card .badge.bg-body-secondary {
+    background-color: rgba(var(--twilight-rgb), 0.3);
+    border-color: var(--border);
+    color: var(--text-primary);
 }
 
-.card-partita .badge.bg-body-secondary.text-body,
-.match-card .badge.bg-body-secondary.text-body {
-    color: var(--text-primary) !important;
+body .card-partita .badge.bg-body-secondary.text-body,
+body .match-card .badge.bg-body-secondary.text-body {
+    color: var(--text-primary);
 }
 
-/* Custom Pagination styles to match the dark sports theme */
-.pagination {
-    margin-top: 2rem;
-}
-
-.pagination .page-item .page-link {
-    background-color: rgba(var(--twilight-rgb), 0.4) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text-secondary) !important;
+/* Pagination container and items */
+body .pagination .page-item .page-link {
+    background-color: rgba(var(--twilight-rgb), 0.4);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
     padding: 0.5rem 0.85rem;
     transition: all 0.3s ease;
     font-weight: 600;
 }
 
-.pagination .page-item .page-link:hover {
-    background-color: rgba(36, 123, 160, 0.35) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--accent) !important;
+body .pagination .page-item .page-link:hover {
+    background-color: rgba(36, 123, 160, 0.35);
+    color: var(--text-primary);
+    border-color: var(--accent);
 }
 
-.pagination .page-item.active .page-link {
-    background-color: var(--accent) !important;
-    border-color: var(--accent) !important;
-    color: #fff !important;
+body .pagination .page-item.active .page-link {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
     box-shadow: 0 0 10px var(--accent-glow);
 }
 
-.pagination .page-item.disabled .page-link {
-    background-color: rgba(var(--twilight-rgb), 0.15) !important;
-    border-color: rgba(96, 95, 94, 0.15) !important;
-    color: rgba(148, 163, 184, 0.3) !important;
+body .pagination .page-item.disabled .page-link {
+    background-color: rgba(var(--twilight-rgb), 0.15);
+    border-color: rgba(96, 95, 94, 0.15);
+    color: rgba(148, 163, 184, 0.3);
     cursor: not-allowed;
 }
 
-/* Format badge styling */
-.match-format {
-    background: rgba(36, 123, 160, 0.15) !important;
-    border: 1px solid rgba(36, 123, 160, 0.4) !important;
-    color: #38bdf8 !important; /* sky-400 */
-    padding: 0.35rem 0.75rem !important;
-    border-radius: 9999px !important;
-    font-size: 0.8rem !important;
-    font-weight: 600 !important;
+/* Game format badge components */
+body .match-format {
+    background: rgba(36, 123, 160, 0.15);
+    border: 1px solid rgba(36, 123, 160, 0.4);
+    color: #38bdf8;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
     letter-spacing: 0.03em;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
 }
 
-/* Status badge overrides */
-.status-badge {
-    padding: 0.35rem 0.75rem !important;
-    border-radius: 9999px !important;
-    font-size: 0.75rem !important;
-    font-weight: 700 !important;
+/* State and actions badges */
+body .status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
 }
 
-.status-open {
-    background: rgba(34, 197, 94, 0.12) !important;
-    border: 1px solid rgba(34, 197, 94, 0.3) !important;
-    color: #4ade80 !important;
+body .status-open {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #4ade80;
 }
 
-.status-closed {
-    background: rgba(148, 163, 184, 0.12) !important;
-    border: 1px solid rgba(148, 163, 184, 0.3) !important;
-    color: #cbd5e1 !important;
+body .status-closed {
+    background: rgba(148, 163, 184, 0.12);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #cbd5e1;
 }
 
-.status-cancelled, .status-cancellata {
-    background: rgba(251, 54, 64, 0.12) !important;
-    border: 1px solid rgba(251, 54, 64, 0.3) !important;
-    color: #fca5a5 !important;
+body .status-cancelled, body .status-cancellata {
+    background: rgba(251, 54, 64, 0.12);
+    border: 1px solid rgba(251, 54, 64, 0.3);
+    color: #fca5a5;
 }
 
-/* Details button styling */
-.btn-details {
-    background: transparent !important;
-    border: 1px solid rgba(36, 123, 160, 0.4) !important;
-    color: #cbd5e1 !important;
+body .btn-details {
+    background: transparent;
+    border: 1px solid rgba(36, 123, 160, 0.4);
+    color: #cbd5e1;
     font-size: 0.85rem;
-    padding: 0.4rem 0.9rem !important;
-    border-radius: 8px !important;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
     transition: all 0.2s ease;
     font-weight: 600;
 }
 
-.btn-details:hover {
-    background: var(--accent) !important;
-    border-color: var(--accent) !important;
-    color: #fff !important;
+body .btn-details:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
     box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-/* Friend and Personal match badges readability overrides */
-.card-partita .badge.bg-success.bg-opacity-25,
-.match-card .badge.bg-success.bg-opacity-25 {
-    background-color: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.4) !important;
-    color: #4ade80 !important;
+/* Custom indicator badges on cards */
+body .card-partita .badge.bg-success.bg-opacity-25,
+body .match-card .badge.bg-success.bg-opacity-25 {
+    background-color: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #4ade80;
 }
 
-.card-partita .badge.bg-warning.bg-opacity-25,
-.match-card .badge.bg-warning.bg-opacity-25 {
-    background-color: rgba(234, 179, 8, 0.15) !important;
-    border-color: rgba(234, 179, 8, 0.4) !important;
-    color: #fef08a !important;
+body .card-partita .badge.bg-warning.bg-opacity-25,
+body .match-card .badge.bg-warning.bg-opacity-25 {
+    background-color: rgba(234, 179, 8, 0.15);
+    border-color: rgba(234, 179, 8, 0.4);
+    color: #fef08a;
 }
 
-/* Ensure text-emphasis colors are also overridden inside card context */
-.card-partita .text-success-emphasis,
-.match-card .text-success-emphasis {
-    color: #4ade80 !important;
+body .card-partita .text-success-emphasis,
+body .match-card .text-success-emphasis {
+    color: #4ade80;
 }
 
-.card-partita .text-warning-emphasis,
-.match-card .text-warning-emphasis {
-    color: #fef08a !important;
+body .card-partita .text-warning-emphasis,
+body .match-card .text-warning-emphasis {
+    color: #fef08a;
 }
 
-.card-partita .text-info-emphasis,
-.match-card .text-info-emphasis {
-    color: #22d3ee !important;
+body .card-partita .text-info-emphasis,
+body .match-card .text-info-emphasis {
+    color: #22d3ee;
 }
 
-.card-partita .text-danger-emphasis,
-.match-card .text-danger-emphasis {
-    color: #fca5a5 !important;
+body .card-partita .text-danger-emphasis,
+body .match-card .text-danger-emphasis {
+    color: #fca5a5;
 }
 
-/* Format badges color contrast overrides */
-.card-partita .badge.bg-success.bg-opacity-10,
-.match-card .badge.bg-success.bg-opacity-10 {
-    background-color: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.3) !important;
-    color: #4ade80 !important;
+body .card-partita .badge.bg-success.bg-opacity-10,
+body .match-card .badge.bg-success.bg-opacity-10 {
+    background-color: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #4ade80;
 }
 
-.card-partita .badge.bg-info.bg-opacity-10,
-.match-card .badge.bg-info.bg-opacity-10 {
-    background-color: rgba(6, 182, 212, 0.15) !important;
-    border-color: rgba(6, 182, 212, 0.3) !important;
-    color: #22d3ee !important;
+body .card-partita .badge.bg-info.bg-opacity-10,
+body .match-card .badge.bg-info.bg-opacity-10 {
+    background-color: rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.3);
+    color: #22d3ee;
 }
 
-.card-partita .badge.bg-danger.bg-opacity-10,
-.match-card .badge.bg-danger.bg-opacity-10 {
-    background-color: rgba(239, 68, 68, 0.15) !important;
-    border-color: rgba(239, 68, 68, 0.3) !important;
-    color: #fca5a5 !important;
+body .card-partita .badge.bg-danger.bg-opacity-10,
+body .match-card .badge.bg-danger.bg-opacity-10 {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
 }
 
-.card-partita .badge.bg-warning.bg-opacity-10,
-.match-card .badge.bg-warning.bg-opacity-10 {
-    background-color: rgba(234, 179, 8, 0.15) !important;
-    border-color: rgba(234, 179, 8, 0.3) !important;
-    color: #fef08a !important;
+body .card-partita .badge.bg-warning.bg-opacity-10,
+body .match-card .badge.bg-warning.bg-opacity-10 {
+    background-color: rgba(234, 179, 8, 0.15);
+    border-color: rgba(234, 179, 8, 0.3);
+    color: #fef08a;
 }
 
-/* Light mode badge and text color overrides for accessibility */
-html[data-bs-theme="light"] .card-partita .badge.bg-success.bg-opacity-25,
-html[data-bs-theme="light"] .match-card .badge.bg-success.bg-opacity-25,
-html[data-bs-theme="light"] .card-partita .badge.bg-success.bg-opacity-10,
-html[data-bs-theme="light"] .match-card .badge.bg-success.bg-opacity-10 {
-    background-color: rgba(22, 163, 74, 0.12) !important;
-    border-color: rgba(22, 163, 74, 0.25) !important;
-    color: #15803d !important;
+/* Light mode high-contrast overrides */
+html[data-bs-theme="light"] body .card-partita .badge.bg-success.bg-opacity-25,
+html[data-bs-theme="light"] body .match-card .badge.bg-success.bg-opacity-25,
+html[data-bs-theme="light"] body .card-partita .badge.bg-success.bg-opacity-10,
+html[data-bs-theme="light"] body .match-card .badge.bg-success.bg-opacity-10 {
+    background-color: rgba(22, 163, 74, 0.12);
+    border-color: rgba(22, 163, 74, 0.25);
+    color: #15803d;
 }
 
-html[data-bs-theme="light"] .card-partita .badge.bg-warning.bg-opacity-25,
-html[data-bs-theme="light"] .match-card .badge.bg-warning.bg-opacity-25,
-html[data-bs-theme="light"] .card-partita .badge.bg-warning.bg-opacity-10,
-html[data-bs-theme="light"] .match-card .badge.bg-warning.bg-opacity-10 {
-    background-color: rgba(202, 138, 4, 0.12) !important;
-    border-color: rgba(202, 138, 4, 0.25) !important;
-    color: #854d0e !important;
+html[data-bs-theme="light"] body .card-partita .badge.bg-warning.bg-opacity-25,
+html[data-bs-theme="light"] body .match-card .badge.bg-warning.bg-opacity-25,
+html[data-bs-theme="light"] body .card-partita .badge.bg-warning.bg-opacity-10,
+html[data-bs-theme="light"] body .match-card .badge.bg-warning.bg-opacity-10 {
+    background-color: rgba(202, 138, 4, 0.12);
+    border-color: rgba(202, 138, 4, 0.25);
+    color: #854d0e;
 }
 
-html[data-bs-theme="light"] .card-partita .badge.bg-info.bg-opacity-10,
-html[data-bs-theme="light"] .match-card .badge.bg-info.bg-opacity-10 {
-    background-color: rgba(8, 145, 178, 0.12) !important;
-    border-color: rgba(8, 145, 178, 0.25) !important;
-    color: #0369a1 !important;
+html[data-bs-theme="light"] body .card-partita .badge.bg-info.bg-opacity-10,
+html[data-bs-theme="light"] body .match-card .badge.bg-info.bg-opacity-10 {
+    background-color: rgba(8, 145, 178, 0.12);
+    border-color: rgba(8, 145, 178, 0.25);
+    color: #0369a1;
 }
 
-html[data-bs-theme="light"] .card-partita .badge.bg-danger.bg-opacity-10,
-html[data-bs-theme="light"] .match-card .badge.bg-danger.bg-opacity-10 {
-    background-color: rgba(220, 38, 38, 0.12) !important;
-    border-color: rgba(220, 38, 38, 0.25) !important;
-    color: #b91c1c !important;
+html[data-bs-theme="light"] body .card-partita .badge.bg-danger.bg-opacity-10,
+html[data-bs-theme="light"] body .match-card .badge.bg-danger.bg-opacity-10 {
+    background-color: rgba(220, 38, 38, 0.12);
+    border-color: rgba(220, 38, 38, 0.25);
+    color: #b91c1c;
 }
 
-html[data-bs-theme="light"] .card-partita .text-success-emphasis,
-html[data-bs-theme="light"] .match-card .text-success-emphasis {
-    color: #15803d !important;
+html[data-bs-theme="light"] body .card-partita .text-success-emphasis,
+html[data-bs-theme="light"] body .match-card .text-success-emphasis {
+    color: #15803d;
 }
 
-html[data-bs-theme="light"] .card-partita .text-warning-emphasis,
-html[data-bs-theme="light"] .match-card .text-warning-emphasis {
-    color: #854d0e !important;
+html[data-bs-theme="light"] body .card-partita .text-warning-emphasis,
+html[data-bs-theme="light"] body .match-card .text-warning-emphasis {
+    color: #854d0e;
 }
 
-html[data-bs-theme="light"] .card-partita .text-info-emphasis,
-html[data-bs-theme="light"] .match-card .text-info-emphasis {
-    color: #0369a1 !important;
+html[data-bs-theme="light"] body .card-partita .text-info-emphasis,
+html[data-bs-theme="light"] body .match-card .text-info-emphasis {
+    color: #0369a1;
 }
 
-html[data-bs-theme="light"] .card-partita .text-danger-emphasis,
-html[data-bs-theme="light"] .match-card .text-danger-emphasis {
-    color: #b91c1c !important;
+html[data-bs-theme="light"] body .card-partita .text-danger-emphasis,
+html[data-bs-theme="light"] body .match-card .text-danger-emphasis {
+    color: #b91c1c;
 }
 
-/* Stile speciale per partite urgenti */
-.card-partita.card-partita-urgent {
-    border: 1.5px solid rgba(220, 53, 69, 0.65) !important;
-    box-shadow: 0 8px 24px rgba(220, 53, 69, 0.15) !important;
+/* Urgent / high-priority matches cards indicators */
+body .card-partita.card-partita-urgent {
+    border: 1.5px solid rgba(220, 53, 69, 0.65);
+    box-shadow: 0 8px 24px rgba(220, 53, 69, 0.15);
 }
-.card-partita.card-partita-urgent:hover {
-    border-color: rgba(220, 53, 69, 0.9) !important;
+body .card-partita.card-partita-urgent:hover {
+    border-color: rgba(220, 53, 69, 0.9);
     box-shadow: 0 16px 36px rgba(220, 53, 69, 0.25), 
-                0 0 20px rgba(220, 53, 69, 0.15) !important;
+                0 0 20px rgba(220, 53, 69, 0.15);
 }
 
-/* CSS Styles for AlmaKick Match Creation Page */
+/* Matches creation map layout */
 #create-map {
     height: 350px;
     width: 100%;
@@ -426,7 +416,7 @@ html[data-bs-theme="light"] .match-card .text-danger-emphasis {
     z-index: 1;
 }
 
-/* Visual Formats (Radio Cards) Styles */
+/* Format choice radio card selectors */
 .btn-check:checked + .btn-outline-primary {
     background-color: var(--bs-primary);
     color: #fff;

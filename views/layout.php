@@ -45,8 +45,10 @@ if ($userAvatar) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom Modular Stylesheet -->
-    <link rel="stylesheet" href="<?= url('/css/style.css') ?>">
+    <!-- Custom Core Stylesheets -->
+    <link rel="stylesheet" href="<?= url('/css/layout.css') ?>">
+    <link rel="stylesheet" href="<?= url('/css/components.css') ?>">
+    <link rel="stylesheet" href="<?= url('/css/notifications.css') ?>">
     <meta name="csrf-token" content="<?= e($_SESSION['csrf_token'] ?? '') ?>">
     <!-- Page-specific Styles -->
     <?php if ($current_path === '/'): ?>
@@ -59,6 +61,12 @@ if ($userAvatar) {
         <link rel="stylesheet" href="<?= url('/css/leaderboard.css') ?>">
     <?php elseif ($current_path === '/users'): ?>
         <link rel="stylesheet" href="<?= url('/css/users.css') ?>">
+    <?php elseif (strpos($current_path, '/matches') === 0): ?>
+        <link rel="stylesheet" href="<?= url('/css/matches.css') ?>">
+    <?php elseif (strpos($current_path, '/profile') === 0): ?>
+        <link rel="stylesheet" href="<?= url('/css/profile.css') ?>">
+    <?php elseif (strpos($current_path, '/admin') === 0): ?>
+        <link rel="stylesheet" href="<?= url('/css/admin.css') ?>">
     <?php endif; ?>
 </head>
 <body class="d-flex flex-column min-vh-100">
