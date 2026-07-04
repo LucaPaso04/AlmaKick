@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <!-- Custom Modular Stylesheet for Matches Creation Page -->
-<link rel="stylesheet" href="<?= url('/css/matches-create.css') ?>">
+<link rel="stylesheet" href="<?= url('/css/matches.css') ?>">
 
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">

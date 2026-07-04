@@ -1,3 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+:root {
+    --bg-primary: #0e1626; /* Dark navy base */
+    --twilight-rgb: 29, 52, 97; /* Twilight Indigo RGB */
+    --bg-secondary: rgba(var(--twilight-rgb), 0.65); /* Twilight Indigo with opacity */
+    --bg-gradient-start: #1d3461; /* Dark blue/indigo gradient start */
+    --accent: #247ba0; /* Cerulean (logo highlight) */
+    --accent-glow: rgba(36, 123, 160, 0.4); /* Cerulean glow */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8; /* Muted Slate */
+    --border: rgba(96, 95, 94, 0.35); /* Charcoal border */
+    --font-sans: 'Outfit', sans-serif;
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    --danger: #fb3640; /* Strawberry Red (logo boot) */
+    --card-bg: #15223c;
+    --card-hover-bg: #1c2d4e;
+    --option-bg: #0e1626;
+}
+
+html[data-bs-theme="light"] {
+    --bg-primary: #f8fafc; /* Slate 50 (light bg) */
+    --twilight-rgb: 226, 232, 240; /* Slate 200 RGB */
+    --bg-secondary: rgba(var(--twilight-rgb), 0.7);
+    --bg-gradient-start: #e2e8f0; /* Light blue/gray gradient start */
+    --text-primary: #0f172a; /* Slate 900 */
+    --text-secondary: #475569; /* Slate 600 */
+    --border: rgba(148, 163, 184, 0.35); /* Slate 400 with opacity */
+    --card-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15);
+    --card-bg: #ffffff;
+    --card-hover-bg: #f1f5f9; /* slate-100 */
+    --option-bg: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: radial-gradient(circle at top, var(--bg-gradient-start) 0%, var(--bg-primary) 80%);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
 /* Header & Navigation */
 body > header {
     border-bottom: 1px solid var(--border);
@@ -236,6 +287,3 @@ footer {
     border-color: var(--bs-primary) !important;
     transform: scale(1.05);
 }
-
-
-
