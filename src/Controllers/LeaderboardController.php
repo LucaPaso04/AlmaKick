@@ -33,7 +33,7 @@ class LeaderboardController extends BaseController {
             $friendsCount = $userModel->getFriendsCount($username);
         }
         
-        view('leaderboard', [
+        view('leaderboards/index', [
             'title' => 'Classifiche - AlmaKick',
             'topScorers' => $topScorers,
             'topMVPs' => $topMVPs,

@@ -118,7 +118,7 @@ class UserController extends BaseController {
             $mutual_friends = $userModel->getMutualFriends($currentUsername, $username);
             $matches_played_together = $userModel->getMatchesPlayedTogetherCount($currentUsername, $username);
             
-            view('public_profile', [
+            view('profile/public', [
                 'title' => 'Profilo di ' . e($viewedUser['name']) . ' - AlmaKick',
                 'user' => $viewedUser,
                 'me' => $me,
@@ -134,7 +134,7 @@ class UserController extends BaseController {
                 'matches_played_together' => $matches_played_together
             ]);
         } else {
-            view('profile', [
+            view('profile/index', [
                 'title' => 'Profilo di ' . e($viewedUser['name']) . ' - AlmaKick',
                 'user' => $viewedUser,
                 'is_own_profile' => $is_own_profile,
