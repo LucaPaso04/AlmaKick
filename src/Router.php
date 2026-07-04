@@ -5,9 +5,9 @@ namespace App;
 class Router {
     private array $routes = [];
 
-    // Aggiunge una rotta alla lista
+    // Add route
     public function add(string $method, string $path, string $handler, array $middlewares = []): void {
-        // Converte ad esempio /matches/{id} in una regex /matches/(?P<id>[^/]+)
+        // Convert format to regex
         $routePattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $path);
         $routePattern = '#^' . $routePattern . '$#';
 
@@ -19,12 +19,12 @@ class Router {
         ];
     }
 
-    // Risolve la richiesta corrente
+    // Handle request
     public function handle(string $method, string $uri): void {
-        // Rimuove query string se presente (es. ?id=1)
+        // Remove query string
         $path = parse_url($uri, PHP_URL_PATH);
         
-        // Se l'app si trova in una sottocartella, rimuove il prefisso BASE_URL dal path di routing
+        // Remove BASE_URL prefix
         if (defined('BASE_URL') && BASE_URL !== '') {
             $len = strlen(BASE_URL);
             if (substr($path, 0, $len) === BASE_URL) {
@@ -39,18 +39,18 @@ class Router {
 
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && preg_match($route['pattern'], $path, $matches)) {
-                // Esegue i middleware registrati per questa rotta
+                // Run route middlewares
                 foreach ($route['middlewares'] as $middlewareClass) {
                     $middleware = new $middlewareClass();
                     if (!$middleware->handle()) {
-                        return; // Se il middleware blocca la richiesta, esce
+                        return; // Exit if middleware blocks
                     }
                 }
 
-                // Estrae i parametri nominativi dal regex match
+                // Extract named parameters
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                // Il formato dell'handler deve essere "NomeController@metodo"
+                // Handler format: Controller@method
                 list($controllerName, $methodName) = explode('@', $route['handler']);
                 $fullControllerName = "\\App\\Controllers\\" . $controllerName;
 

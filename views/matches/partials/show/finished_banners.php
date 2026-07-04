@@ -1,6 +1,4 @@
-<?php
-// views/matches/partials/show/finished_banners.php
-?>
+
 
 <?php if ($match['status'] === 'cancelled'): ?>
     <div class="alert alert-danger mb-4 border-0 rounded-4 shadow-sm d-flex align-items-center" role="alert">

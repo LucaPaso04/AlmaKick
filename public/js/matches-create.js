@@ -1,12 +1,6 @@
-/**
- * AlmaKick Match Creation JavaScript Integration
- * Manages Leaflet Map picker, address geocoding/reverse-geocoding, cost presets,
- * smart date/time defaults and form validation feedback.
- */
-
+/* Map picker and dynamic settings for match creation */
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Initialize Leaflet Map
-    var defaultLat = 44.4949; // Default center (Bologna/Emilia-Romagna region context)
+    var defaultLat = 44.4949;
     var defaultLng = 11.3426;
     
     var map = L.map('create-map', {
@@ -18,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
 
     var marker;
-
     var latInput = document.getElementById('latitude');
     var lngInput = document.getElementById('longitude');
 
@@ -33,15 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     map.on('click', function(e) {
         var lat = e.latlng.lat;
         var lng = e.latlng.lng;
-
         latInput.value = lat.toFixed(7);
         lngInput.value = lng.toFixed(7);
-
         updateMarker(lat, lng);
         reverseGeocode(lat, lng);
     });
 
-    // Try to get user location for map center
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             var userLat = position.coords.latitude;
@@ -52,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Geocoding Search Logic (nominatim)
+    // Geocoding query
     var searchBtn = document.getElementById('map-search-btn');
     var searchInput = document.getElementById('map-search-input');
     
@@ -99,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Reverse Geocoding Logic (nominatim)
+    // Reverse geocoding query
     function reverseGeocode(lat, lng) {
         fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng)
             .then(function(res) { return res.json(); })
@@ -123,13 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var applyBtn = document.getElementById('apply-address-btn');
         if (applyBtn) {
-            // Clean event listeners to avoid duplicates
             var newApplyBtn = applyBtn.cloneNode(true);
             applyBtn.parentNode.replaceChild(newApplyBtn, applyBtn);
 
             newApplyBtn.addEventListener('click', function() {
                 var parts = address.split(',');
-                // Extract the first few segments of the address (typically street and street number)
                 var shortAddress = parts.slice(0, 3).join(',').trim();
                 var locInput = document.getElementById('location');
                 if (locInput) locInput.value = shortAddress;
@@ -138,11 +126,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 2. Quota Preview & presets Logic
+    // Quota calculator and presets logic
     var costInput = document.getElementById('total_cost');
     var quotaPreview = document.getElementById('quota_preview');
 
-    // Carica l'ultimo costo salvato da localStorage
     if (costInput) {
         var lastCost = localStorage.getItem('last_match_cost');
         if (lastCost !== null) {
@@ -180,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         costInput.addEventListener('input', updateQuotaPreview);
     }
 
-    // Cost preset buttons listeners
     document.querySelectorAll('.cost-preset-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             if (costInput) {
@@ -190,29 +176,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Inizializza la preview della quota
     updateQuotaPreview();
 
-    // 3. Smart defaults for Date & Time
+    // Default dates config
     var dateInput = document.getElementById('date');
     var timeInput = document.getElementById('time');
     
     if (dateInput && timeInput && !dateInput.value && !timeInput.value) {
         var now = new Date();
-        
-        // Set date to today
         var yyyy = now.getFullYear();
         var mm = String(now.getMonth() + 1).padStart(2, '0');
         var dd = String(now.getDate()).padStart(2, '0');
         dateInput.value = yyyy + '-' + mm + '-' + dd;
         
-        // Set time to next round hour + 2 (e.g. if 18:30 -> 20:00)
         var nextHour = (now.getHours() + 2) % 24;
         var nextHourStr = String(nextHour).padStart(2, '0');
         timeInput.value = nextHourStr + ':00';
     }
 
-    // 4. Form Submission and validation UI
+    // Form submission validation
     var form = document.getElementById('createMatchForm');
     if (form) {
         var submitBtn = form.querySelector('button[type="submit"]');
@@ -229,11 +211,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     firstInvalid.focus();
                 }
             } else {
-                // Salva l'ultimo costo in localStorage per la prossima creazione
                 if (costInput) {
                     localStorage.setItem('last_match_cost', costInput.value);
                 }
-                // Valid: show loading feedback
                 if (submitBtn) {
                     submitBtn.innerHTML = `
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

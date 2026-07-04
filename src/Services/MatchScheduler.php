@@ -17,9 +17,9 @@ class MatchScheduler
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * Esegue tutti i controlli automatici di manutenzione sulle partite.
-     */
+     /**
+      * Run all automatic maintenance checks
+      */
     public function runAllMaintenance(): void
     {
         $this->resolveExpiredMvps();
@@ -31,7 +31,7 @@ class MatchScheduler
 
     public function resolveExpiredMvps(): void
     {
-        // Trova tutte le partite finite, con scadenza votazione passata e MVP non ancora assegnato
+        // Find expired matches with unassigned MVP
         $stmt = $this->db->prepare("
             SELECT id, host_username 
             FROM matches 
@@ -50,7 +50,7 @@ class MatchScheduler
         foreach ($expiredMatches as $match) {
             $matchId = $match['id'];
 
-            // Trova l'utente con la valutazione media più alta (skill_vote) tra i partecipanti di questo match
+            // Find user with highest average rating
             $stmtMvp = $this->db->prepare("
                 SELECT evaluated_username, AVG(skill_vote) as avg_vote, COUNT(skill_vote) as vote_count
                 FROM evaluations
@@ -69,7 +69,7 @@ class MatchScheduler
                 try {
                     $this->db->beginTransaction();
 
-                    // Aggiorna il match con l'MVP assegnato
+                    // Assign MVP to match
                     $stmtUpdateMatch = $this->db->prepare("
                         UPDATE matches 
                         SET mvp_assigned = 1, mvp_username = :username, updated_at = NOW() 
@@ -80,7 +80,7 @@ class MatchScheduler
                         'id' => $matchId
                     ]);
 
-                    // Incrementa il conteggio MVP dell'utente
+                    // Increment user's MVP count
                     $stmtUpdateUser = $this->db->prepare("
                         UPDATE users 
                         SET mvp_count = mvp_count + 1, updated_at = NOW() 
@@ -95,7 +95,7 @@ class MatchScheduler
                     }
                 }
             } else {
-                // Se nessuno ha ricevuto voti, assegniamo comunque mvp_assigned = 1 per evitare di ripetere l'operazione
+                // Mark MVP as assigned if no votes
                 $this->db->prepare("
                     UPDATE matches 
                     SET mvp_assigned = 1, updated_at = NOW() 
@@ -107,7 +107,7 @@ class MatchScheduler
 
     public function autoCancelExpiredMatches(): void
     {
-        // Trova tutte le partite 'open' che iniziano tra NOW() e NOW() + 2 ore (selezioniamo anche data e luogo)
+        // Find open matches starting within 2 hours
         $stmt = $this->db->prepare("
             SELECT m.id, m.max_players, m.format, m.location, m.date
             FROM matches m
@@ -136,7 +136,7 @@ class MatchScheduler
         foreach ($matches as $match) {
             $matchId = $match['id'];
 
-            // Conta i posti occupati in questo match (considerando gli ospiti)
+            // Count occupied seats
             $stmtCount = $this->db->prepare("
                 SELECT COALESCE(SUM(1 + has_guest), 0) 
                 FROM registrations 
@@ -146,7 +146,7 @@ class MatchScheduler
             $stmtCount->execute(['match_id' => $matchId]);
             $occupied = (int)$stmtCount->fetchColumn();
 
-            // Calcola la soglia minima richiesta
+            // Calculate min players threshold
             $fmt = str_replace(' ', '', strtolower($match['format'] ?? ''));
             if (isset($formatMinPlayers[$fmt])) {
                 $minPlayers = $formatMinPlayers[$fmt];
@@ -154,17 +154,17 @@ class MatchScheduler
                 $minPlayers = (int)ceil((int)$match['max_players'] * 0.8);
             }
 
-            // Se gli iscritti sono sotto la soglia minima, annulla la partita
+            // Auto-cancel if below threshold
             if ($occupied < $minPlayers) {
                 try {
-                    // Recupera gli utenti iscritti per notificarli prima dell'annullamento
+                    // Get players to notify
                     $stmtGetPlayers = $this->db->prepare("SELECT username FROM registrations WHERE match_id = :match_id AND status = 'registered'");
                     $stmtGetPlayers->execute(['match_id' => $matchId]);
                     $playersToNotify = $stmtGetPlayers->fetchAll(PDO::FETCH_COLUMN);
 
                     $this->db->beginTransaction();
 
-                    // Aggiorna lo stato del match
+                    // Update match status
                     $stmtCancelMatch = $this->db->prepare("
                         UPDATE matches 
                         SET status = 'cancelled', 
@@ -174,7 +174,7 @@ class MatchScheduler
                     ");
                     $stmtCancelMatch->execute(['id' => $matchId]);
 
-                    // Annulla tutte le registrazioni
+                    // Cancel registrations
                     $stmtCancelRegs = $this->db->prepare("
                         UPDATE registrations 
                         SET status = 'cancelled', 
@@ -185,7 +185,7 @@ class MatchScheduler
 
                     $this->db->commit();
 
-                    // Invia notifiche
+                    // Send notifications
                     $notificationModel = new Notification();
                     foreach ($playersToNotify as $playerUsername) {
                         $notificationModel->create([
@@ -206,7 +206,7 @@ class MatchScheduler
 
     public function resolveExpiredWaitlistOffers(): void
     {
-        // Trova offerte scadute
+        // Find expired offers
         $stmt = $this->db->prepare("
             SELECT r.*, m.location, m.date 
             FROM registrations r
@@ -225,14 +225,14 @@ class MatchScheduler
         $notificationModel = new Notification();
 
         foreach ($expired as $reg) {
-            // Aggiorna a cancellato e rimuovi scadenza
+            // Cancel registration and remove expiration
             $this->db->prepare("
                 UPDATE registrations 
                 SET status = 'cancelled', offer_expires_at = NULL, updated_at = NOW() 
                 WHERE id = :id
             ")->execute(['id' => $reg['id']]);
 
-            // Invia notifica di scadenza offerta
+            // Notify user
             $notificationModel->create([
                 'user_recipient' => $reg['username'],
                 'type' => 'offer_expired',
@@ -240,7 +240,7 @@ class MatchScheduler
                 'link' => url('/matches/' . $reg['match_id'])
             ]);
 
-            // Promuovi o offri al prossimo panchinaro
+            // Promote next waitlist player
             $this->promoteNextWaitlistPlayer($reg['match_id']);
         }
     }
@@ -254,7 +254,7 @@ class MatchScheduler
             return;
         }
 
-        // Calcola posti occupati attivi
+        // Calculate active seats
         $stmtCountReg = $this->db->prepare("
             SELECT COALESCE(SUM(1 + has_guest), 0) 
             FROM registrations 
@@ -263,7 +263,7 @@ class MatchScheduler
         $stmtCountReg->execute(['match_id' => $matchId]);
         $occupiedReg = (int)$stmtCountReg->fetchColumn();
 
-        // Calcola posti riservati da offerte attive non scadute
+        // Calculate reserved seats
         $stmtCountPending = $this->db->prepare("
             SELECT COALESCE(SUM(1 + has_guest), 0) 
             FROM registrations 
@@ -284,7 +284,7 @@ class MatchScheduler
             return;
         }
 
-        // Recupera panchina ordinata cronologicamente (escludendo chi ha già offerte attive)
+        // Get waitlist ordered chronologically
         $stmtWaitlist = $this->db->prepare("
             SELECT * FROM registrations 
             WHERE match_id = :match_id 
@@ -305,7 +305,7 @@ class MatchScheduler
             $needed = 1 + (int)$next['has_guest'];
             if ($needed <= $freeSeats) {
                 if ($isLastMinute) {
-                    // Notifica offerta non automatica (15 min)
+                    // Notify 15 min offer
                     $this->db->prepare("
                         UPDATE registrations 
                         SET offer_expires_at = DATE_ADD(NOW(), INTERVAL 15 MINUTE), updated_at = NOW() 
@@ -319,7 +319,7 @@ class MatchScheduler
                         'link' => url('/matches/' . $matchId)
                     ]);
                 } else {
-                    // Promozione automatica immediata
+                    // Auto-promote
                     $this->db->prepare("
                         UPDATE registrations 
                         SET status = 'registered', offer_expires_at = NULL, updated_at = NOW() 
@@ -342,7 +342,7 @@ class MatchScheduler
             }
         }
 
-        // Ricalcola se la partita è di nuovo disponibile o piena
+        // Update match status
         if ($occupied < (int)$match['max_players']) {
             $this->db->prepare("UPDATE matches SET status = 'open', updated_at = NOW() WHERE id = :id")->execute(['id' => $matchId]);
         } else {
@@ -352,7 +352,7 @@ class MatchScheduler
 
     public function autoFinishPastMatches(): void
     {
-        // 1. Trova tutte le partite 'open' o 'full' iniziate da più di 2 ore
+        // Find matches started >2 hours ago
         $stmt = $this->db->prepare("
             SELECT id, host_username, location, date, time
             FROM matches
@@ -369,7 +369,7 @@ class MatchScheduler
         foreach ($pastMatches as $match) {
             $matchId = $match['id'];
             try {
-                // Imposta lo stato a 'finished' per avviare il processo di refertazione
+                // Set status to finished
                 $this->db->prepare("
                     UPDATE matches 
                     SET status = 'finished', updated_at = NOW() 
@@ -383,7 +383,7 @@ class MatchScheduler
 
     public function autoCloseUnreportedMatches(): void
     {
-        // 1. Trova tutte le partite iniziate da più di 48 ore non refertate e non cancellate
+        // Find unrecorded matches >48 hours old
         $stmt = $this->db->prepare("
             SELECT id, host_username, date, time, location
             FROM matches
@@ -409,7 +409,7 @@ class MatchScheduler
             try {
                 $this->db->beginTransaction();
 
-                // 2. Aggiorna lo stato della partita, i risultati d'ufficio (0-0) e la scadenza per la votazione MVP (24 ore da adesso)
+                // Update match with default scores
                 $stmtUpdateMatch = $this->db->prepare("
                     UPDATE matches 
                     SET status = 'finished', 
@@ -421,7 +421,7 @@ class MatchScheduler
                 ");
                 $stmtUpdateMatch->execute(['id' => $matchId]);
 
-                // 3. Ricalcola total_goals e matches_played per tutti i partecipanti del match
+                // Recalculate players statistics
                 $stmtUpdateStats = $this->db->prepare("
                     UPDATE users u
                     SET 
@@ -450,7 +450,7 @@ class MatchScheduler
                 ");
                 $stmtUpdateStats->execute(['match_id' => $matchId]);
 
-                // 4. Detrazione di 15 punti sul Trust Score dell'host
+                // Penalize host's trust score
                 $penalty = -15;
                 $stmtPenalty = $this->db->prepare("
                     UPDATE users 
@@ -460,7 +460,7 @@ class MatchScheduler
                 ");
                 $stmtPenalty->execute(['penalty' => $penalty, 'host' => $host]);
 
-                // Inserimento del log di Trust Score
+                // Log trust score penalty
                 $stmtLog = $this->db->prepare("
                     INSERT INTO trust_history (username, match_id, score_change, reason, created_at) 
                     VALUES (:host, :match_id, :change, 'Mancato inserimento tabellino entro 48h', NOW())
@@ -473,8 +473,8 @@ class MatchScheduler
 
                 $this->db->commit();
 
-                // 5. Invia notifiche
-                // Notifica per l'host
+                // Send notifications
+                // Notify host
                 $notificationModel->create([
                     'user_recipient' => $host,
                     'type' => 'match_autoclose_host',
@@ -482,7 +482,7 @@ class MatchScheduler
                     'link' => url('/matches/' . $matchId)
                 ]);
 
-                // Recupera tutti gli altri partecipanti registrati
+                // Get other participants
                 $stmtPlayers = $this->db->prepare("
                     SELECT username 
                     FROM registrations 

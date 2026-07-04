@@ -3,13 +3,13 @@
 namespace App\Controllers;
 
 abstract class BaseController {
-    // Helper per redirect
+    // Redirect helper
     protected function redirect(string $url): void {
         header("Location: " . $url);
         exit;
     }
 
-    // Helper per verificare CSRF token
+    // Validate CSRF
     protected function validateCsrf(): bool {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {

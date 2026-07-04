@@ -179,9 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ----------------------------------------------------
-    // GESTIONE NOTIFICHE PREMIUM
-    // ----------------------------------------------------
+    // Notifications management
     const notificationsBell = document.getElementById('notificationsBell');
     const notificationsBadge = document.getElementById('notificationsBadge');
     const notificationsList = document.getElementById('notificationsList');
@@ -192,13 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
     if (notificationsBell) {
-        // Fetch iniziale delle notifiche
         fetchNotifications();
-
-        // Polling asincrono ogni 45 secondi
         setInterval(fetchNotifications, 45000);
 
-        // Click su "Segna come lette"
         if (markAllReadBtn) {
             markAllReadBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -206,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Click su "Svuota tutto"
         if (clearAllBtn) {
             clearAllBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -218,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchNotifications() {
-        // Rileva il BASE_URL in modo dinamico
         let baseUrl = '';
         const homeLink = document.querySelector('a[href*="/matches"]');
         if (homeLink) {
@@ -254,21 +246,18 @@ document.addEventListener('DOMContentLoaded', function() {
             notificationsBadge.classList.add('d-none');
         }
 
-        // Mostra "Segna come lette" solo se ci sono notifiche reali non lette
         if (hasUnreadRealNotifications) {
             if (markAllReadBtn) markAllReadBtn.classList.remove('d-none');
         } else {
             if (markAllReadBtn) markAllReadBtn.classList.add('d-none');
         }
 
-        // Mostra "Svuota tutto" solo se ci sono notifiche reali
         if (hasRealNotifications) {
             if (clearAllBtn) clearAllBtn.classList.remove('d-none');
         } else {
             if (clearAllBtn) clearAllBtn.classList.add('d-none');
         }
 
-        // Mostra il divisore solo se entrambi i pulsanti sono visibili
         if (notificationsHeaderDivider && hasUnreadRealNotifications && hasRealNotifications) {
             notificationsHeaderDivider.classList.remove('d-none');
         } else if (notificationsHeaderDivider) {
@@ -343,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         notificationsList.innerHTML = html;
 
-        // Click handler su ciascun elemento di notifica
+        // Notification item click
         notificationsList.querySelectorAll('.notification-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 const id = this.getAttribute('data-id');
@@ -366,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Click handler sul pulsante "X" per eliminare la singola notifica
+        // Delete notification click
         notificationsList.querySelectorAll('.notification-delete-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -376,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const item = this.closest('.notification-item');
                 
                 if (id && item) {
-                    // Animazione di uscita
                     item.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
                     item.style.opacity = '0';
                     item.style.transform = 'translateX(20px)';
@@ -398,7 +386,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 fetchNotifications();
                             }, 250);
                         } else {
-                            // Ripristina l'elemento se fallisce
                             item.style.opacity = '1';
                             item.style.transform = 'translateX(0)';
                         }

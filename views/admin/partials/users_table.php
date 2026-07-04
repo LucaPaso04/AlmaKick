@@ -3,10 +3,9 @@
         <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Gestione Utenti</h5>
     </div>
 
-    <?php // =================== FILTERS & SEARCH =================== ?>
+    <?php // Filters & Search ?>
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#users-section" class="row g-2">
-            <?php // Search ?>
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
@@ -15,7 +14,6 @@
                 </div>
             </div>
 
-            <?php // Role Filter ?>
             <div class="col-md-3">
                 <select name="role" class="form-select">
                     <option value="">Tutti i ruoli</option>
@@ -27,7 +25,6 @@
                 </select>
             </div>
 
-            <?php // Status Filter ?>
             <div class="col-md-3">
                 <select name="status" class="form-select">
                     <option value="">Tutti gli stati</option>
@@ -36,7 +33,6 @@
                 </select>
             </div>
 
-            <?php // Problematic Profiling Filter ?>
             <div class="col-md-3">
                 <select name="problematic" class="form-select">
                     <option value="">Tutti i profili</option>
@@ -97,7 +93,7 @@
                             if ($u['is_banned']) {
                                 $row_class = 'table-banned';
                             } elseif ($is_low_trust) {
-                                $row_class = 'table-banned'; // evidenzia in rosso
+                                $row_class = 'table-banned'; // Highlight red
                             } elseif ($is_suspect) {
                                 $row_class = 'table-suspicious';
                             }
@@ -128,7 +124,7 @@
                                     <i class="bi bi-clock-history"></i>
                                 </button>
 
-                                <!-- Modale Storico Trust Score -->
+                                <!-- Trust history modal -->
                                 <div class="modal fade text-start" id="trustHistoryModal<?= e($u['username']) ?>" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered modal-lg">
                                         <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
@@ -227,7 +223,7 @@
                                                     class="bi bi-ban me-1"></i>Banna</button>
                                         </form>
 
-                                        <!-- Modale Modifica Trust Score -->
+                                        <!-- Edit trust score modal -->
                                         <div class="modal fade text-start" id="editTrustModal<?= e($u['username']) ?>" tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
@@ -272,12 +268,11 @@
         </table>
     </div>
 
-    <?php // =================== PAGINATION =================== ?>
+    <?php // Pagination ?>
     <?php if ($totalPagesUsers > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    <?php // Previous Page Link ?>
                     <?php if ($pageUsers <= 1): ?>
                         <li class="page-item disabled">
                             <span class="page-link">← Precedente</span>
@@ -291,7 +286,6 @@
                         </li>
                     <?php endif; ?>
 
-                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesUsers; $i++): ?>
                         <?php if ($i == $pageUsers): ?>
                             <li class="page-item active">
@@ -307,7 +301,6 @@
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    <?php // Next Page Link ?>
                     <?php if ($pageUsers >= $totalPagesUsers): ?>
                         <li class="page-item disabled">
                             <span class="page-link">Prossima →</span>

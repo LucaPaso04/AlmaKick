@@ -333,7 +333,7 @@ class SoccerMatch
 
             $matchId = $this->db->lastInsertId();
 
-            // Registra automaticamente l'host come giocatore
+            // Automatically register host
             $sqlReg = "INSERT INTO registrations (match_id, username, status, created_at, updated_at) 
                        VALUES (:match_id, :username, 'registered', NOW(), NOW())";
             $stmtReg = $this->db->prepare($sqlReg);

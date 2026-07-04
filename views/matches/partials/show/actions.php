@@ -1,5 +1,5 @@
 <?php
-// views/matches/partials/show/actions.php
+
 
 $my_registration = null;
 if (isset($_SESSION['user']['username'])) {
@@ -122,13 +122,13 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
         </div>
     </div>
 
-    <?php // Host Controls ?>
+
     <?php if ($is_host): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4 border-start border-4 border-warning">
             <div class="card-body p-4">
                 <h2 class="fw-bold mb-3 fs-5"><span class="bi bi-gear-fill me-2 text-warning"></span>Gestione Organizzatore</h2>
                 <div class="row g-3">
-                    <?php // Generate Teams ?>
+                    <!-- Generate Teams -->
                     <div class="col-12 col-md-6">
                         <form action="<?= url('/matches/' . $match['id'] . '/generate-teams?from=' . urlencode($from)) ?>" method="POST">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -137,7 +137,7 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
                             </button>
                         </form>
                     </div>
-                    <?php // Close Match ?>
+                    <!-- Close Match -->
                     <div class="col-12 col-md-6">
                         <?php if ($canClose): ?>
                             <form action="<?= url('/matches/' . $match['id'] . '/close?from=' . urlencode($from)) ?>" method="POST"

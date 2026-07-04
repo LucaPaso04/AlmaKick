@@ -1,5 +1,5 @@
 <?php
-// Avvia sessione se non è già attiva
+// Start session if not active
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -79,7 +79,7 @@ if ($userAvatar) {
         <div id="scroll-progress-bar"></div>
     </div>
 
-    <!-- Toast Container per notifiche fluttuanti -->
+    <!-- Toast container -->
     <div class="custom-toast-container" id="toast-container">
         <?php if (isset($_SESSION['success'])): ?>
             <div class="custom-toast toast-success" role="alert" data-duration="4500">
@@ -108,13 +108,11 @@ if ($userAvatar) {
     <header>
         <nav class="navbar navbar-expand sticky-top border-bottom">
             <div class="container-fluid px-3 px-md-4">
-                <!-- Brand Logo & Home Link (Top Left) -->
+                <!-- Logo & Home link -->
                 <div class="d-flex align-items-center gap-2">
                     <a href="<?= url('/') ?>" class="navbar-brand py-0 d-flex align-items-center gap-2" aria-label="AlmaKick Home">
                         <span class="logo-bg-wrapper <?= $isHomeActive ? 'logo-active' : '' ?>">
-                            <!-- Logo monogramma per mobile -->
                             <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none">
-                            <!-- Logo completo per desktop -->
                             <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
                         </span>
                         <span class="fw-bold fs-5 <?= $isHomeActive ? 'text-primary' : 'text-body' ?>">Home</span>
@@ -125,7 +123,7 @@ if ($userAvatar) {
                         $isCercaActive = ($current_path === '/users');
                     ?>
                     <?php if (isset($_SESSION['user'])): ?>
-                        <!-- Classifica con effetto hover reveal elegante -->
+                        <!-- Leaderboard link -->
                         <a class="nav-link fw-semibold p-0 text-decoration-none search-hover-reveal ms-3 d-none d-md-inline-flex <?= $isClassificheActive ? 'text-primary' : '' ?>" href="<?= url('/leaderboard') ?>" aria-label="Visualizza Classifica">
                             <span class="bi bi-trophy-fill fs-5 <?= $isClassificheActive ? 'text-warning' : 'text-body' ?>"></span>
                             <span class="search-text-reveal fw-semibold text-primary">Classifica</span>
@@ -137,20 +135,20 @@ if ($userAvatar) {
                 <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
                     
                     <?php if (isset($_SESSION['user'])): ?>
-                        <!-- Lente d'ingrandimento per la ricerca con effetto hover reveal elegante -->
+                        <!-- Search players link -->
                         <a class="btn btn-link p-0 text-decoration-none search-hover-reveal d-none d-md-inline-flex <?= $isCercaActive ? 'text-primary' : 'text-body' ?>" href="<?= url('/users') ?>" aria-label="Cerca Giocatori">
                             <span class="bi bi-search fs-5 <?= $isCercaActive ? 'text-primary' : 'text-body' ?>"></span>
                             <span class="search-text-reveal fw-semibold text-primary">Cerca</span>
                         </a>
                     <?php endif; ?>
 
-                    <!-- Theme Toggle (Invertito con la lente, posizionato dopo la lente) -->
+                    <!-- Theme toggle -->
                     <button class="btn btn-link text-body p-0 text-decoration-none" id="theme-toggle" aria-label="Cambia tema">
                         <span class="bi bi-sun-fill fs-5 transition-transform" id="theme-icon"></span>
                     </button>
 
                     <?php if (isset($_SESSION['user'])): ?>
-                        <!-- Campana Notifiche Premium -->
+                        <!-- Notifications bell -->
                         <div class="dropdown notifications-dropdown-wrapper">
                             <button class="btn btn-link text-body p-0 text-decoration-none position-relative" 
                                     id="notificationsBell" 
@@ -185,7 +183,7 @@ if ($userAvatar) {
                             </div>
                         </div>
 
-                        <!-- Avatar User Dropdown (Profilo) -->
+                        <!-- User menu dropdown -->
                         <div class="dropdown d-none d-md-block">
                             <button class="btn btn-link p-0 position-relative text-decoration-none dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent"
                                 type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu utente">
@@ -245,27 +243,25 @@ if ($userAvatar) {
     </header>
 
     <main class="container py-4 mb-5 pb-5">
-        <!-- Contenuto dinamico della pagina -->
+        <!-- Page content -->
         <?= $content ?>
     </main>
 
     <footer class="bg-body-tertiary border-top py-4 mt-auto pb-5 pb-lg-4">
         <div class="container">
             <div class="row align-items-center gy-4">
-                <!-- Left Column: Logo & Tagline -->
+                <!-- Footer info -->
                 <div class="col-12 col-md-8 text-center text-md-start">
                     <div class="mb-3 d-inline-flex">
                         <span class="logo-bg-wrapper">
-                            <!-- Logo monogramma per mobile -->
                             <img src="<?= url('/images/logo.svg') ?>" alt="AlmaKick Logo" class="header-logo-mobile d-md-none">
-                            <!-- Logo completo per desktop -->
                             <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="header-logo-desktop d-none d-md-block">
                         </span>
                     </div>
                     <p class="text-body-secondary small mb-0 footer-tagline">La migliore piattaforma per organizzare e trovare partite di calcetto nella tua zona. Scendi in campo con noi!</p>
                 </div>
                 <?php if (isset($_SESSION['user'])): ?>
-                    <!-- Right Column: Links aligned horizontally on desktop -->
+                    <!-- Footer links -->
                     <div class="col-12 col-md-4 text-center text-md-end">
                         <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
                         <ul class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
@@ -290,7 +286,7 @@ if ($userAvatar) {
             $isClassificheActive = ($current_path === '/leaderboard');
             $isProfiloActive = ($current_path === '/profile');
         ?>
-        <!-- BOTTOM BAR MOBILE GLASSMORPHISM -->
+        <!-- Mobile bottom bar -->
         <div class="d-lg-none fixed-bottom border-top shadow-lg pb-safe bottom-mobile-bar">
             <nav aria-label="Menu navigazione principale">
                 <ul class="nav nav-pills nav-justified py-2 align-items-center">

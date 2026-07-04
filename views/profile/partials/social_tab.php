@@ -95,7 +95,7 @@
             <?php else: ?>
                 <div class="list-group list-group-flush profile-scrollable-list-large">
                     
-                    <!-- Richieste Ricevute (Da accettare) -->
+                    <!-- Received requests -->
                     <?php foreach($pendingRequests as $richiesta): ?>
                         <div class="list-group-item px-0 py-3 border-bottom border-light">
                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -127,7 +127,7 @@
                         </div>
                     <?php endforeach; ?>
 
-                    <!-- Richieste Inviate (In attesa) -->
+                    <!-- Sent requests -->
                     <?php foreach($sentPendingRequests as $richiesta): ?>
                         <div class="list-group-item px-0 py-3 border-bottom border-light">
                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -156,7 +156,7 @@
                         </div>
                     <?php endforeach; ?>
 
-                    <!-- Amici Accettati -->
+                    <!-- Friends list -->
                     <?php foreach($friends as $amico): ?>
                         <div class="list-group-item px-0 py-3 border-bottom border-light">
                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">

@@ -1,6 +1,4 @@
-<?php
-// views/matches/partials/show/info_grid.php
-?>
+
 <div class="row g-3 mb-4 text-center">
     <div class="col-6 col-md-3">
         <div class="p-4 bg-body rounded-4 shadow-sm border-0 h-100 d-flex flex-column justify-content-center hover-scale transition-all" tabindex="0" role="region" aria-label="Quota base per persona: <?= number_format($current_quote, 2) ?> euro">

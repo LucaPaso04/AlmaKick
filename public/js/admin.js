@@ -1,6 +1,6 @@
-/* Admin dashboard state management and AJAX request handlers */
+/* Admin dashboard logic */
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Restore active tab from hash or localStorage
+    // Restore active tab
     const hash = window.location.hash;
     let activeTabTrigger = null;
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         tab.show();
     }
 
-    // 2. Tab change event listener to save state
+    // Save active tab state
     const tabButtons = document.querySelectorAll('button[data-bs-toggle="tab"]');
     tabButtons.forEach(btn => {
         btn.addEventListener('shown.bs.tab', function(e) {
@@ -30,10 +30,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // 3. Event delegation for pagination links, filter inputs and AJAX POST submissions
+    // Handle dynamic tab events
     const tabContent = document.getElementById('adminDashboardTabsContent');
     if (tabContent) {
-        // Pagination link click delegation
         tabContent.addEventListener('click', function(e) {
             const link = e.target.closest('a.page-link');
             if (link) {
@@ -45,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // Form submission delegation (GET filters and POST action forms)
         tabContent.addEventListener('submit', function(e) {
             const form = e.target.closest('form');
             if (!form) return;
@@ -121,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // Filter select change delegation
         tabContent.addEventListener('change', function(e) {
             const input = e.target;
             if (input.tagName === 'SELECT' || input.type === 'date') {

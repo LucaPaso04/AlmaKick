@@ -21,7 +21,7 @@ class Database {
         try {
             $this->conn = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            // In produzione, registrare l'errore senza mostrare i dettagli sensibili
+            // Don't leak details in production
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
@@ -37,10 +37,10 @@ class Database {
         return $this->conn;
     }
 
-    // Previene la clonazione dell'oggetto
+    // Prevent cloning
     private function __clone() {}
 
-    // Previene la deserializzazione
+    // Prevent deserialization
     public function __wakeup() {
         throw new \Exception("Non è possibile deserializzare una classe Singleton.");
     }

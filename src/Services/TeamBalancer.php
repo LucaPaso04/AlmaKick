@@ -15,12 +15,11 @@ class TeamBalancer
     }
 
     /**
-     * Bilancia le squadre (home e away) per la partita indicata.
-     * Ritorna true se l'operazione ha successo, false se i giocatori registrati sono insufficienti.
+     * Balance teams for match
      */
     public function balanceTeams(int $matchId): bool
     {
-        // Recupera iscritti attivi con il flag has_guest
+        // Load active players
         $stmt = $this->db->prepare("
             SELECT r.id, r.has_guest, u.skill_rating 
             FROM registrations r
@@ -34,12 +33,12 @@ class TeamBalancer
             return false;
         }
 
-        // Ordina per skill decrescente
+        // Sort by skill descending
         usort($players, function($a, $b) {
             return $b['skill_rating'] <=> $a['skill_rating'];
         });
 
-        // Algoritmo greedy con snake draft di fallback per bilanciare i pesi (1 + has_guest)
+        // Greedy snake draft balancer
         $homeIds = [];
         $awayIds = [];
         $homeWeight = 0;
@@ -75,7 +74,7 @@ class TeamBalancer
             }
         }
 
-        // Esegue modifiche su DB
+        // Update DB
         $stmtUpdateHome = $this->db->prepare("UPDATE registrations SET team = 'home' WHERE id = :id");
         foreach ($homeIds as $regId) {
             $stmtUpdateHome->execute(['id' => $regId]);

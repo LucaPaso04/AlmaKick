@@ -18,11 +18,11 @@ class UserController extends BaseController {
         $users = [];
         if ($q !== '') {
             $currentUsername = $_SESSION['user']['username'];
-            // Cerca al massimo 10 utenti
+            // Limit to 10 users
             $users = $userModel->searchUsers($q, $currentUsername, 10, 0);
         }
 
-        // Se la richiesta è AJAX, restituisce JSON con i risultati
+        // AJAX request
         if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
             ob_start();
             require VIEW_PATH . '/users/partials/results.php';
@@ -54,7 +54,7 @@ class UserController extends BaseController {
 
         $userModel = new User();
         
-        // Determina l'utente da visualizzare
+        // Get user parameter
         $username = $_GET['username'] ?? $_SESSION['user']['username'];
         $viewedUser = $userModel->find($username);
 
@@ -65,13 +65,13 @@ class UserController extends BaseController {
 
         $is_own_profile = ($username === $_SESSION['user']['username']);
         
-        // Recupera lo stato dell'amicizia
+        // Get friendship status
         $friendship = null;
         if (!$is_own_profile) {
             $friendship = $userModel->getFriendshipStatus($_SESSION['user']['username'], $username);
         }
 
-        // Recupera le statistiche e lo storico
+        // Get stats and history
         $matches_hosted = $userModel->getMatchesHostedCount($username);
         $rawHistory = $userModel->getMatchHistory($username);
 
@@ -108,7 +108,7 @@ class UserController extends BaseController {
         }
 
         if (!$is_own_profile) {
-            // Calcola variabili helper per il profilo pubblico
+            // Calculate helpers for public profile
             $is_friend = ($friendship && $friendship['status'] === 'accepted');
             $sent_request = ($friendship && $friendship['status'] === 'pending' && $friendship['sender_username'] === $_SESSION['user']['username']);
             $received_request = ($friendship && $friendship['status'] === 'pending' && $friendship['sender_username'] !== $_SESSION['user']['username']);
@@ -181,7 +181,7 @@ class UserController extends BaseController {
                 $this->redirect('/profile');
             }
 
-            // Crea la cartella uploads se non esiste
+            // Create uploads dir if missing
             if (!is_dir(UPLOAD_PATH)) {
                 mkdir(UPLOAD_PATH, 0755, true);
             }
@@ -190,7 +190,7 @@ class UserController extends BaseController {
             $dest_path = UPLOAD_PATH . '/' . $newFileName;
 
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                // Rimuovi eventuale avatar precedente
+                // Remove old avatar
                 if ($currentUser && $currentUser['avatar']) {
                     $oldPath = BASE_PATH . '/public/' . ltrim($currentUser['avatar'], '/');
                     if (file_exists($oldPath) && is_file($oldPath)) {
@@ -198,7 +198,7 @@ class UserController extends BaseController {
                     }
                 }
 
-                // Salva il nuovo percorso relativo nel database
+                // Save path to DB
                 $avatarRelativePath = 'uploads/' . $newFileName;
                 $userModel->updateAvatar($username, $avatarRelativePath);
                 $_SESSION['success'] = "Foto profilo aggiornata con successo!";
@@ -229,7 +229,7 @@ class UserController extends BaseController {
             $this->redirect('/');
         }
 
-        // 1. Caso Cambio Password
+        // Update password
         if (isset($_POST['password'])) {
             $currentPassword = $_POST['current_password'] ?? '';
             $newPassword = $_POST['password'] ?? '';
@@ -261,7 +261,7 @@ class UserController extends BaseController {
             $this->redirect('/profile');
         }
 
-        // 2. Caso Cambio Email
+        // Update email
         if (isset($_POST['email'])) {
             $newEmail = trim($_POST['email']);
             $currentPassword = $_POST['current_password'] ?? '';
@@ -276,7 +276,7 @@ class UserController extends BaseController {
                 $this->redirect('/profile');
             }
 
-            // Verifica se l'email è già in uso da un altro utente
+            // Check email availability
             $existing = $userModel->findByEmail($newEmail);
             if ($existing && $existing['username'] !== $username) {
                 $_SESSION['error'] = "Questo indirizzo email è già utilizzato da un altro account.";
@@ -294,7 +294,7 @@ class UserController extends BaseController {
             $this->redirect('/profile');
         }
 
-        // 3. Caso Modifica Informazioni Generali
+        // Update profile details
         if (isset($_POST['name'])) {
             $name = trim($_POST['name']);
             $lastName = trim($_POST['last_name'] ?? '');
@@ -362,10 +362,10 @@ class UserController extends BaseController {
                 if ($existing['sender_username'] === $myUsername) {
                     $_SESSION['error'] = "C'è già una richiesta di amicizia in sospeso.";
                 } else {
-                    // L'altro utente ha già inviato una richiesta a me: accetto automaticamente!
+                    // Accept automatically if pending
                     $userModel->acceptFriendRequest($recipient['username'], $myUsername);
                     
-                    // Notifica il mittente originale
+                    // Notify original sender
                     $notificationModel = new \App\Models\Notification();
                     $notificationModel->create([
                         'user_recipient' => $recipient['username'],
@@ -373,7 +373,7 @@ class UserController extends BaseController {
                         'message' => '🤝 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
                         'link' => url('/profile?username=' . urlencode($myUsername))
                     ]);
-                    // Segna come letta la notifica di richiesta ricevuta
+                    // Mark request as read
                     $notificationModel->markFriendRequestAsRead($recipient['username'], $myUsername);
                     
                     $_SESSION['success'] = "Richiesta di amicizia accettata automaticamente!";
@@ -381,7 +381,7 @@ class UserController extends BaseController {
             } elseif ($existing['status'] === 'blocked') {
                 $_SESSION['error'] = "Operazione non consentita.";
             } else {
-                // Se era rifiutata o altro, la riattiviamo
+                // Reactivate if rejected
                 $userModel->addFriendRequest($myUsername, $recipient['username']);
                 $sent = true;
                 $_SESSION['success'] = "Richiesta di amicizia inviata!";
@@ -393,7 +393,7 @@ class UserController extends BaseController {
         }
 
         if ($sent) {
-            // Crea una notifica persistente per il destinatario
+            // Notify recipient
             $notificationModel = new \App\Models\Notification();
             $notificationModel->create([
                 'user_recipient' => $recipient['username'],
@@ -416,10 +416,10 @@ class UserController extends BaseController {
         $myUsername = $_SESSION['user']['username'];
         $userModel = new User();
 
-        // Accetta la richiesta inviata da $username a me
+        // Accept request
         $userModel->acceptFriendRequest($username, $myUsername);
 
-        // Notifica il mittente che la richiesta è stata accettata
+        // Notify sender
         $notificationModel = new \App\Models\Notification();
         $notificationModel->create([
             'user_recipient' => $username,
@@ -428,7 +428,7 @@ class UserController extends BaseController {
             'link' => url('/profile?username=' . urlencode($myUsername))
         ]);
 
-        // Segna come letta la notifica di richiesta ricevuta
+        // Mark request as read
         $notificationModel->markFriendRequestAsRead($username, $myUsername);
 
         $_SESSION['success'] = "Richiesta di amicizia accettata!";
@@ -445,10 +445,10 @@ class UserController extends BaseController {
         $myUsername = $_SESSION['user']['username'];
         $userModel = new User();
 
-        // Elimina record di amicizia in sospeso
+        // Delete pending friendship
         $userModel->deleteFriendship($username, $myUsername);
 
-        // Segna come letta la notifica di richiesta ricevuta
+        // Mark request as read
         $notificationModel = new \App\Models\Notification();
         $notificationModel->markFriendRequestAsRead($username, $myUsername);
 
@@ -468,7 +468,7 @@ class UserController extends BaseController {
 
         $userModel->blockUser($myUsername, $username);
 
-        // Segna come letta la notifica di richiesta ricevuta (se c'era)
+        // Mark request as read
         $notificationModel = new \App\Models\Notification();
         $notificationModel->markFriendRequestAsRead($username, $myUsername);
 
@@ -488,7 +488,7 @@ class UserController extends BaseController {
 
         $userModel->deleteFriendship($myUsername, $username);
 
-        // Segna come letta la notifica di richiesta ricevuta (se c'era)
+        // Mark request as read
         $notificationModel = new \App\Models\Notification();
         $notificationModel->markFriendRequestAsRead($username, $myUsername);
         $notificationModel->markFriendRequestAsRead($myUsername, $username);
@@ -515,7 +515,7 @@ class UserController extends BaseController {
             $this->redirect('/profile');
         }
 
-        // Verifica che l'utente segnalato esista
+        // Validate reported user exists
         $userModel = new User();
         $viewedUser = $userModel->find($reported);
         if (!$viewedUser) {

@@ -3,10 +3,9 @@
         <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event-fill me-2 text-success"></i>Gestione Partite</h5>
     </div>
 
-    <?php // =================== FILTERS & SEARCH =================== ?>
+    <?php // Filters & Search ?>
     <div class="card-body border-bottom bg-body-tertiary p-3">
         <form method="GET" action="<?= url('/admin') ?>#matches-section" class="row g-2">
-            <?php // Search ?>
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
@@ -14,7 +13,6 @@
                 </div>
             </div>
 
-            <?php // Status Filter ?>
             <div class="col-md-2">
                 <select name="status_match" class="form-select">
                     <option value="">Stato</option>
@@ -25,12 +23,10 @@
                 </select>
             </div>
 
-            <?php // Date Filter ?>
             <div class="col-md-4">
                 <input type="date" name="date_match" class="form-control" value="<?= e($dateMatch) ?>" title="Filtra per data">
             </div>
 
-            <?php // Format Filter ?>
             <div class="col-md-2">
                 <select name="format_match" class="form-select">
                     <option value="">Formato</option>
@@ -130,12 +126,11 @@
         </table>
     </div>
 
-    <?php // =================== PAGINATION (MATCHES) =================== ?>
+    <?php // Pagination ?>
     <?php if ($totalPagesMatches > 1): ?>
         <div class="card-footer bg-body-tertiary border-top p-3">
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
-                    <?php // Previous Page Link ?>
                     <?php if ($pageMatches <= 1): ?>
                         <li class="page-item disabled"><span class="page-link text-success">← Precedente</span></li>
                     <?php else: ?>
@@ -144,7 +139,6 @@
                         </li>
                     <?php endif; ?>
 
-                    <?php // Pagination Elements ?>
                     <?php for ($i = 1; $i <= $totalPagesMatches; $i++): ?>
                         <?php if ($i == $pageMatches): ?>
                             <li class="page-item active"><span class="page-link bg-success border-success"><?= $i ?></span></li>
@@ -153,7 +147,6 @@
                         <?php endif; ?>
                     <?php endfor; ?>
 
-                    <?php // Next Page Link ?>
                     <?php if ($pageMatches >= $totalPagesMatches): ?>
                         <li class="page-item disabled"><span class="page-link text-success">Prossima →</span></li>
                     <?php else: ?>

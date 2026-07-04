@@ -1,5 +1,5 @@
 <?php
-// views/matches/partials/show/players_list.php
+
 
 $activePlayers = [];
 $benchPlayers = [];
@@ -16,7 +16,7 @@ foreach ($registrations as $reg) {
 }
 ?>
 
-<!-- Match Enrollment Progress Bar -->
+<!-- Enrollment progress -->
 <div class="card shadow-sm border-0 mb-4 rounded-4 bg-body">
     <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -38,7 +38,7 @@ foreach ($registrations as $reg) {
     </div>
 </div>
 
-<!-- Titolari (Registered Active) -->
+<!-- Active players -->
 <h2 class="fw-bolder mb-3 mt-4 px-2 fs-5"><span class="bi bi-check-circle-fill text-success me-2"></span>Giocatori Iscritti (<?= count($activePlayers) ?>)</h2>
 <div class="list-group shadow-sm rounded-4 border-0 mb-4" role="list" aria-label="Lista dei giocatori iscritti">
     <?php if (!empty($activePlayers)): ?>
@@ -103,7 +103,7 @@ foreach ($registrations as $reg) {
         <?php endforeach; ?>
 
         <?php
-        // Calcola e visualizza i gol degli ospiti se la partita è finita ed ha gol ospiti
+        // Calculate guest goals if finished
         $sumHomeGoalsRegistered = 0;
         $sumAwayGoalsRegistered = 0;
         foreach ($activePlayers as $reg) {
@@ -163,7 +163,7 @@ foreach ($registrations as $reg) {
     <?php endif; ?>
 </div>
 
-<!-- Panchinari (Waitlist) -->
+<!-- Waitlist -->
 <h2 class="fw-bolder mb-3 mt-4 px-2 fs-5 text-warning"><span class="bi bi-hourglass-split me-2"></span>In Panchina (Lista d'Attesa) (<?= count($benchPlayers) ?>)</h2>
 <div class="list-group shadow-sm rounded-4 border-0 mb-5" role="list" aria-label="Lista dei giocatori in panchina">
     <?php if (!empty($benchPlayers)): ?>

@@ -1,7 +1,7 @@
 
 <div class="row justify-content-center my-4">
     <div class="col-12 col-lg-10">
-        <!-- Header Section -->
+        <!-- Header -->
         <div class="d-flex align-items-center mb-4">
             <a href="<?= url('/matches/' . $match['id']) ?>" class="btn btn-light rounded-circle me-3 shadow-sm border-0">
                 <i class="bi bi-arrow-left"></i>
@@ -9,7 +9,7 @@
             <h1 class="h3 fw-bold mb-0">📋 Tabellino Post-Partita</h1>
         </div>
 
-        <!-- Real-time Validation Alert -->
+        <!-- Validation alert -->
         <div id="validation-alert" class="alert alert-danger d-none rounded-4 mb-4 shadow-sm border-0" role="alert">
             <div class="d-flex align-items-center">
                 <i class="bi bi-exclamation-triangle-fill fs-4 me-3" aria-hidden="true"></i>
@@ -20,7 +20,7 @@
         <form action="<?= url('/matches/' . $match['id'] . '/report') ?>" method="POST" class="no-spinner">
             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
 
-            <!-- Punteggio Finale Card -->
+            <!-- Final score -->
             <div class="card shadow-sm border-0 mb-4 rounded-4 bg-body">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-4 text-center"><i class="bi bi-trophy-fill text-warning me-2" aria-hidden="true"></i>Punteggio Finale</h5>
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <!-- Colonne Squadre con Drag & Drop -->
+            <!-- Team lists with Drag & Drop -->
             <div class="row g-4 mb-4">
                 <!-- Colonna Home (Red) -->
                 <div class="col-12 col-md-6">
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <!-- Giocatori Disponibili da Agganciare alle Colonne -->
+            <!-- Available players -->
             <div id="players-source-container" class="d-none">
                 <?php
                 // Unisce tutti i giocatori registrati (inclusi quelli non assegnati)
@@ -94,13 +94,11 @@
                     }
                     $avatarMonogram = strtoupper(substr($reg['name'], 0, 1));
                 ?>
-                    <!-- Elemento Giocatore Trascinabile -->
                      <div class="player-card-draggable card mb-3 border-0 bg-body-secondary rounded-4 shadow-sm p-3 position-relative cursor-grab" 
                           draggable="true" 
                           data-reg-id="<?= $reg['id'] ?>"
                           data-starting-team="<?= $startingTeam ?>">
                         
-                        <!-- Input Nascosto per inviare la squadra sul DB -->
                         <input type="hidden" name="teams[<?= $reg['id'] ?>]" id="team_input_<?= $reg['id'] ?>" value="<?= $startingTeam ?>">
 
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -117,7 +115,6 @@
                                 </div>
                             </div>
 
-                            <!-- Sezione Gol (Giocatore + eventuale Ospite) -->
                             <div class="d-flex align-items-center gap-3">
                                 <!-- Gol del Giocatore -->
                                 <div class="text-end">
@@ -148,7 +145,7 @@
                 <?php endforeach; ?>
             </div>
 
-            <!-- Submit Button -->
+            <!-- Submit button -->
             <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow-sm mb-5 mt-3 py-2.5">
                 <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>Salva Tabellino e Chiudi
             </button>
