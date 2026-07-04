@@ -298,3 +298,38 @@ body #compareStatsModal .badge {
 #compareStatsModal .modal-body hr {
     opacity: 0.15;
 }
+
+/* Custom Trust Circle and Performance Chart styling */
+.profile-avatar-container-lg {
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
+    z-index: 10;
+}
+.trust-circle-svg {
+    transform: rotate(-90deg);
+}
+.trust-circle-progress {
+    transition: stroke-dashoffset 0.5s ease-in-out;
+}
+.trust-circle-text {
+    font-size: 0.85rem;
+    color: var(--bs-body-color);
+}
+.performance-chart-wrapper {
+    width: 100%;
+    max-width: 320px;
+}
+.performance-chart-svg {
+    height: 80px;
+    overflow: visible;
+}
+.performance-chart-text {
+    paint-order: stroke;
+    stroke: var(--bs-body-bg);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+}
+.location-truncate {
+    max-width: 200px;
+}

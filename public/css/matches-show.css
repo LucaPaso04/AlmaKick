@@ -328,3 +328,14 @@
 .tracking-wide {
     letter-spacing: 0.05em;
 }
+
+/* Pulse animation utility for match waitlist offer badges */
+@keyframes pulse-animation-badge {
+    0% { opacity: 0.6; transform: scale(0.98); }
+    50% { opacity: 1; transform: scale(1.02); }
+    100% { opacity: 0.6; transform: scale(0.98); }
+}
+
+.pulse-badge {
+    animation: pulse-animation-badge 1.5s infinite;
+}

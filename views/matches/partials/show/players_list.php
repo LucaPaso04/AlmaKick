@@ -1,10 +1,3 @@
-<style>
-@keyframes pulse-animation-badge {
-    0% { opacity: 0.6; transform: scale(0.98); }
-    50% { opacity: 1; transform: scale(1.02); }
-    100% { opacity: 0.6; transform: scale(0.98); }
-}
-</style>
 <?php
 // views/matches/partials/show/players_list.php
 
@@ -83,7 +76,7 @@ foreach ($registrations as $reg) {
                                 <span class="badge bg-secondary shadow-sm"><span class="bi bi-star-fill text-warning me-1" aria-hidden="true"></span>Host</span>
                             <?php endif; ?>
                             <?php if($isOfferActive): ?>
-                                <span class="badge bg-warning text-dark shadow-sm d-inline-flex align-items-center" style="animation: pulse-animation-badge 1.5s infinite;"><i class="bi bi-lightning-fill me-1"></i>Da confermare</span>
+                                <span class="badge bg-warning text-dark shadow-sm d-inline-flex align-items-center pulse-badge"><i class="bi bi-lightning-fill me-1"></i>Da confermare</span>
                             <?php endif; ?>
                             <?php if($reg['team']): ?>
                                 <span class="badge bg-<?= $reg['team'] === 'home' ? 'danger' : 'primary' ?> shadow-sm"><?= ucfirst($reg['team']) ?></span>

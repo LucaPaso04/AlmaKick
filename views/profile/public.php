@@ -23,13 +23,13 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 
         <div class="card shadow-sm border-0 rounded-4 mb-4">
             <div class="bg-primary pt-5 pb-3 px-4 position-relative rounded-top-4">
-                <div class="position-absolute top-0 end-0 p-3 d-flex align-items-center gap-2" style="z-index: 1000;">
+                <div class="position-absolute top-0 end-0 p-3 d-flex align-items-center gap-2 z-index-1000">
                     <?php if ($user['role'] === 'super_admin'): ?>
                         <span class="badge bg-warning text-dark"><i class="bi bi-shield-lock-fill me-1"></i>Admin</span>
                     <?php endif; ?>
                     
                     <div class="dropdown">
-                        <button class="btn btn-link text-white p-0 border-0 fs-4" type="button" id="profileActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none; box-shadow: none; line-height: 1;">
+                        <button class="btn btn-link text-white p-0 border-0 fs-4 outline-none shadow-none line-height-1" type="button" id="profileActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down" aria-labelledby="profileActionsDropdown">
@@ -51,9 +51,9 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                 </div>
             </div>
             <div class="card-body px-4 pb-5 text-center mt-n4">
-                <div class="position-relative d-inline-block shadow-sm rounded-circle mb-3 mx-auto border bg-white" style="width: 100px; height: 100px; margin-top: -50px; z-index:10;">
+                <div class="position-relative d-inline-block shadow-sm rounded-circle mb-3 mx-auto border bg-white profile-avatar-container-lg">
                     <?php if($avatarUrl): ?>
-                        <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Foto Profilo" class="w-100 h-100 rounded-circle" style="object-fit: cover;">
+                        <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Foto Profilo" class="w-100 h-100 rounded-circle object-fit-cover">
                     <?php else: ?>
                         <div class="w-100 h-100 rounded-circle d-flex justify-content-center align-items-center bg-white text-primary">
                             <span class="fs-1 fw-bold"><?= strtoupper(substr($user['name'] ?? '', 0, 1)) ?></span>
@@ -128,7 +128,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                                 <?php if ($fAvatarUrl): ?>
                                                     <img src="<?= htmlspecialchars($fAvatarUrl) ?>" alt="<?= e($f['name']) ?>" class="w-100 h-100 object-fit-cover">
                                                 <?php else: ?>
-                                                    <div class="w-100 h-100 d-flex justify-content-center align-items-center bg-primary text-white fw-bold" style="font-size: 0.75rem;">
+                                                    <div class="w-100 h-100 d-flex justify-content-center align-items-center bg-primary text-white fw-bold font-size-xs">
                                                         <?= strtoupper(substr($f['name'] ?? '', 0, 1)) ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -150,8 +150,8 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                         ?>
                                     </div>
                                 <?php else: ?>
-                                    <div class="rounded-circle bg-body-secondary d-flex justify-content-center align-items-center text-muted" style="width: 32px; height: 32px;">
-                                        <i class="bi bi-people-fill text-muted" style="font-size: 0.9rem;"></i>
+                                    <div class="rounded-circle bg-body-secondary d-flex justify-content-center align-items-center text-muted size-32">
+                                        <i class="bi bi-people-fill text-muted font-size-sm"></i>
                                     </div>
                                     <span class="text-muted small">Nessun amico in comune</span>
                                 <?php endif; ?>
@@ -161,8 +161,8 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                         <!-- Matches Played Together -->
                         <div class="col-12 col-md-6">
                             <div class="d-flex align-items-center gap-2">
-                                <div class="rounded-circle bg-primary bg-opacity-10 d-flex justify-content-center align-items-center text-primary shadow-sm" style="width: 32px; height: 32px;">
-                                    <i class="bi bi-controller" style="font-size: 1rem;"></i>
+                                <div class="rounded-circle bg-primary bg-opacity-10 d-flex justify-content-center align-items-center text-primary shadow-sm size-32">
+                                    <i class="bi bi-controller fs-6"></i>
                                 </div>
                                 <div class="small text-body">
                                     <?php if ($matches_played_together > 0): ?>
@@ -235,21 +235,21 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                     $glow_class = 'trust-glow-red';
                                 }
                                 ?>
-                                <div class="trust-circle-container <?= $glow_class ?> mb-2 position-relative shadow-sm bg-body rounded-circle" style="width: 60px; height: 60px;">
-                                    <svg width="60" height="60" viewBox="0 0 60 60" style="transform: rotate(-90deg);">
+                                <div class="trust-circle-container <?= $glow_class ?> mb-2 position-relative shadow-sm bg-body rounded-circle size-60">
+                                    <svg width="60" height="60" viewBox="0 0 60 60" class="trust-circle-svg">
                                         <circle cx="30" cy="30" r="25" fill="transparent" stroke="rgba(120, 120, 120, 0.15)" stroke-width="4.5" />
                                         <circle cx="30" cy="30" r="25" fill="transparent" 
                                                 stroke="<?= $stroke_color ?>" stroke-width="4.5" 
                                                 stroke-dasharray="<?= $circumference ?>" 
                                                 stroke-dashoffset="<?= $dashoffset ?>" 
                                                 stroke-linecap="round"
-                                                style="transition: stroke-dashoffset 0.5s ease-in-out;" />
+                                                class="trust-circle-progress" />
                                     </svg>
-                                    <div class="position-absolute top-50 start-50 translate-middle fw-bold text-center" style="font-size: 0.85rem; color: var(--bs-body-color);">
+                                    <div class="position-absolute top-50 start-50 translate-middle fw-bold text-center trust-circle-text">
                                         <?= $ts ?>%
                                     </div>
                                 </div>
-                                <small class="text-muted text-uppercase fw-semibold stat-card-label" style="font-size: 0.75rem;">Trust Score</small>
+                                <small class="text-muted text-uppercase fw-semibold stat-card-label font-size-xs">Trust Score</small>
                             </div>
                         </div>
                     </div>
@@ -257,8 +257,8 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <!-- Trend/Sparkline Widget -->
                     <div class="mt-4 p-3 bg-body border rounded-4 shadow-sm text-start">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="fw-semibold text-muted text-uppercase tracking-wide" style="font-size: 0.75rem;"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
-                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold" style="font-size: 0.75rem;">Stato di Forma</span>
+                            <span class="fw-semibold text-muted text-uppercase tracking-wide font-size-xs"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold font-size-xs">Stato di Forma</span>
                         </div>
                         <?php if (empty($trend_votes)): ?>
                             <div class="text-center py-2 text-muted small">
@@ -295,8 +295,8 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                             $y_4_5 = $padding_y + (1 - (4.5 - $min_val) / ($max_val - $min_val)) * ($height - 2 * $padding_y);
                             ?>
                             <div class="d-flex align-items-center justify-content-center py-2">
-                                <div style="width: 100%; max-width: 320px;">
-                                    <svg viewBox="0 0 <?= $width ?> <?= $height ?>" class="w-100" style="height: 80px; overflow: visible;">
+                                <div class="performance-chart-wrapper">
+                                    <svg viewBox="0 0 <?= $width ?> <?= $height ?>" class="w-100 performance-chart-svg">
                                         <defs>
                                             <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="0%" stop-color="var(--bs-primary)" stop-opacity="0.25" />
@@ -318,7 +318,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                         <!-- Value markers & Text -->
                                         <?php foreach ($points_array as $pt): ?>
                                             <circle cx="<?= $pt['x'] ?>" cy="<?= $pt['y'] ?>" r="3.5" fill="#ffffff" stroke="var(--bs-primary)" stroke-width="2" />
-                                            <text x="<?= $pt['x'] ?>" y="<?= $pt['y'] - 8 ?>" text-anchor="middle" font-size="8.5" font-weight="bold" fill="var(--bs-emphasis-color)" style="paint-order: stroke; stroke: var(--bs-body-bg); stroke-width: 3px; stroke-linejoin: round;"><?= number_format($pt['val'], 1) ?></text>
+                                            <text x="<?= $pt['x'] ?>" y="<?= $pt['y'] - 8 ?>" text-anchor="middle" font-size="8.5" font-weight="bold" fill="var(--bs-emphasis-color)" class="performance-chart-text"><?= number_format($pt['val'], 1) ?></text>
                                         <?php endforeach; ?>
                                     </svg>
                                 </div>
@@ -346,7 +346,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 <!-- Modale di Segnalazione -->
 <div class="modal fade" id="reportUserModal" tabindex="-1" aria-labelledby="reportUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+        <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
                 <h5 class="modal-title fw-bold" id="reportUserModalLabel">
                     <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Segnala Utente
@@ -398,7 +398,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 <!-- Modale Confronto Statistiche -->
 <div class="modal fade" id="compareStatsModal" tabindex="-1" aria-labelledby="compareStatsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content rounded-4 border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+        <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
                 <h5 class="modal-title fw-bold" id="compareStatsModalLabel">
                     <i class="bi bi-arrow-left-right text-primary me-2"></i>Confronta Statistiche
@@ -411,7 +411,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                 <div class="row align-items-center mb-4 text-center">
                     <!-- Left: Me -->
                     <div class="col-5">
-                        <div class="position-relative d-inline-block shadow-sm rounded-circle mb-2 border bg-white" style="width: 70px; height: 70px;">
+                        <div class="position-relative d-inline-block shadow-sm rounded-circle mb-2 border bg-white size-70">
                             <?php 
                             $meAvatarUrl = null;
                             if (!empty($me['avatar'])) {
@@ -425,7 +425,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                             }
                             if ($meAvatarUrl): 
                             ?>
-                                <img src="<?= htmlspecialchars($meAvatarUrl) ?>" alt="Tu" class="w-100 h-100 rounded-circle" style="object-fit: cover;">
+                                <img src="<?= htmlspecialchars($meAvatarUrl) ?>" alt="Tu" class="w-100 h-100 rounded-circle object-fit-cover">
                             <?php else: ?>
                                 <div class="w-100 h-100 rounded-circle d-flex justify-content-center align-items-center bg-primary text-white">
                                     <span class="fs-4 fw-bold"><?= strtoupper(substr($me['name'] ?? '', 0, 1)) ?></span>
@@ -443,9 +443,9 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     
                     <!-- Right: User -->
                     <div class="col-5">
-                        <div class="position-relative d-inline-block shadow-sm rounded-circle mb-2 border bg-white" style="width: 70px; height: 70px;">
+                        <div class="position-relative d-inline-block shadow-sm rounded-circle mb-2 border bg-white size-70">
                             <?php if ($avatarUrl): ?>
-                                <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="<?= e($user['name']) ?>" class="w-100 h-100 rounded-circle" style="object-fit: cover;">
+                                <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="<?= e($user['name']) ?>" class="w-100 h-100 rounded-circle object-fit-cover">
                             <?php else: ?>
                                 <div class="w-100 h-100 rounded-circle d-flex justify-content-center align-items-center bg-success text-white">
                                     <span class="fs-4 fw-bold"><?= strtoupper(substr($user['name'] ?? '', 0, 1)) ?></span>
@@ -492,11 +492,11 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                 ?>
                     <div class="mb-4 px-md-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="fw-bold text-primary" style="font-size: 1.1rem;"><?= $display_me ?></span>
+                            <span class="fw-bold text-primary font-size-lg"><?= $display_me ?></span>
                             <span class="text-muted small text-uppercase fw-bold"><?= $label ?></span>
-                            <span class="fw-bold text-success" style="font-size: 1.1rem;"><?= $display_user ?></span>
+                            <span class="fw-bold text-success font-size-lg"><?= $display_user ?></span>
                         </div>
-                        <div class="progress rounded-pill bg-body-secondary shadow-sm" style="height: 10px; overflow: hidden;">
+                        <div class="progress rounded-pill bg-body-secondary shadow-sm progress-h-10">
                             <div class="progress-bar bg-primary transition-all" role="progressbar" style="width: <?= $pct_me ?>%" aria-valuenow="<?= $pct_me ?>" aria-valuemin="0" aria-valuemax="100"></div>
                             <div class="progress-bar bg-success transition-all" role="progressbar" style="width: <?= $pct_user ?>%" aria-valuenow="<?= $pct_user ?>" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>

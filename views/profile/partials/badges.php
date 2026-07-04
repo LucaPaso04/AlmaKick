@@ -67,8 +67,8 @@ if (!function_exists('getBadgeStatus')) {
                     ?>
                     
                     <div class="col-6 col-sm-4 col-md-3">
-                        <div class="card h-100 <?= $borderStyle ?> bg-body-tertiary text-center p-3 badge-card animate-hover" 
-                             data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>" style="cursor: pointer;">
+                        <div class="card h-100 <?= $borderStyle ?> bg-body-tertiary text-center p-3 badge-card animate-hover cursor-pointer" 
+                             data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>">
                             
                             <!-- Icona -->
                             <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 badge-card-avatar" 
@@ -112,7 +112,7 @@ if (!function_exists('getBadgeStatus')) {
     ?>
     <div class="modal fade" id="badgeModal<?= $b['id'] ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow rounded-4 text-center p-3" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+            <div class="modal-content border-0 shadow rounded-4 text-center p-3">
                 <div class="modal-header border-0 p-0 justify-content-end">
                     <button type="button" class="btn-close badge-modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

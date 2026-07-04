@@ -63,6 +63,9 @@ if ($userAvatar) {
         <link rel="stylesheet" href="<?= url('/css/users.css') ?>">
     <?php elseif (strpos($current_path, '/matches') === 0): ?>
         <link rel="stylesheet" href="<?= url('/css/matches.css') ?>">
+        <?php if (strpos($current_path, '/report') !== false): ?>
+            <link rel="stylesheet" href="<?= url('/css/matches-report.css') ?>">
+        <?php endif; ?>
     <?php elseif (strpos($current_path, '/profile') === 0): ?>
         <link rel="stylesheet" href="<?= url('/css/profile.css') ?>">
     <?php elseif (strpos($current_path, '/admin') === 0): ?>
@@ -341,6 +344,16 @@ if ($userAvatar) {
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="<?= url('/js/app.js') ?>"></script>
+
+    <!-- Page-specific Javascripts -->
+    <?php if (strpos($current_path, '/profile') === 0): ?>
+        <script src="<?= url('/js/profile.js') ?>"></script>
+    <?php elseif (strpos($current_path, '/admin') === 0): ?>
+        <script src="<?= url('/js/admin.js') ?>"></script>
+    <?php elseif (strpos($current_path, '/matches') === 0 && strpos($current_path, '/report') !== false): ?>
+        <script src="<?= url('/js/matches-report.js') ?>"></script>
+    <?php endif; ?>
+
     <!-- Floating Back to Top Button -->
     <button id="back-to-top" class="btn" aria-label="Torna in alto">
         <span class="bi bi-arrow-up fs-5"></span>

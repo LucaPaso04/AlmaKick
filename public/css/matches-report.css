@@ -1,0 +1,38 @@
+/* Match report drag & drop zones and draggable player cards */
+.team-dropzone {
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+body .team-dropzone.dragover-home {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+}
+
+body .team-dropzone.dragover-away {
+    background-color: rgba(13, 110, 253, 0.1);
+    border-color: #0d6efd;
+}
+
+.player-card-draggable {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+body .player-card-draggable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .25rem .75rem rgba(0,0,0,.08);
+}
+
+.player-card-draggable.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
+
+.report-team-zone {
+    min-height: 300px;
+}
+body #team-home-zone {
+    border-color: rgba(220,53,69,0.15);
+}
+body #team-away-zone {
+    border-color: rgba(13,110,253,0.15);
+}
