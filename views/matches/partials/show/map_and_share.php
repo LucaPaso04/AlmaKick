@@ -34,78 +34,21 @@ $wa_text = urlencode($waTextRaw);
 
 <div class="row g-2 mb-4">
     <div class="col-6">
-        <button id="copy-link-btn" class="btn btn-light w-100 rounded-pill fw-bold shadow-sm py-2 d-flex align-items-center justify-content-center hover-scale transition-all focus-ring border" aria-label="Copia link della partita">
+        <button id="copy-link-btn" data-url="<?= $absoluteUrl ?>" class="btn btn-light w-100 rounded-pill fw-bold shadow-sm py-2 d-flex align-items-center justify-content-center hover-scale transition-all focus-ring border" aria-label="Copia link della partita">
             <span class="bi bi-link-45deg me-2 fs-5 text-secondary"></span>Copia Link
         </button>
     </div>
     <div class="col-6">
-        <button onclick="downloadICS()" class="btn btn-light w-100 rounded-pill fw-bold shadow-sm py-2 d-flex align-items-center justify-content-center hover-scale transition-all focus-ring border" aria-label="Aggiungi al calendario">
+        <button onclick="downloadICS(this)" 
+                data-title="Partita AlmaKick (<?= e($match['format']) ?>)"
+                data-location="<?= e($match['location']) ?>"
+                data-description="Organizzatore: <?= e($match['host_name'] ?? $match['host_username']) ?>\nQuota stimata: €<?= number_format($current_quote, 2) ?>\n\nIscriviti cliccando qui: <?= $absoluteUrl ?>"
+                data-date="<?= $match['date'] ?>"
+                data-time="<?= $match['time'] ?>"
+                data-match-id="<?= $match['id'] ?>"
+                data-url="<?= $absoluteUrl ?>"
+                class="btn btn-light w-100 rounded-pill fw-bold shadow-sm py-2 d-flex align-items-center justify-content-center hover-scale transition-all focus-ring border" aria-label="Aggiungi al calendario">
             <span class="bi bi-calendar-event me-2 fs-5 text-danger"></span>In Calendario
         </button>
     </div>
 </div>
-
-<script>
-// 1. Copy Link function with dynamic toast feedback
-document.getElementById('copy-link-btn').addEventListener('click', function() {
-    var url = "<?= $absoluteUrl ?>";
-    navigator.clipboard.writeText(url).then(function() {
-        if (typeof window.showToast === 'function') {
-            window.showToast("Link della partita copiato negli appunti!", "success");
-        } else {
-            alert("Link della partita copiato negli appunti!");
-        }
-    }).catch(function(err) {
-        console.error('Could not copy text: ', err);
-    });
-});
-
-// 2. ICS Calendar export generation (Client-side)
-function downloadICS() {
-    var title = "Partita AlmaKick (<?= e($match['format']) ?>)";
-    var location = "<?= e($match['location']) ?>";
-    var description = "Organizzatore: <?= e($match['host_name'] ?? $match['host_username']) ?>\\nQuota stimata: €<?= number_format($current_quote, 2) ?>\\n\\nIscriviti cliccando qui: <?= $absoluteUrl ?>";
-    
-    // Parse match date and time
-    var dateStr = "<?= $match['date'] ?>";
-    var timeStr = "<?= $match['time'] ?>";
-    
-    // Convert match time into local Date object
-    var startLocal = new Date(dateStr + 'T' + timeStr);
-    
-    // Duration: 1.5 hours (90 minutes)
-    var endLocal = new Date(startLocal.getTime() + 90 * 60 * 1000);
-    
-    function formatICSDate(date) {
-        return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    }
-
-    var icsContent = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//AlmaKick//NONSGML v1.0//IT",
-        "BEGIN:VEVENT",
-        "UID:almakick_" + "<?= $match['id'] ?>_" + Date.now() + "@almakick.it",
-        "DTSTAMP:" + formatICSDate(new Date()),
-        "DTSTART:" + formatICSDate(startLocal),
-        "DTEND:" + formatICSDate(endLocal),
-        "SUMMARY:" + title,
-        "DESCRIPTION:" + description,
-        "LOCATION:" + location,
-        "END:VEVENT",
-        "END:VCALENDAR"
-    ].join("\r\n");
-
-    var blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8;" });
-    var link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "partita_almakick_" + "<?= $match['id'] ?>" + ".ics");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    if (typeof window.showToast === 'function') {
-        window.showToast("Promemoria salvato! Aggiungilo al tuo calendario.", "success");
-    }
-}
-</script>

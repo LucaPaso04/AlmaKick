@@ -135,6 +135,151 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         } else {
             weatherEl.textContent = 'Meteo N/D';
-        }
     }
+    
+    // 3. Copy Link function with dynamic toast feedback
+    var copyBtn = document.getElementById('copy-link-btn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', function() {
+            var urlToCopy = copyBtn.getAttribute('data-url') || window.location.href;
+            navigator.clipboard.writeText(urlToCopy).then(function() {
+                if (typeof window.showToast === 'function') {
+                    window.showToast("Link della partita copiato negli appunti!", "success");
+                } else {
+                    alert("Link della partita copiato negli appunti!");
+                }
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        });
+    }
+
+    // 4. Offer Timer setup
+    const timerEl = document.getElementById("offer-timer");
+    if (timerEl) {
+        const expires = parseInt(timerEl.getAttribute("data-expires"), 10) * 1000;
+        const span = timerEl.querySelector("span");
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = expires - now;
+            if (distance < 0) {
+                span.innerText = "Tempo scaduto!";
+                span.classList.add("text-danger");
+                setTimeout(() => { window.location.reload(); }, 1500);
+                return;
+            }
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            span.innerText = "Tempo rimasto: " + minutes + "m " + seconds + "s";
+            setTimeout(updateTimer, 1000);
+        }
+        updateTimer();
+    }
+
+    // 5. Interactive Star Rating Logic
+    document.querySelectorAll('.star-rating').forEach(function(ratingEl) {
+        var username = ratingEl.getAttribute('data-username');
+        var hiddenInput = document.getElementById('vote_val_' + username);
+        var stars = ratingEl.querySelectorAll('.star-item');
+
+        stars.forEach(function(star) {
+            star.addEventListener('mouseenter', function() {
+                var hoverVal = parseInt(this.getAttribute('data-value'));
+                stars.forEach(function(s, idx) {
+                    if (idx < hoverVal) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseleave', function() {
+                var currentVal = parseInt(hiddenInput.value) || 0;
+                stars.forEach(function(s, idx) {
+                    if (idx < currentVal) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                    }
+                });
+            });
+
+            star.addEventListener('click', function() {
+                var clickVal = this.getAttribute('data-value');
+                hiddenInput.value = clickVal;
+                stars.forEach(function(s, idx) {
+                    if (idx < clickVal) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                    }
+                });
+            });
+        });
+    });
+
+    // 6. Thumb Down Styled Button Logic
+    document.querySelectorAll('.thumb-down-check').forEach(function(checkbox) {
+        var label = document.querySelector('label[for="' + checkbox.id + '"]');
+        if (label) {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    label.classList.replace('btn-outline-danger', 'btn-danger');
+                    label.querySelector('.bi').classList.replace('bi-hand-thumbs-down', 'bi-hand-thumbs-down-fill');
+                } else {
+                    label.classList.replace('btn-danger', 'btn-outline-danger');
+                    label.querySelector('.bi').classList.replace('bi-hand-thumbs-down-fill', 'bi-hand-thumbs-down');
+                }
+            });
+        }
+    });
+
 });
+
+// Global ICS Calendar export generator
+function downloadICS(btn) {
+    if (!btn) return;
+    var title = btn.getAttribute("data-title") || "Partita AlmaKick";
+    var location = btn.getAttribute("data-location") || "";
+    var description = btn.getAttribute("data-description") || "";
+    var dateStr = btn.getAttribute("data-date") || "";
+    var timeStr = btn.getAttribute("data-time") || "";
+    var matchId = btn.getAttribute("data-match-id") || "";
+    var absoluteUrl = btn.getAttribute("data-url") || window.location.href;
+
+    var startLocal = new Date(dateStr + 'T' + timeStr);
+    var endLocal = new Date(startLocal.getTime() + 90 * 60 * 1000);
+    
+    function formatICSDate(date) {
+        return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    }
+
+    var icsContent = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//AlmaKick//NONSGML v1.0//IT",
+        "BEGIN:VEVENT",
+        "UID:almakick_" + matchId + "_" + Date.now() + "@almakick.it",
+        "DTSTAMP:" + formatICSDate(new Date()),
+        "DTSTART:" + formatICSDate(startLocal),
+        "DTEND:" + formatICSDate(endLocal),
+        "SUMMARY:" + title,
+        "DESCRIPTION:" + description,
+        "LOCATION:" + location,
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\r\n");
+
+    var blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8;" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "partita_almakick_" + matchId + ".ics");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    if (typeof window.showToast === 'function') {
+        window.showToast("Promemoria salvato! Aggiungilo al tuo calendario.", "success");
+    }
+}

@@ -434,3 +434,23 @@ body #back-to-top:hover {
         transform: translateY(0);
     }
 }
+
+/* Static utility classes to replace inline styles */
+.cursor-pointer { cursor: pointer; }
+.cursor-default { cursor: default; }
+.outline-none { outline: none; }
+.shadow-none { box-shadow: none; }
+.line-height-1 { line-height: 1; }
+.object-fit-cover { object-fit: cover; }
+.z-index-10 { z-index: 10; }
+.z-index-1000 { z-index: 1000; }
+.font-size-xs { font-size: 0.75rem; }
+.font-size-sm { font-size: 0.85rem; }
+.font-size-lg { font-size: 1.1rem; }
+.size-32 { width: 32px; height: 32px; }
+.size-60 { width: 60px; height: 60px; }
+.size-70 { width: 70px; height: 70px; }
+.progress-h-10 { height: 10px; overflow: hidden; }
+.cursor-grab { cursor: grab; }
+.size-38 { width: 38px; height: 38px; }
+.width-70 { width: 70px; }

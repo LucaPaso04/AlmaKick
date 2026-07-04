@@ -22,14 +22,13 @@
                         <tbody>
                             <?php foreach($matchHistory as $reg): ?>
                                 <?php if($reg['match']): ?>
-                                    <tr onclick="window.location.href='<?= url('/matches/' . $reg['match']['id']) ?>?from=profile';"
-                                        style="cursor: pointer;">
+                                    <tr class="cursor-pointer" onclick="window.location.href='<?= url('/matches/' . $reg['match']['id']) ?>?from=profile';">
                                         <td><strong><?= date('d/m/Y', strtotime($reg['match']['date'])) ?></strong></td>
                                         <td><?= date('H:i', strtotime($reg['match']['time'])) ?></td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <i class="bi bi-geo-alt-fill text-danger me-2"></i>
-                                                <span class="text-truncate" style="max-width: 200px;"><?= e($reg['match']['location']) ?></span>
+                                                <span class="text-truncate location-truncate"><?= e($reg['match']['location']) ?></span>
                                             </div>
                                         </td>
                                         <td><span class="badge bg-primary bg-opacity-10 text-primary"><?= e($reg['match']['format']) ?></span></td>

@@ -60,7 +60,7 @@
                 <h3 class="fw-bold mb-0 profile-username d-flex align-items-center justify-content-center gap-2 flex-wrap">
                     <span><?= e($user['name']) ?> <?= e($user['last_name'] ?? '') ?></span>
                     <?php if ((int)$user['trust_score'] < 40): ?>
-                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 rounded-pill px-2" style="font-size: 0.75rem;" title="Il trust score di questo giocatore è inferiore a 40.">
+                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 rounded-pill px-2 font-size-xs" title="Il trust score di questo giocatore è inferiore a 40.">
                             ⚠️ Giocatore Poco Affidabile
                         </span>
                     <?php endif; ?>
@@ -103,7 +103,7 @@
                             <?php endif; ?>
                         <?php elseif ($friendship['status'] === 'accepted'): ?>
                             <div class="d-flex justify-content-center gap-2">
-                                <span class="btn btn-success rounded-pill px-4 fw-bold" style="cursor: default;">
+                                <span class="btn btn-success rounded-pill px-4 fw-bold cursor-default">
                                     <i class="bi bi-people-fill me-2"></i>Siete Amici
                                 </span>
                                 <form action="<?= url('/friends/remove/' . urlencode($user['username'])) ?>" method="POST" class="m-0"
@@ -115,7 +115,7 @@
                                 </form>
                             </div>
                         <?php elseif ($friendship['status'] === 'blocked'): ?>
-                            <span class="btn btn-danger rounded-pill px-4 fw-bold" style="cursor: default;">
+                            <span class="btn btn-danger rounded-pill px-4 fw-bold cursor-default">
                                 <i class="bi bi-slash-circle me-2"></i>Bloccato
                             </span>
                         <?php endif; ?>
@@ -192,21 +192,21 @@
                                 $glow_class = 'trust-glow-red';
                             }
                             ?>
-                            <div class="trust-circle-container <?= $glow_class ?> mb-2 position-relative shadow-sm bg-body rounded-circle" style="width: 60px; height: 60px;">
-                                <svg width="60" height="60" viewBox="0 0 60 60" style="transform: rotate(-90deg);">
+                            <div class="trust-circle-container <?= $glow_class ?> mb-2 position-relative shadow-sm bg-body rounded-circle size-60">
+                                <svg width="60" height="60" viewBox="0 0 60 60" class="trust-circle-svg">
                                     <circle cx="30" cy="30" r="25" fill="transparent" stroke="rgba(120, 120, 120, 0.15)" stroke-width="4.5" />
                                     <circle cx="30" cy="30" r="25" fill="transparent" 
                                             stroke="<?= $stroke_color ?>" stroke-width="4.5" 
                                             stroke-dasharray="<?= $circumference ?>" 
                                             stroke-dashoffset="<?= $dashoffset ?>" 
                                             stroke-linecap="round"
-                                            style="transition: stroke-dashoffset 0.5s ease-in-out;" />
+                                            class="trust-circle-progress" />
                                 </svg>
-                                <div class="position-absolute top-50 start-50 translate-middle fw-bold text-center" style="font-size: 0.85rem; color: var(--bs-body-color);">
+                                <div class="position-absolute top-50 start-50 translate-middle fw-bold text-center trust-circle-text">
                                     <?= $ts ?>%
                                 </div>
                             </div>
-                            <small class="text-muted text-uppercase fw-semibold stat-card-label">Trust Score</small>
+                            <small class="text-muted text-uppercase fw-semibold stat-card-label font-size-xs">Trust Score</small>
                         </div>
                     </div>
                 </div>
@@ -214,8 +214,8 @@
                 <!-- Trend/Sparkline Widget -->
                 <div class="mt-4 p-3 bg-body border rounded-4 shadow-sm text-start">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="fw-semibold text-muted text-uppercase tracking-wide" style="font-size: 0.75rem;"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
-                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold" style="font-size: 0.75rem;">Stato di Forma</span>
+                        <span class="fw-semibold text-muted text-uppercase tracking-wide font-size-xs"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold font-size-xs">Stato di Forma</span>
                     </div>
                     <?php if (empty($trend_votes)): ?>
                         <div class="text-center py-2 text-muted small">
@@ -252,8 +252,8 @@
                         $y_4_5 = $padding_y + (1 - (4.5 - $min_val) / ($max_val - $min_val)) * ($height - 2 * $padding_y);
                         ?>
                         <div class="d-flex align-items-center justify-content-center py-2">
-                            <div style="width: 100%; max-width: 320px;">
-                                <svg viewBox="0 0 <?= $width ?> <?= $height ?>" class="w-100" style="height: 80px; overflow: visible;">
+                            <div class="performance-chart-wrapper">
+                                <svg viewBox="0 0 <?= $width ?> <?= $height ?>" class="w-100 performance-chart-svg">
                                     <defs>
                                         <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="0%" stop-color="var(--bs-primary)" stop-opacity="0.25" />
@@ -275,7 +275,7 @@
                                     <!-- Value markers & Text -->
                                     <?php foreach ($points_array as $pt): ?>
                                         <circle cx="<?= $pt['x'] ?>" cy="<?= $pt['y'] ?>" r="3.5" fill="#ffffff" stroke="var(--bs-primary)" stroke-width="2" />
-                                        <text x="<?= $pt['x'] ?>" y="<?= $pt['y'] - 8 ?>" text-anchor="middle" font-size="8.5" font-weight="bold" fill="var(--bs-emphasis-color)" style="paint-order: stroke; stroke: var(--bs-body-bg); stroke-width: 3px; stroke-linejoin: round;"><?= number_format($pt['val'], 1) ?></text>
+                                        <text x="<?= $pt['x'] ?>" y="<?= $pt['y'] - 8 ?>" text-anchor="middle" font-size="8.5" font-weight="bold" fill="var(--bs-emphasis-color)" class="performance-chart-text"><?= number_format($pt['val'], 1) ?></text>
                                     <?php endforeach; ?>
                                 </svg>
                             </div>
@@ -327,37 +327,8 @@
             <?php if ($is_own_profile): ?>
                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab" tabindex="0">
                     <?php require VIEW_PATH . '/profile/partials/info_tab.php'; ?>
-
                 </div>
             <?php endif; ?>
         </div>
     </div>
 </div>
-
-<script>
-    function copyFriendCode(btn) {
-        const textEl = document.getElementById('friendCodeText');
-        if (!textEl) return;
-        
-        navigator.clipboard.writeText(textEl.innerText).then(() => {
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check-lg"></i>';
-            btn.classList.replace('btn-outline-primary', 'btn-success');
-            
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.replace('btn-success', 'btn-outline-primary');
-            }, 2000);
-        }).catch(err => {
-            console.error("Errore durante la copia negli appunti: ", err);
-        });
-    }
-
-    function switchSettingsTab(tabId) {
-        const tabEl = document.getElementById(tabId);
-        if (tabEl) {
-            const tab = new bootstrap.Tab(tabEl);
-            tab.show();
-        }
-    }
-</script>

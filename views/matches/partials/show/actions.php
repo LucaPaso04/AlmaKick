@@ -70,30 +70,7 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
                             </div>
                         </div>
                         
-                        <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            const timerEl = document.getElementById("offer-timer");
-                            if (timerEl) {
-                                const expires = parseInt(timerEl.getAttribute("data-expires"), 10) * 1000;
-                                const span = timerEl.querySelector("span");
-                                function updateTimer() {
-                                    const now = new Date().getTime();
-                                    const distance = expires - now;
-                                    if (distance < 0) {
-                                        span.innerText = "Tempo scaduto!";
-                                        span.classList.add("text-danger");
-                                        setTimeout(() => { window.location.reload(); }, 1500);
-                                        return;
-                                    }
-                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                                    span.innerText = "Tempo rimasto: " + minutes + "m " + seconds + "s";
-                                    setTimeout(updateTimer, 1000);
-                                }
-                                updateTimer();
-                            }
-                        });
-                        </script>
+
                     <?php else: ?>
                         <p class="text-warning fw-bold mb-3"><span class="bi bi-hourglass-split me-2"></span>Sei in Panchina (Lista d'attesa)!</p>
                         <small class="d-block mb-3 text-muted">Subentrerai automaticamente in caso di ritiri.</small>

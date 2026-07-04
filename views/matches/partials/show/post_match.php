@@ -179,65 +179,6 @@ if ($match['status'] === 'finished'):
             </div>
         </div>
 
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Interactive Star Rating Logic
-            document.querySelectorAll('.star-rating').forEach(function(ratingEl) {
-                var username = ratingEl.getAttribute('data-username');
-                var hiddenInput = document.getElementById('vote_val_' + username);
-                var stars = ratingEl.querySelectorAll('.star-item');
 
-                stars.forEach(function(star) {
-                    star.addEventListener('mouseenter', function() {
-                        var hoverVal = parseInt(this.getAttribute('data-value'));
-                        stars.forEach(function(s, idx) {
-                            if (idx < hoverVal) {
-                                s.classList.replace('bi-star', 'bi-star-fill');
-                            } else {
-                                s.classList.replace('bi-star-fill', 'bi-star');
-                            }
-                        });
-                    });
-
-                    star.addEventListener('mouseleave', function() {
-                        var currentVal = parseInt(hiddenInput.value) || 0;
-                        stars.forEach(function(s, idx) {
-                            if (idx < currentVal) {
-                                s.classList.replace('bi-star', 'bi-star-fill');
-                            } else {
-                                s.classList.replace('bi-star-fill', 'bi-star');
-                            }
-                        });
-                    });
-
-                    star.addEventListener('click', function() {
-                        var clickVal = this.getAttribute('data-value');
-                        hiddenInput.value = clickVal;
-                        stars.forEach(function(s, idx) {
-                            if (idx < clickVal) {
-                                s.classList.replace('bi-star', 'bi-star-fill');
-                            } else {
-                                s.classList.replace('bi-star-fill', 'bi-star');
-                            }
-                        });
-                    });
-                });
-            });
-
-            // Thumb Down Styled Button Logic
-            document.querySelectorAll('.thumb-down-check').forEach(function(checkbox) {
-                var label = document.querySelector('label[for="' + checkbox.id + '"]');
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        label.classList.replace('btn-outline-danger', 'btn-danger');
-                        label.querySelector('.bi').classList.replace('bi-hand-thumbs-down', 'bi-hand-thumbs-down-fill');
-                    } else {
-                        label.classList.replace('btn-danger', 'btn-outline-danger');
-                        label.querySelector('.bi').classList.replace('bi-hand-thumbs-down-fill', 'bi-hand-thumbs-down');
-                    }
-                });
-            });
-        });
-        </script>
     <?php endif; ?>
 <?php endif; ?>

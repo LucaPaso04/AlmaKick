@@ -44,7 +44,7 @@
                 <h5 class="fw-bold mb-3 d-flex align-items-center">
                     <i class="bi bi-person-lines-fill text-warning me-2 fs-4"></i>
                     <span class="text-body">Richieste in Attesa (<?= count($pendingRequests) ?>)</span>
-                    <span class="badge bg-danger rounded-pill ms-2 shadow-sm" style="font-size: 0.7rem;">Nuove</span>
+                    <span class="badge bg-danger rounded-pill ms-2 shadow-sm font-size-2xs">Nuove</span>
                 </h5>
 
                 <div class="list-group list-group-flush bg-transparent profile-scrollable-list">
