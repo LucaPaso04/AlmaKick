@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         } else {
             weatherEl.textContent = 'Meteo N/D';
+        }
     }
     
     // 3. Copy Link function with dynamic toast feedback
