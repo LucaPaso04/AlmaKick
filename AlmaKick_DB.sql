@@ -596,20 +596,20 @@ INSERT INTO reports (reporter_username, reported_username, match_id, reason, des
 -- NOTIFICATIONS
 -- --------------------------------------------------------
 
-INSERT INTO notifications (user_recipient, type, message, link, is_read, created_at, updated_at) VALUES
+INSERT INTO notifications (user_recipient, type, message, link, is_read, created_at) VALUES
 -- Friend request notification for admin_test from tommaso_st
-('admin_test', 'friend_request', '👋 Tommaso Stella (@tommaso_st) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 1 HOUR), NOW()),
+('admin_test', 'friend_request', '👋 Tommaso Stella (@tommaso_st) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 1 HOUR)),
 
 -- Friend request notification for mario_rossi from tommaso_st
-('mario_rossi', 'friend_request', '👋 Tommaso Stella (@tommaso_st) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 2 HOUR), NOW()),
+('mario_rossi', 'friend_request', '👋 Tommaso Stella (@tommaso_st) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 2 HOUR)),
 
 -- Friend accept notification for admin_test from mario_rossi
-('admin_test', 'friend_accept', '🤝 Mario Rossi (@mario_rossi) ha accettato la tua richiesta di amicizia!', '/profile?username=mario_rossi', 0, DATE_SUB(NOW(), INTERVAL 1 DAY), NOW()),
+('admin_test', 'friend_accept', '🤝 Mario Rossi (@mario_rossi) ha accettato la tua richiesta di amicizia!', '/profile?username=mario_rossi', 0, DATE_SUB(NOW(), INTERVAL 1 DAY)),
 
 -- Match cancellation notification for admin_test for Match 6 (cancelled by giovanni_neri)
-('admin_test', 'match_cancellation', '⚠️ La partita a Campo Periferia del 28/06/2026 è stata annullata dall\'organizzatore (Motivo: Meteo avverso).', '/matches/6', 0, DATE_SUB(NOW(), INTERVAL 5 DAY), NOW()),
+('admin_test', 'match_cancellation', '⚠️ La partita a Campo Periferia del 28/06/2026 è stata annullata dall\'organizzatore (Motivo: Meteo avverso).', '/matches/6', 0, DATE_SUB(NOW(), INTERVAL 5 DAY)),
 
 -- Match cancellation notification for mario_rossi for Match 6
-('mario_rossi', 'match_cancellation', '⚠️ La partita a Campo Periferia del 28/06/2026 è stata annullata dall\'organizzatore (Motivo: Meteo avverso).', '/matches/6', 0, DATE_SUB(NOW(), INTERVAL 5 DAY), NOW());
+('mario_rossi', 'match_cancellation', '⚠️ La partita a Campo Periferia del 28/06/2026 è stata annullata dall\'organizzatore (Motivo: Meteo avverso).', '/matches/6', 0, DATE_SUB(NOW(), INTERVAL 5 DAY));
 
 SET FOREIGN_KEY_CHECKS = 1;
