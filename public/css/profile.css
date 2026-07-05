@@ -13,8 +13,8 @@
 }
 
 .avatar-upload-btn {
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     padding: 0;
     transition: transform 0.2s ease;
 }
@@ -333,3 +333,80 @@ body #compareStatsModal .badge {
 .location-truncate {
     max-width: 200px;
 }
+
+/* Badge level colors classes */
+.badge-level-oro {
+    background-color: #ffd700 !important;
+    color: #000 !important;
+}
+.badge-level-argento {
+    background-color: #c0c0c0 !important;
+    color: #000 !important;
+}
+.badge-level-bronzo {
+    background-color: #cd7f32 !important;
+    color: #000 !important;
+}
+.badge-level-bloccato {
+    background-color: #6c757d !important;
+    color: #fff !important;
+}
+
+.bg-badge-oro {
+    background-color: #ffd700 !important;
+}
+.bg-badge-argento {
+    background-color: #c0c0c0 !important;
+}
+.bg-badge-bronzo {
+    background-color: #cd7f32 !important;
+}
+.bg-badge-bloccato {
+    background-color: #6c757d !important;
+}
+
+/* Badge card avatar level styling */
+.avatar-level-oro {
+    background-color: rgba(255, 215, 0, 0.2) !important;
+    color: #ffd700 !important;
+    border: 2px solid #ffd700 !important;
+}
+.avatar-level-argento {
+    background-color: rgba(192, 192, 192, 0.2) !important;
+    color: #c0c0c0 !important;
+    border: 2px solid #c0c0c0 !important;
+}
+.avatar-level-bronzo {
+    background-color: rgba(205, 127, 50, 0.2) !important;
+    color: #cd7f32 !important;
+    border: 2px solid #cd7f32 !important;
+}
+.avatar-level-bloccato {
+    background-color: rgba(108, 117, 125, 0.1) !important;
+    color: #6c757d !important;
+    border: 2px solid transparent !important;
+}
+
+/* Badge modal avatar level styling */
+.modal-avatar-level-oro {
+    background-color: rgba(255, 215, 0, 0.2) !important;
+    color: #ffd700 !important;
+    border: 3px solid #ffd700 !important;
+}
+.modal-avatar-level-argento {
+    background-color: rgba(192, 192, 192, 0.2) !important;
+    color: #c0c0c0 !important;
+    border: 3px solid #c0c0c0 !important;
+}
+.modal-avatar-level-bronzo {
+    background-color: rgba(205, 127, 50, 0.2) !important;
+    color: #cd7f32 !important;
+    border: 3px solid #cd7f32 !important;
+}
+.modal-avatar-level-bloccato {
+    background-color: rgba(108, 117, 125, 0.1) !important;
+    color: #6c757d !important;
+    border: 3px solid transparent !important;
+}
+
+
