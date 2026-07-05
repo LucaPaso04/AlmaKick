@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (notifications.length === 0) {
             notificationsList.innerHTML = `
                 <div class="text-center py-4 text-muted small" id="notificationsEmpty">
-                    <i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></i>
+                    <span class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></span>
                     Nessuna notifica ricevuta
                 </div>
             `;
@@ -311,14 +311,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const deleteBtn = n.is_actionable ? '' : `
                 <button type="button" class="notification-delete-btn" data-id="${n.id}" title="Elimina notifica">
-                    <i class="bi bi-x-lg"></i>
+                    <span class="bi bi-x-lg"></span>
                 </button>
             `;
 
             html += `
                 <a href="${n.link || '#'}" class="notification-item ${unreadClass}" data-id="${n.id}">
                     <div class="notification-icon-wrapper ${iconBgClass}">
-                        <i class="bi ${iconClass}"></i>
+                        <span class="bi ${iconClass}"></span>
                     </div>
                     <div class="notification-content">
                         <div class="notification-message text-body">${escapeHtml(n.message)}</div>

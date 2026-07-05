@@ -3,8 +3,8 @@
     <div class="col-12 col-lg-4">
         <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden card-danger">
             <header class="card-header-gradient-danger text-white p-4 text-center position-relative">
-                <i class="bi bi-bullseye fs-1 mb-2 opacity-75" aria-hidden="true"></i>
-                <h3 class="fw-bolder mb-0">La Scarpa d'Oro</h3>
+                <span class="bi bi-bullseye fs-1 mb-2 opacity-75" aria-hidden="true"></span>
+                <h2 class="h3 fw-bolder mb-0">La Scarpa d'Oro</h2>
                 <small class="opacity-75 fw-medium text-uppercase tracking-wide">Migliori Marcatori</small>
             </header>
             <div class="card-body p-0 bg-body">
@@ -32,9 +32,9 @@
                             ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $podiumClass ?> <?= $isMe ? 'bg-danger bg-opacity-10' : '' ?>">
                                 <div class="d-flex align-items-center">
-                                    <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" aria-label="Posizione <?= $index + 1 ?>">
+                                    <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" role="img" aria-label="Posizione <?= $index + 1 ?>">
                                         <?php if ($index < 3): ?>
-                                            <i class="bi bi-award-fill" aria-hidden="true"></i>
+                                            <span class="bi bi-award-fill" aria-hidden="true"></span>
                                         <?php else: ?>
                                             <?= $index + 1 ?>
                                         <?php endif; ?>
@@ -47,19 +47,19 @@
                                         <?php endif; ?>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($user['username'])) ?>" class="text-decoration-none <?= $isMe ? 'text-danger' : 'text-body' ?> leaderboard-link stretched-link"><?= e($user['name'] . ' ' . $user['last_name']) ?></a>
                                             <?php if ($isMe): ?> <span class="badge bg-danger ms-1 small">Tu</span> <?php endif; ?>
-                                        </h6>
-                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e(getRoleBadge($user['preferred_role'])) ?></small>
+                                        </div>
+                                        <small class="text-muted"><span class="bi bi-person-vcard me-1" aria-hidden="true"></span><?= e(getRoleBadge($user['preferred_role'])) ?></small>
                                     </div>
                                 </div>
-                                <span class="badge bg-danger rounded-pill fs-6 shadow-sm z-2" aria-label="<?= (int)$user['total_goals'] ?> gol"><?= (int)$user['total_goals'] ?> <i class="bi bi-record-circle" aria-hidden="true"></i></span>
+                                <span class="badge bg-danger rounded-pill fs-6 shadow-sm z-2"><?= (int)$user['total_goals'] ?> <span class="bi bi-record-circle" aria-hidden="true"></span><span class="visually-hidden"> gol</span></span>
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <li class="list-group-item p-4 text-center text-muted bg-transparent border-0">
-                            <i class="bi bi-emoji-frown fs-2 d-block mb-2 opacity-50" aria-hidden="true"></i>
+                            <span class="bi bi-emoji-frown fs-2 d-block mb-2 opacity-50" aria-hidden="true"></span>
                             Nessun dato disponibile in questa classifica.
                         </li>
                     <?php endif; ?>
@@ -72,8 +72,8 @@
     <div class="col-12 col-lg-4">
         <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden card-warning">
             <header class="card-header-gradient-warning text-white p-4 text-center position-relative">
-                <i class="bi bi-star-fill fs-1 mb-2 opacity-75 text-white" aria-hidden="true"></i>
-                <h3 class="fw-bolder mb-0 text-white">Hall of Fame</h3>
+                <span class="bi bi-star-fill fs-1 mb-2 opacity-75 text-white" aria-hidden="true"></span>
+                <h2 class="h3 fw-bolder mb-0 text-white">Hall of Fame</h2>
                 <small class="opacity-75 text-white fw-medium text-uppercase tracking-wide">Pluripremiati MVP</small>
             </header>
             <div class="card-body p-0 bg-body">
@@ -101,9 +101,9 @@
                             ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $podiumClass ?> <?= $isMe ? 'bg-warning bg-opacity-10' : '' ?>">
                                 <div class="d-flex align-items-center">
-                                    <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" aria-label="Posizione <?= $index + 1 ?>">
+                                    <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" role="img" aria-label="Posizione <?= $index + 1 ?>">
                                         <?php if ($index < 3): ?>
-                                            <i class="bi bi-award-fill" aria-hidden="true"></i>
+                                            <span class="bi bi-award-fill" aria-hidden="true"></span>
                                         <?php else: ?>
                                             <?= $index + 1 ?>
                                         <?php endif; ?>
@@ -116,19 +116,19 @@
                                         <?php endif; ?>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($user['username'])) ?>" class="text-decoration-none <?= $isMe ? 'text-warning text-darken' : 'text-body' ?> leaderboard-link stretched-link"><?= e($user['name'] . ' ' . $user['last_name']) ?></a>
                                             <?php if ($isMe): ?> <span class="badge bg-warning text-dark ms-1 small">Tu</span> <?php endif; ?>
-                                        </h6>
-                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e(getRoleBadge($user['preferred_role'])) ?></small>
+                                        </div>
+                                        <small class="text-muted"><span class="bi bi-person-vcard me-1" aria-hidden="true"></span><?= e(getRoleBadge($user['preferred_role'])) ?></small>
                                     </div>
                                 </div>
-                                <span class="badge bg-warning text-dark rounded-pill fs-6 shadow-sm z-2" aria-label="<?= (int)$user['mvp_count'] ?> titoli MVP"><?= (int)$user['mvp_count'] ?> <i class="bi bi-trophy" aria-hidden="true"></i></span>
+                                <span class="badge bg-warning text-dark rounded-pill fs-6 shadow-sm z-2"><?= (int)$user['mvp_count'] ?> <span class="bi bi-trophy" aria-hidden="true"></span><span class="visually-hidden"> titoli MVP</span></span>
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <li class="list-group-item p-4 text-center text-muted bg-transparent border-0">
-                            <i class="bi bi-emoji-frown fs-2 d-block mb-2 opacity-50" aria-hidden="true"></i>
+                            <span class="bi bi-emoji-frown fs-2 d-block mb-2 opacity-50" aria-hidden="true"></span>
                             Nessun dato disponibile in questa classifica.
                         </li>
                     <?php endif; ?>
@@ -141,8 +141,8 @@
     <div class="col-12 col-lg-4">
         <div class="card shadow-lg border-0 rounded-4 h-100 overflow-hidden card-info">
             <header class="card-header-gradient-info text-white p-4 text-center position-relative">
-                <i class="bi bi-patch-check-fill fs-1 mb-2 opacity-75" aria-hidden="true"></i>
-                <h3 class="fw-bolder mb-0">Top Players</h3>
+                <span class="bi bi-patch-check-fill fs-1 mb-2 opacity-75" aria-hidden="true"></span>
+                <h2 class="h3 fw-bolder mb-0">Top Players</h2>
                 <small class="opacity-75 fw-medium text-uppercase tracking-wide">Miglior Skill Rating</small>
             </header>
             <div class="card-body p-0 bg-body">
@@ -170,9 +170,9 @@
                             ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3 leaderboard-item <?= $podiumClass ?> <?= $isMe ? 'bg-info bg-opacity-10' : '' ?>">
                                 <div class="d-flex align-items-center">
-                                    <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" aria-label="Posizione <?= $index + 1 ?>">
+                                    <div class="me-3 rank-badge rank-<?= $index < 3 ? $index + 1 : 'other' ?>" role="img" aria-label="Posizione <?= $index + 1 ?>">
                                         <?php if ($index < 3): ?>
-                                            <i class="bi bi-award-fill" aria-hidden="true"></i>
+                                            <span class="bi bi-award-fill" aria-hidden="true"></span>
                                         <?php else: ?>
                                             <?= $index + 1 ?>
                                         <?php endif; ?>
@@ -185,19 +185,19 @@
                                         <?php endif; ?>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($user['username'])) ?>" class="text-decoration-none <?= $isMe ? 'text-info text-darken' : 'text-body' ?> leaderboard-link stretched-link"><?= e($user['name'] . ' ' . $user['last_name']) ?></a>
                                             <?php if ($isMe): ?> <span class="badge bg-info ms-1 small text-white">Tu</span> <?php endif; ?>
-                                        </h6>
-                                        <small class="text-muted"><i class="bi bi-person-vcard me-1" aria-hidden="true"></i><?= e(getRoleBadge($user['preferred_role'])) ?></small>
+                                        </div>
+                                        <small class="text-muted"><span class="bi bi-person-vcard me-1" aria-hidden="true"></span><?= e(getRoleBadge($user['preferred_role'])) ?></small>
                                     </div>
                                 </div>
-                                <span class="badge bg-info rounded-pill fs-6 shadow-sm text-white z-2" aria-label="Valutazione <?= number_format($user['skill_rating'], 1) ?> stelle"><?= number_format($user['skill_rating'], 1) ?> <i class="bi bi-star-fill" aria-hidden="true"></i></span>
+                                <span class="badge bg-info rounded-pill fs-6 shadow-sm text-white z-2"><?= number_format($user['skill_rating'], 1) ?> <span class="bi bi-star-fill" aria-hidden="true"></span><span class="visually-hidden"> stelle su 5</span></span>
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <li class="list-group-item p-4 text-center text-muted bg-transparent border-0">
-                            <i class="bi bi-info-circle fs-2 d-block mb-2 opacity-50" aria-hidden="true"></i>
+                            <span class="bi bi-info-circle fs-2 d-block mb-2 opacity-50" aria-hidden="true"></span>
                             Dati insufficienti. Le statistiche compaiono dopo 3 partite giocate!
                         </li>
                     <?php endif; ?>
