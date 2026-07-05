@@ -2,7 +2,7 @@
     <div class="col-12 col-lg-10">
         <div class="card shadow-sm border rounded-4 overflow-hidden">
             <div class="card-header bg-primary bg-opacity-10 border-bottom-0 p-4">
-                <h5 class="fw-bold text-primary mb-0"><i class="bi bi-gear-fill me-2"></i>Gestione Account</h5>
+                <h3 class="h5 fw-bold text-primary mb-0"><span class="bi bi-gear-fill me-2"></span>Gestione Account</h3>
             </div>
 
             <div class="card-body p-0">
@@ -10,10 +10,10 @@
                     <!-- Basic profile -->
                     <div class="list-group-item p-4 border-bottom">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold mb-0 text-uppercase text-muted settings-section-header">Informazioni Personali</h6>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm"
-                                data-bs-toggle="modal" data-bs-target="#settingsModal" onclick="switchSettingsTab('modal-info-tab')">
-                                <i class="bi bi-pencil-square me-1"></i>Modifica
+                            <h4 class="h6 fw-bold mb-0 text-uppercase text-muted settings-section-header">Informazioni Personali</h4>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm switch-settings-tab-btn"
+                                data-bs-toggle="modal" data-bs-target="#settingsModal" data-target-tab="modal-info-tab">
+                                <span class="bi bi-pencil-square me-1"></span>Modifica
                             </button>
                         </div>
                         <div class="row g-3">
@@ -34,16 +34,16 @@
 
                     <!-- Security -->
                     <div class="list-group-item p-4 border-bottom">
-                        <h6 class="fw-bold mb-4 text-uppercase text-muted settings-section-header">Sicurezza e Accesso</h6>
+                        <h4 class="h6 fw-bold mb-4 text-uppercase text-muted settings-section-header">Sicurezza e Accesso</h4>
 
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center py-2 mb-3 border-bottom border-light">
                             <div class="mb-3 mb-md-0">
                                 <span class="d-block fw-semibold text-body mb-1">Indirizzo Email</span>
                                 <span class="text-muted"><?= e($user['email']) ?></span>
                             </div>
-                            <button class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm"
-                                data-bs-toggle="modal" type="button" data-bs-target="#settingsModal" onclick="switchSettingsTab('modal-email-tab')">
-                                <i class="bi bi-envelope me-2"></i>Cambia Email
+                            <button class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm switch-settings-tab-btn"
+                                data-bs-toggle="modal" type="button" data-bs-target="#settingsModal" data-target-tab="modal-email-tab">
+                                <span class="bi bi-envelope me-2"></span>Cambia Email
                             </button>
                         </div>
 
@@ -52,16 +52,16 @@
                                 <span class="d-block fw-semibold text-body mb-1">Password</span>
                                 <span class="text-muted">************</span>
                             </div>
-                            <button class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm"
-                                data-bs-toggle="modal" type="button" data-bs-target="#settingsModal" onclick="switchSettingsTab('modal-pwd-tab')">
-                                <i class="bi bi-key me-2"></i>Cambia Password
+                            <button class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm switch-settings-tab-btn"
+                                data-bs-toggle="modal" type="button" data-bs-target="#settingsModal" data-target-tab="modal-pwd-tab">
+                                <span class="bi bi-key me-2"></span>Cambia Password
                             </button>
                         </div>
                     </div>
 
                     <!-- Footer info -->
                     <div class="list-group-item p-4 bg-body-tertiary text-center">
-                        <span class="text-muted small"><i class="bi bi-calendar-check me-1"></i>Iscritto a AlmaKick dal
+                        <span class="text-muted small"><span class="bi bi-calendar-check me-1"></span>Iscritto a AlmaKick dal
                             <strong><?= date('d/m/Y', strtotime($user['created_at'])) ?></strong></span>
                     </div>
                 </div>
@@ -71,11 +71,11 @@
 </div>
 
 <!-- Account settings modal -->
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="settingsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold" id="settingsModalLabel">Impostazioni Account</h5>
+                <h2 class="h5 modal-title fw-bold" id="settingsModalLabel">Impostazioni Account</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             
@@ -83,17 +83,17 @@
                 <ul class="nav nav-tabs border-bottom-0 gap-1 bg-light p-1 rounded-3 font-size-sm" id="settingsModalTabs" role="tablist">
                     <li class="nav-item flex-grow-1 text-center" role="presentation">
                         <button class="nav-link active rounded-2 border-0 w-100 fw-semibold" id="modal-info-tab" data-bs-toggle="tab" data-bs-target="#modal-info-pane" type="button" role="tab" aria-controls="modal-info-pane" aria-selected="true">
-                            <i class="bi bi-person me-1"></i>Profilo
+                            <span class="bi bi-person me-1"></span>Profilo
                         </button>
                     </li>
                     <li class="nav-item flex-grow-1 text-center" role="presentation">
                         <button class="nav-link rounded-2 border-0 w-100 fw-semibold" id="modal-email-tab" data-bs-toggle="tab" data-bs-target="#modal-email-pane" type="button" role="tab" aria-controls="modal-email-pane" aria-selected="false">
-                            <i class="bi bi-envelope me-1"></i>Email
+                            <span class="bi bi-envelope me-1"></span>Email
                         </button>
                     </li>
                     <li class="nav-item flex-grow-1 text-center" role="presentation">
                         <button class="nav-link rounded-2 border-0 w-100 fw-semibold" id="modal-pwd-tab" data-bs-toggle="tab" data-bs-target="#modal-pwd-pane" type="button" role="tab" aria-controls="modal-pwd-pane" aria-selected="false">
-                            <i class="bi bi-key me-1"></i>Password
+                            <span class="bi bi-key me-1"></span>Password
                         </button>
                     </li>
                 </ul>

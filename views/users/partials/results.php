@@ -2,7 +2,7 @@
     <!-- Search history -->
     <div id="search-history-container" class="d-none mb-4">
         <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2 border-secondary border-opacity-10">
-            <h6 class="fw-bold text-muted text-uppercase tracking-wider mb-0 fs-7">Ricerche recenti</h6>
+            <div class="fw-bold text-muted text-uppercase tracking-wider mb-0 fs-7">Ricerche recenti</div>
             <button id="clear-all-history" class="btn btn-link btn-sm text-secondary text-decoration-none p-0 small">Cancella tutto</button>
         </div>
         <div id="search-history-list" class="d-flex flex-column"></div>
@@ -11,8 +11,8 @@
     <!-- Initial empty state -->
     <div id="empty-search-state" class="text-center py-5">
         <div class="card bg-dark bg-opacity-25 border border-secondary border-opacity-10 rounded-4 p-5 shadow-sm">
-            <i class="bi bi-search fs-1 text-primary opacity-75 mb-3 d-block"></i>
-            <h4 class="fw-bold mb-1">Cerca Giocatori su AlmaKick</h4>
+            <span class="bi bi-search fs-1 text-primary opacity-75 mb-3 d-block"></span>
+            <h2 class="h4 fw-bold mb-1">Cerca Giocatori su AlmaKick</h2>
             <p class="text-muted mb-0">Digita un nome o username nella barra sopra per scoprirne il profilo.</p>
         </div>
     </div>
@@ -60,13 +60,11 @@
         <?php else: ?>
             <div class="col-12 text-center py-5">
                 <div class="card bg-dark bg-opacity-25 border border-secondary border-opacity-10 rounded-4 p-5 shadow-sm">
-                    <i class="bi bi-emoji-frown fs-1 text-muted opacity-50 mb-3 d-block"></i>
-                    <h4 class="fw-bold mb-1">Nessun giocatore trovato</h4>
+                    <span class="bi bi-emoji-frown fs-1 text-muted opacity-50 mb-3 d-block"></span>
+                    <h2 class="h4 fw-bold mb-1">Nessun giocatore trovato</h2>
                     <p class="text-muted mb-0">Prova a modificare i termini di ricerca.</p>
                 </div>
             </div>
         <?php endif; ?>
     </div>
 <?php endif; ?>
-
-

@@ -1,10 +1,10 @@
 <div class="row g-4 mt-2 mb-2">
     <div class="col-12">
         <div class="card shadow-sm border rounded-4 p-4">
-            <h5 class="fw-bold mb-4"><i class="bi bi-clock-history text-primary me-2"></i>Storico Partite Giocate</h5>
+            <h3 class="h5 fw-bold mb-4"><span class="bi bi-clock-history text-primary me-2"></span>Storico Partite Giocate</h3>
             <?php if(empty($matchHistory)): ?>
                 <div class="text-center py-4 bg-body-tertiary rounded-3">
-                    <i class="bi bi-calendar-x fs-2 text-muted mb-2"></i>
+                    <span class="bi bi-calendar-x fs-2 text-muted mb-2"></span>
                     <p class="text-muted mb-0">Non ci sono partite giocate in archivio.</p>
                 </div>
             <?php else: ?>
@@ -22,12 +22,12 @@
                         <tbody>
                             <?php foreach($matchHistory as $reg): ?>
                                 <?php if($reg['match']): ?>
-                                    <tr class="cursor-pointer" onclick="window.location.href='<?= url('/matches/' . $reg['match']['id']) ?>?from=profile';">
+                                    <tr class="cursor-pointer history-match-row" data-href="<?= url('/matches/' . $reg['match']['id']) ?>?from=profile">
                                         <td><strong><?= date('d/m/Y', strtotime($reg['match']['date'])) ?></strong></td>
                                         <td><?= date('H:i', strtotime($reg['match']['time'])) ?></td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                                                <span class="bi bi-geo-alt-fill text-danger me-2"></span>
                                                 <span class="text-truncate location-truncate"><?= e($reg['match']['location']) ?></span>
                                             </div>
                                         </td>

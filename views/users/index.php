@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
             <div>
-                <h1 class="fw-bolder mb-1"><i class="bi bi-people-fill text-primary me-2"></i>Ricerca Giocatori</h1>
+                <h1 class="fw-bolder mb-1"><span class="bi bi-people-fill text-primary me-2"></span>Ricerca Giocatori</h1>
                 <p class="text-muted mb-0">Trova nuovi compagni di squadra, consulta i loro profili e invia richieste di
                     amicizia.</p>
             </div>
@@ -22,7 +22,7 @@
                                 class="form-label small fw-bold text-muted text-uppercase tracking-wider">Cerca per nome
                                 o username</label>
                             <div class="input-group search-input-group">
-                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <span class="input-group-text"><span class="bi bi-search"></span></span>
                                 <input type="text" id="search-input" name="q" class="form-control search-control py-3"
                                     placeholder="Digita il nome o l'username di un giocatore..."
                                     value="<?= e($q ?? '') ?>" autocomplete="off">

@@ -57,33 +57,31 @@ if (!function_exists('getBadgeStatus')) {
 <div class="row g-4 mt-2 mb-2">
     <div class="col-12">
         <div class="card shadow-sm border rounded-4 p-4 bg-body">
-            <h5 class="fw-bold mb-4"><i class="bi bi-award-fill text-warning me-2"></i>Obiettivi e Trofei</h5>
+            <h3 class="h5 fw-bold mb-4"><span class="bi bi-award-fill text-warning me-2"></span>Obiettivi e Trofei</h3>
             <div class="row g-3 justify-content-center">
                 <?php foreach($badges as $b): ?>
                     <?php 
                         $status = getBadgeStatus($b['value'], $b['tiers']);
                         $isLocked = $status['level'] === 'Bloccato';
                         $borderStyle = $isLocked ? 'border-secondary border-opacity-25 border-dashed' : 'border shadow-sm';
+                        $lvlLower = strtolower($status['level']);
                     ?>
                     
                     <div class="col-6 col-sm-4 col-md-3">
                         <div class="card h-100 <?= $borderStyle ?> bg-body-tertiary text-center p-3 badge-card animate-hover cursor-pointer" 
                              data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>">
                             
-                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 badge-card-avatar" 
-                                 style="background-color: <?= $isLocked ? 'rgba(108, 117, 125, 0.1)' : $status['color_hex'].'33' ?>;
-                                        color: <?= $isLocked ? '#6c757d' : $status['color_hex'] ?>;
-                                        border: 2px solid <?= $isLocked ? 'transparent' : $status['color_hex'] ?>;">
-                                <i class="bi <?= $b['icon'] ?>"></i>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 badge-card-avatar avatar-level-<?= $lvlLower ?>">
+                                <span class="bi <?= $b['icon'] ?>"></span>
                             </div>
                             
                             <span class="small fw-bold d-block text-truncate"><?= e($b['title']) ?></span>
-                            <span class="badge mb-2 font-size-2xs" style="background-color: <?= $status['color_hex'] ?>; color: <?= $status['level'] === 'Oro' ? '#000' : '#fff' ?>">
+                            <span class="badge mb-2 font-size-2xs badge-level-<?= $lvlLower ?>">
                                 <?= e($status['level']) ?>
                             </span>
                             
                             <div class="progress mt-auto bg-light border height-6px">
-                                <div class="progress-bar" role="progressbar" style="width: <?= $status['progress'] ?>%; background-color: <?= $status['color_hex'] ?>;" 
+                                <div class="progress-bar bg-badge-<?= $lvlLower ?>" role="progressbar" style="width: <?= $status['progress'] ?>%;" 
                                      aria-valuenow="<?= $status['progress'] ?>" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <small class="text-muted mt-1 font-size-2xs">
@@ -106,22 +104,20 @@ if (!function_exists('getBadgeStatus')) {
     <?php 
         $status = getBadgeStatus($b['value'], $b['tiers']);
         $isLocked = $status['level'] === 'Bloccato';
+        $lvlLower = strtolower($status['level']);
     ?>
-    <div class="modal fade" id="badgeModal<?= $b['id'] ?>" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="badgeModal<?= $b['id'] ?>" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow rounded-4 text-center p-3">
                 <div class="modal-header border-0 p-0 justify-content-end">
                     <button type="button" class="btn-close badge-modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body pt-0 mt-n2">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 badge-modal-avatar" 
-                         style="background-color: <?= $isLocked ? 'rgba(108, 117, 125, 0.1)' : $status['color_hex'].'33' ?>;
-                                color: <?= $isLocked ? '#6c757d' : $status['color_hex'] ?>;
-                                border: 3px solid <?= $isLocked ? 'transparent' : $status['color_hex'] ?>;">
-                        <i class="bi <?= $b['icon'] ?>"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 badge-modal-avatar modal-avatar-level-<?= $lvlLower ?>">
+                        <span class="bi <?= $b['icon'] ?>"></span>
                     </div>
-                    <h4 class="fw-bold mb-1"><?= e($b['title']) ?></h4>
-                    <span class="badge mb-3 px-3 py-2" style="background-color: <?= $status['color_hex'] ?>; color: <?= $status['level'] === 'Oro' ? '#000' : '#fff' ?>">
+                    <h2 class="h4 fw-bold mb-1"><?= e($b['title']) ?></h2>
+                    <span class="badge mb-3 px-3 py-2 badge-level-<?= $lvlLower ?>">
                         Livello Attuale: <?= e($status['level']) ?>
                     </span>
                     <p class="text-muted small mb-4"><?= e($b['desc']) ?></p>
@@ -136,8 +132,8 @@ if (!function_exists('getBadgeStatus')) {
                             <?php endif; ?>
                         </div>
                         <div class="progress mb-2 bg-light border height-8px">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
-                                 style="width: <?= $status['progress'] ?>%; background-color: <?= $status['color_hex'] ?>;"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-badge-<?= $lvlLower ?>" role="progressbar" 
+                                 style="width: <?= $status['progress'] ?>%;"></div>
                         </div>
                         <small class="text-muted d-block text-center font-size-2xs">
                             <?php if($status['level'] === 'Oro'): ?>

@@ -18,31 +18,31 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 <div class="row justify-content-center mb-5">
     <div class="col-12 col-md-10 col-lg-8">
         <a href="<?= $backUrl ?>" class="btn btn-link text-decoration-none text-body mb-3 px-0">
-            <i class="bi bi-arrow-left me-1"></i> Indietro
+            <span class="bi bi-arrow-left me-1"></span> Indietro
         </a>
 
         <div class="card shadow-sm border-0 rounded-4 mb-4">
             <div class="bg-primary pt-5 pb-3 px-4 position-relative rounded-top-4">
                 <div class="position-absolute top-0 end-0 p-3 d-flex align-items-center gap-2 z-index-1000">
                     <?php if ($user['role'] === 'super_admin'): ?>
-                        <span class="badge bg-warning text-dark"><i class="bi bi-shield-lock-fill me-1"></i>Admin</span>
+                        <span class="badge bg-warning text-dark"><span class="bi bi-shield-lock-fill me-1"></span>Admin</span>
                     <?php endif; ?>
                     
                     <div class="dropdown">
-                        <button class="btn btn-link text-white p-0 border-0 fs-4 outline-none shadow-none line-height-1" type="button" id="profileActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-three-dots-vertical"></i>
+                        <button class="btn btn-link text-white p-0 border-0 fs-4 outline-none shadow-none line-height-1" type="button" id="profileActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Azioni Profilo" title="Azioni Profilo">
+                            <span class="bi bi-three-dots-vertical"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down" aria-labelledby="profileActionsDropdown">
                             <li>
                                 <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#reportUserModal">
-                                    <i class="bi bi-flag-fill"></i> Segnala Utente
+                                    <span class="bi bi-flag-fill"></span> Segnala Utente
                                 </button>
                             </li>
                             <li>
                                 <form action="<?= url('/friends/block/' . urlencode($user['username'])) ?>" method="POST" onsubmit="return confirm('Vuoi bloccare questo utente in modo permanente? Non potrà più vedere il tuo profilo né contattarti.');" class="m-0">
                                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                     <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-body fw-semibold bg-transparent border-0 w-100 text-start">
-                                        <i class="bi bi-slash-circle text-secondary"></i> Blocca Utente
+                                        <span class="bi bi-slash-circle text-secondary"></span> Blocca Utente
                                     </button>
                                 </form>
                             </li>
@@ -61,42 +61,42 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <?php endif; ?>
                 </div>
 
-                <h3 class="fw-bold mb-0">
+                <h1 class="h3 fw-bold mb-0">
                     <?= e($user['name']) ?>
-                </h3>
+                </h1>
                 <p class="text-muted mb-3 text-capitalize">
                     <?= e($user['preferred_role'] ?? 'Ruolo non specificato') ?>
                 </p>
 
                 <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
                     <?php if($is_friend): ?>
-                        <span class="badge bg-success rounded-pill px-3 py-2 fs-6 shadow-sm d-flex align-items-center"><i class="bi bi-check-circle-fill me-1"></i> Amici</span>
+                        <span class="badge bg-success rounded-pill px-3 py-2 fs-6 shadow-sm d-flex align-items-center"><span class="bi bi-check-circle-fill me-1"></span> Amici</span>
                         <form action="<?= url('/friends/remove/' . urlencode($user['username'])) ?>" method="POST" onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');" class="m-0">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                            <button type="submit" class="btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm"><i class="bi bi-person-dash me-1"></i> Rimuovi</button>
+                            <button type="submit" class="btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm"><span class="bi bi-person-dash me-1"></span> Rimuovi</button>
                         </form>
                         <button type="button" class="btn btn-primary rounded-pill px-3 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#compareStatsModal">
-                            <i class="bi bi-arrow-left-right me-1"></i> Confronta con me
+                            <span class="bi bi-arrow-left-right me-1"></span> Confronta con me
                         </button>
                     <?php elseif($sent_request): ?>
-                        <button disabled class="btn btn-secondary rounded-pill px-4 fw-bold shadow-sm opacity-75"><i class="bi bi-hourglass-split me-1"></i> In attesa di conferma</button>
+                        <button disabled class="btn btn-secondary rounded-pill px-4 fw-bold shadow-sm opacity-75"><span class="bi bi-hourglass-split me-1"></span> In attesa di conferma</button>
                     <?php elseif($received_request): ?>
                         <div class="d-flex gap-2 align-items-center flex-wrap justify-content-center">
-                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fs-6 shadow-sm d-flex align-items-center"><i class="bi bi-person-exclamation me-1"></i> Ti ha inviato una richiesta</span>
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fs-6 shadow-sm d-flex align-items-center"><span class="bi bi-person-exclamation me-1"></span> Ti ha inviato una richiesta</span>
                             <form action="<?= url('/friends/accept/' . urlencode($user['username'])) ?>" method="POST" class="m-0">
                                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                <button type="submit" class="btn btn-success rounded-pill px-3 fw-bold shadow-sm"><i class="bi bi-check-lg me-1"></i> Accetta</button>
+                                <button type="submit" class="btn btn-success rounded-pill px-3 fw-bold shadow-sm"><span class="bi bi-check-lg me-1"></span> Accetta</button>
                             </form>
                             <form action="<?= url('/friends/reject/' . urlencode($user['username'])) ?>" method="POST" class="m-0">
                                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                <button type="submit" class="btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm"><i class="bi bi-x-lg me-1"></i> Rifiuta</button>
+                                <button type="submit" class="btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm"><span class="bi bi-x-lg me-1"></span> Rifiuta</button>
                             </form>
                         </div>
                     <?php else: ?>
                         <form action="<?= url('/friends/add') ?>" method="POST" class="m-0">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                             <input type="hidden" name="friend_code" value="<?= e($user['friend_code']) ?>">
-                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><i class="bi bi-person-plus-fill me-1"></i> Aggiungi Amico</button>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><span class="bi bi-person-plus-fill me-1"></span> Aggiungi Amico</button>
                         </form>
                     <?php endif; ?>
                 </div>
@@ -149,7 +149,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                     </div>
                                 <?php else: ?>
                                     <div class="rounded-circle bg-body-secondary d-flex justify-content-center align-items-center text-muted size-32">
-                                        <i class="bi bi-people-fill text-muted font-size-sm"></i>
+                                        <span class="bi bi-people-fill text-muted font-size-sm"></span>
                                     </div>
                                     <span class="text-muted small">Nessun amico in comune</span>
                                 <?php endif; ?>
@@ -160,7 +160,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                         <div class="col-12 col-md-6">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="rounded-circle bg-primary bg-opacity-10 d-flex justify-content-center align-items-center text-primary shadow-sm size-32">
-                                    <i class="bi bi-controller fs-6"></i>
+                                    <span class="bi bi-controller fs-6"></span>
                                 </div>
                                 <div class="small text-body">
                                     <?php if ($matches_played_together > 0): ?>
@@ -182,35 +182,35 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <div class="row text-center mt-4 g-3">
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100">
-                                <i class="bi bi-controller fs-3 text-primary mb-2"></i>
+                                <span class="bi bi-controller fs-3 text-primary mb-2 d-block"></span>
                                 <h4 class="fw-bold mb-0"><?= $matches_played ?? 0 ?></h4>
                                 <small class="text-muted">Presenze</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100">
-                               <i class="bi bi-people-fill fs-3 text-success mb-2"></i>
+                               <span class="bi bi-people-fill fs-3 text-success mb-2 d-block"></span>
                                 <h4 class="fw-bold mb-0"><?= $friends_count ?? 0 ?></h4>
                                 <small class="text-muted">Amici</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100">
-                                <i class="bi bi-bullseye fs-3 text-danger mb-2"></i>
+                                <span class="bi bi-bullseye fs-3 text-danger mb-2 d-block"></span>
                                 <h4 class="fw-bold mb-0"><?= $user['total_goals'] ?? 0 ?></h4>
                                 <small class="text-muted">Gol Totali</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100 <?= $is_skill_exceptional ? 'stat-card-glow-gold' : '' ?>">
-                                <i class="bi bi-star-fill fs-3 text-warning mb-2"></i>
+                                <span class="bi bi-star-fill fs-3 text-warning mb-2 d-block"></span>
                                 <h4 class="fw-bold mb-0"><?= $user['skill_rating'] > 0 ? number_format($user['skill_rating'], 1) : '-' ?></h4>
                                 <small class="text-muted">Skill Media</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100 <?= $is_mvp_exceptional ? 'stat-card-glow-gold' : '' ?>">
-                                <i class="bi bi-award-fill fs-3 text-info mb-2"></i>
+                                <span class="bi bi-award-fill fs-3 text-info mb-2 d-block"></span>
                                 <h4 class="fw-bold mb-0"><?= $user['mvp_count'] ?? 0 ?></h4>
                                 <small class="text-muted">MVP 🏆</small>
                             </div>
@@ -255,12 +255,12 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <!-- Performance trend -->
                     <div class="mt-4 p-3 bg-body border rounded-4 shadow-sm text-start">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="fw-semibold text-muted text-uppercase tracking-wide font-size-xs"><i class="bi bi-graph-up text-primary me-1"></i>Trend Prestazioni (Ultime 5 partite)</span>
+                            <span class="fw-semibold text-muted text-uppercase tracking-wide font-size-xs"><span class="bi bi-graph-up text-primary me-1"></span>Trend Prestazioni (Ultime 5 partite)</span>
                             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 fw-bold font-size-xs">Stato di Forma</span>
                         </div>
                         <?php if (empty($trend_votes)): ?>
                             <div class="text-center py-2 text-muted small">
-                                <i class="bi bi-info-circle me-1"></i>Non ci sono valutazioni sufficienti per calcolare il trend.
+                                <span class="bi bi-info-circle me-1"></span>Non ci sono valutazioni sufficienti per calcolare il trend.
                             </div>
                         <?php else: ?>
                             <?php
@@ -327,9 +327,9 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                     <!-- Locked stats -->
                     <div class="mt-4 p-4 bg-body-tertiary border border-secondary-subtle rounded-4 text-center shadow-sm">
                         <div class="d-inline-flex p-3 bg-primary bg-opacity-10 text-primary rounded-circle mb-3">
-                            <i class="bi bi-shield-lock-fill fs-3"></i>
+                            <span class="bi bi-shield-lock-fill fs-3"></span>
                         </div>
-                        <h5 class="fw-bold mb-2">Statistiche Private</h5>
+                        <h2 class="h5 fw-bold mb-2">Statistiche Private</h2>
                         <p class="text-muted small mb-0 px-md-4">
                             Le statistiche dettagliate, lo stato di forma ed il trend delle prestazioni di <strong><?= e($user['name']) ?></strong> sono visibili solo ai suoi amici. Invia una richiesta di amicizia per sbloccarle!
                         </p>
@@ -342,12 +342,12 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 </div>
 
 <!-- Report user modal -->
-<div class="modal fade" id="reportUserModal" tabindex="-1" aria-labelledby="reportUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="reportUserModal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="reportUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
                 <h5 class="modal-title fw-bold" id="reportUserModalLabel">
-                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Segnala Utente
+                    <span class="bi bi-exclamation-triangle-fill text-danger me-2"></span>Segnala Utente
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
@@ -384,7 +384,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                 <div class="modal-footer border-top-0 pt-0">
                     <button type="button" class="btn btn-outline-secondary rounded-pill px-3 fw-bold" data-bs-dismiss="modal">Annulla</button>
                     <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
-                        <i class="bi bi-send-fill me-1"></i> Invia Segnalazione
+                        <span class="bi bi-send-fill me-1"></span> Invia Segnalazione
                     </button>
                  </div>
             </form>
@@ -394,12 +394,12 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
 
 <?php if ($is_friend): ?>
 <!-- Compare stats modal -->
-<div class="modal fade" id="compareStatsModal" tabindex="-1" aria-labelledby="compareStatsModalLabel" aria-hidden="true">
+<div class="modal fade" id="compareStatsModal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="compareStatsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
                 <h5 class="modal-title fw-bold" id="compareStatsModalLabel">
-                    <i class="bi bi-arrow-left-right text-primary me-2"></i>Confronta Statistiche
+                    <span class="bi bi-arrow-left-right text-primary me-2"></span>Confronta Statistiche
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>

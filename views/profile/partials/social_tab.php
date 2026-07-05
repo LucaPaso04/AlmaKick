@@ -2,7 +2,7 @@
     <?php if ($is_own_profile): ?>
         <div class="col-md-5">
             <div class="card shadow-sm border rounded-4 h-100 p-4">
-                <h5 class="fw-bold mb-3"><i class="bi bi-person-plus-fill text-primary me-2"></i>Aggiungi Amico</h5>
+                <h3 class="h5 fw-bold mb-3"><span class="bi bi-person-plus-fill text-primary me-2"></span>Aggiungi Amico</h3>
 
                 <div class="mb-4 text-center">
                     <small class="text-muted d-block mb-1">Il tuo Codice Amico</small>
@@ -12,8 +12,8 @@
                         </div>
                         <?php if(!empty($user['friend_code'])): ?>
                             <button type="button" class="btn btn-outline-primary shadow-sm"
-                                onclick="copyFriendCode(this)" title="Copia codice">
-                                <i class="bi bi-copy"></i>
+                                id="copy-friend-code-btn" title="Copia codice">
+                                <span class="bi bi-copy"></span>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="mb-3">
                         <label for="friend_code" class="form-label small fw-semibold">Inserisci Codice Amico</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-body-tertiary border-end-0"><i class="bi bi-hash"></i></span>
+                            <span class="input-group-text bg-body-tertiary border-end-0"><span class="bi bi-hash"></span></span>
                             <input type="text" class="form-control border-start-0 ps-0 text-uppercase"
                                 id="friend_code" name="friend_code" placeholder="es. A9F3K2" required>
                             <button class="btn btn-primary fw-bold" type="submit">Aggiungi</button>
@@ -41,11 +41,11 @@
     <div class="<?= $is_own_profile ? 'col-md-7' : 'col-12' ?>">
         <?php if($is_own_profile && !empty($pendingRequests)): ?>
             <div class="card shadow-sm border border-top border-warning border-4 rounded-4 p-4 mb-4">
-                <h5 class="fw-bold mb-3 d-flex align-items-center">
-                    <i class="bi bi-person-lines-fill text-warning me-2 fs-4"></i>
+                <h3 class="h5 fw-bold mb-3 d-flex align-items-center">
+                    <span class="bi bi-person-lines-fill text-warning me-2 fs-4"></span>
                     <span class="text-body">Richieste in Attesa (<?= count($pendingRequests) ?>)</span>
                     <span class="badge bg-danger rounded-pill ms-2 shadow-sm font-size-2xs">Nuove</span>
-                </h5>
+                </h3>
 
                 <div class="list-group list-group-flush bg-transparent profile-scrollable-list">
                     <?php foreach($pendingRequests as $richiesta): ?>
@@ -56,25 +56,25 @@
                                         <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
-                                        </h6>
+                                        </div>
                                         <small class="text-muted"><?= e($richiesta['preferred_role'] ?? 'Giocatore') ?></small>
                                     </div>
                                 </div>
                                 <div class="d-flex gap-2 me-2">
                                     <form action="<?= url('/friends/accept/' . urlencode($richiesta['username'])) ?>" method="POST">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold shadow-sm px-3" title="Accetta"><i class="bi bi-check-lg"></i></button>
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold shadow-sm px-3" title="Accetta"><span class="bi bi-check-lg"></span></button>
                                     </form>
                                     <form action="<?= url('/friends/reject/' . urlencode($richiesta['username'])) ?>" method="POST">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold shadow-sm px-2" title="Rifiuta"><i class="bi bi-x-lg"></i></button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold shadow-sm px-2" title="Rifiuta"><span class="bi bi-x-lg"></span></button>
                                     </form>
                                     <form action="<?= url('/friends/block/' . urlencode($richiesta['username'])) ?>" method="POST"
                                         onsubmit="return confirm('Vuoi bloccare questo utente in modo permanente?');">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold shadow-sm px-2" title="Blocca"><i class="bi bi-slash-circle"></i></button>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold shadow-sm px-2" title="Blocca"><span class="bi bi-slash-circle"></span></button>
                                     </form>
                                 </div>
                             </div>
@@ -85,11 +85,11 @@
         <?php endif; ?>
 
         <div class="card shadow-sm border rounded-4 p-4 <?= ($is_own_profile && empty($pendingRequests) && empty($sentPendingRequests)) ? 'h-100' : '' ?>">
-            <h5 class="fw-bold mb-4"><i class="bi bi-people-fill text-success me-2"></i>Amici di <?= e($user['name']) ?></h5>
+            <h3 class="h5 fw-bold mb-4"><span class="bi bi-people-fill text-success me-2"></span>Amici di <?= e($user['name']) ?></h3>
 
             <?php if(empty($friends) && empty($pendingRequests) && empty($sentPendingRequests)): ?>
                 <div class="text-center py-4 bg-body-tertiary rounded-3">
-                    <i class="bi bi-emoji-frown fs-2 text-muted mb-2"></i>
+                    <span class="bi bi-emoji-frown fs-2 text-muted mb-2"></span>
                     <p class="text-muted mb-0">Nessun amico o richiesta in lista.</p>
                 </div>
             <?php else: ?>
@@ -104,9 +104,9 @@
                                         <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
-                                        </h6>
+                                        </div>
                                         <small class="text-muted">
                                             <?= e($richiesta['preferred_role'] ?? 'Giocatore') ?> • 
                                             <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 font-size-2xs">Richiesta Ricevuta</span>
@@ -116,11 +116,11 @@
                                 <div class="d-flex gap-2">
                                     <form action="<?= url('/friends/accept/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold shadow-sm px-3" title="Accetta"><i class="bi bi-check-lg me-1"></i>Accetta</button>
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold shadow-sm px-3" title="Accetta"><span class="bi bi-check-lg me-1"></span>Accetta</button>
                                     </form>
                                     <form action="<?= url('/friends/reject/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold shadow-sm px-2" title="Rifiuta"><i class="bi bi-x-lg"></i></button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold shadow-sm px-2" title="Rifiuta"><span class="bi bi-x-lg"></span></button>
                                     </form>
                                 </div>
                             </div>
@@ -136,9 +136,9 @@
                                         <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
-                                        </h6>
+                                        </div>
                                         <small class="text-muted">
                                             <?= e($richiesta['preferred_role'] ?? 'Giocatore') ?> • 
                                             <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 font-size-2xs">Richiesta Inviata (In attesa)</span>
@@ -165,12 +165,12 @@
                                         <?= strtoupper(substr($amico['name'], 0, 1)) ?>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">
+                                        <div class="mb-0 fw-bold">
                                             <a href="<?= url('/profile?username=' . urlencode($amico['username'])) ?>" class="text-decoration-none text-body"><?= e($amico['name']) ?></a>
-                                        </h6>
+                                        </div>
                                         <small class="text-muted">
                                             <?= e($amico['preferred_role'] ?? 'Giocatore') ?> •
-                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <span class="bi bi-star-fill text-warning"></span>
                                             <?= $amico['skill_rating'] > 0 ? number_format($amico['skill_rating'], 1) : '-' ?>
                                         </small>
                                     </div>
@@ -180,7 +180,7 @@
                                         class="m-0"
                                         onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2 shadow-sm" title="Rimuovi"><i class="bi bi-person-dash"></i> Rimuovi</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2 shadow-sm" title="Rimuovi"><span class="bi bi-person-dash"></span> Rimuovi</button>
                                     </form>
                                 <?php endif; ?>
                             </div>
