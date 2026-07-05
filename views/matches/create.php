@@ -1,6 +1,3 @@
-<?php
-
-?>
 <!-- Leaflet Map CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -10,8 +7,8 @@
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
         <div class="d-flex align-items-center mb-4">
-            <a href="<?= url('/matches') ?>" class="btn btn-light rounded-circle me-3 shadow-sm border-0">
-                <i class="bi bi-arrow-left"></i>
+            <a href="<?= url('/matches') ?>" class="btn btn-light rounded-circle me-3 shadow-sm border-0" title="Torna alle partite" aria-label="Torna alle partite">
+                <span class="bi bi-arrow-left"></span>
             </a>
             <h1 class="h3 fw-bold mb-0">Organizza Partita</h1>
         </div>
@@ -21,7 +18,7 @@
                 <form action="<?= url('/matches') ?>" method="POST" id="createMatchForm" class="needs-validation no-spinner" novalidate>
                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                     
-                    <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-geo-alt-fill me-2"></i>Dettagli Evento</h5>
+                    <h2 class="h5 fw-bold mb-4 text-primary"><span class="bi bi-geo-alt-fill me-2"></span>Dettagli Evento</h2>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
@@ -46,14 +43,15 @@
 
                     <!-- Leaflet Map -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold"><i class="bi bi-pin-map-fill text-danger me-1"></i>Posizione sulla Mappa</label>
+                        <label class="form-label fw-semibold"><span class="bi bi-pin-map-fill text-danger me-1"></span>Posizione sulla Mappa</label>
                         <p class="text-muted small mb-2" id="map-description">Cerca l'indirizzo dell'impianto o clicca direttamente sulla mappa per posizionare il campo.</p>
                         
                         <!-- Address search -->
                         <div class="input-group mb-2">
+                            <label for="map-search-input" class="visually-hidden">Cerca indirizzo campo sulla mappa</label>
                             <input type="text" id="map-search-input" class="form-control bg-body-tertiary border-0" placeholder="Es. Centro Sportivo Olimpia, Milano">
                             <button class="btn btn-primary fw-bold" type="button" id="map-search-btn">
-                                <i class="bi bi-search me-1"></i>Cerca
+                                <span class="bi bi-search me-1"></span>Cerca
                             </button>
                         </div>
 
@@ -69,7 +67,7 @@
                                 </div>
                             </div>
                             <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-2 fw-bold text-nowrap hover-scale shadow-sm mt-1" id="apply-address-btn">
-                                <i class="bi bi-check2-circle me-1"></i>Usa Indirizzo
+                                <span class="bi bi-check2-circle me-1"></span>Usa Indirizzo
                             </button>
                         </div>
 
@@ -77,12 +75,12 @@
                         <input type="hidden" name="longitude" id="longitude" value="">
                     </div>
 
-                    <h5 class="fw-bold mb-4 mt-5 text-primary"><i class="bi bi-people-fill me-2"></i>Formato e Costi</h5>
+                    <h2 class="h5 fw-bold mb-4 mt-5 text-primary"><span class="bi bi-people-fill me-2"></span>Formato e Costi</h2>
 
                     <!-- Format cards -->
                     <div class="row g-3 mb-4">
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Formato (Totale Giocatori)</label>
+                        <fieldset class="col-12 border-0 p-0 m-0">
+                            <legend class="form-label fw-semibold fs-6">Formato (Totale Giocatori)</legend>
                             <div class="row g-2" id="format-cards-container">
                                 <div class="col-6 col-md-3">
                                     <input type="radio" class="btn-check" name="format" id="format-5vs5" value="5vs5" checked required>
@@ -117,13 +115,13 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-12">
                             <label for="visibility" class="form-label fw-semibold">Visibilità</label>
-                            <select class="form-select bg-body-tertiary border-0" id="visibility" name="visibility" required>
+                            <select class="form-select bg-body-tertiary border-0" id="visibility" name="visibility">
                                 <option value="public" selected>Pubblica (Tutti possono iscriversi)</option>
                                 <option value="private">Privata (Solo per i tuoi Amici)</option>
                             </select>
@@ -155,7 +153,7 @@
 
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
-                            <i class="bi bi-check2-circle me-2"></i>Conferma e Crea Partita
+                            <span class="bi bi-check2-circle me-2"></span>Conferma e Crea Partita
                         </button>
                     </div>
                 </form>

@@ -183,35 +183,35 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100">
                                 <span class="bi bi-controller fs-3 text-primary mb-2 d-block"></span>
-                                <h4 class="fw-bold mb-0"><?= $matches_played ?? 0 ?></h4>
+                                <div class="h4 fw-bold mb-0"><?= $matches_played ?? 0 ?></div>
                                 <small class="text-muted">Presenze</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100">
                                <span class="bi bi-people-fill fs-3 text-success mb-2 d-block"></span>
-                                <h4 class="fw-bold mb-0"><?= $friends_count ?? 0 ?></h4>
+                                <div class="h4 fw-bold mb-0"><?= $friends_count ?? 0 ?></div>
                                 <small class="text-muted">Amici</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100">
                                 <span class="bi bi-bullseye fs-3 text-danger mb-2 d-block"></span>
-                                <h4 class="fw-bold mb-0"><?= $user['total_goals'] ?? 0 ?></h4>
+                                <div class="h4 fw-bold mb-0"><?= $user['total_goals'] ?? 0 ?></div>
                                 <small class="text-muted">Gol Totali</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100 <?= $is_skill_exceptional ? 'stat-card-glow-gold' : '' ?>">
                                 <span class="bi bi-star-fill fs-3 text-warning mb-2 d-block"></span>
-                                <h4 class="fw-bold mb-0"><?= $user['skill_rating'] > 0 ? number_format($user['skill_rating'], 1) : '-' ?></h4>
+                                <div class="h4 fw-bold mb-0"><?= $user['skill_rating'] > 0 ? number_format($user['skill_rating'], 1) : '-' ?></div>
                                 <small class="text-muted">Skill Media</small>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="p-3 bg-body-tertiary rounded-4 h-100 <?= $is_mvp_exceptional ? 'stat-card-glow-gold' : '' ?>">
                                 <span class="bi bi-award-fill fs-3 text-info mb-2 d-block"></span>
-                                <h4 class="fw-bold mb-0"><?= $user['mvp_count'] ?? 0 ?></h4>
+                                <div class="h4 fw-bold mb-0"><?= $user['mvp_count'] ?? 0 ?></div>
                                 <small class="text-muted">MVP 🏆</small>
                             </div>
                         </div>
@@ -346,9 +346,9 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold" id="reportUserModalLabel">
+                <h2 class="h5 modal-title fw-bold" id="reportUserModalLabel">
                     <span class="bi bi-exclamation-triangle-fill text-danger me-2"></span>Segnala Utente
-                </h5>
+                </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <form action="<?= url('/reports') ?>" method="POST">
@@ -398,9 +398,9 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold" id="compareStatsModalLabel">
+                <h2 class="h5 modal-title fw-bold" id="compareStatsModalLabel">
                     <span class="bi bi-arrow-left-right text-primary me-2"></span>Confronta Statistiche
-                </h5>
+                </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             
@@ -430,7 +430,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <h6 class="fw-bold mb-0 text-truncate text-primary">Tu</h6>
+                        <div class="fw-bold mb-0 text-truncate text-primary">Tu</div>
                         <small class="text-muted d-block text-truncate text-lowercase">@<?= e($me['username']) ?></small>
                     </div>
                     
@@ -450,7 +450,7 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <h6 class="fw-bold mb-0 text-truncate text-success"><?= e($user['name']) ?></h6>
+                        <div class="fw-bold mb-0 text-truncate text-success"><?= e($user['name']) ?></div>
                         <small class="text-muted d-block text-truncate text-lowercase">@<?= e($user['username']) ?></small>
                     </div>
                 </div>
