@@ -127,12 +127,12 @@ footer {
 /* Images and logo wrapping elements */
 .header-logo-mobile {
     height: 32px;
-    width: auto;
+    width: 39px;
 }
 
 .header-logo-desktop {
     height: 38px;
-    width: auto;
+    width: 188px;
 }
 
 .hero-logo {
@@ -287,3 +287,5 @@ footer {
     border-color: var(--bs-primary) !important;
     transform: scale(1.05);
 }
+
+

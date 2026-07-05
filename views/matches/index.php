@@ -127,7 +127,7 @@ if ($username) {
                     <!-- Date from -->
                     <div style="flex: 1 1 140px;">
                         <div class="input-group input-group-sm">
-                            <span class="input-group-text border-end-0 bg-transparent text-muted small">Dal</span>
+                            <label for="filter-date-from" class="input-group-text border-end-0 bg-transparent text-muted small">Dal</label>
                             <input type="date" id="filter-date-from" name="date_from" class="form-control border-start-0 ps-1"
                                 value="<?= e($_GET['date_from'] ?? '') ?>">
                         </div>
@@ -136,7 +136,7 @@ if ($username) {
                     <!-- Date to -->
                     <div style="flex: 1 1 140px;">
                         <div class="input-group input-group-sm">
-                            <span class="input-group-text border-end-0 bg-transparent text-muted small">Al</span>
+                            <label for="filter-date-to" class="input-group-text border-end-0 bg-transparent text-muted small">Al</label>
                             <input type="date" id="filter-date-to" name="date_to" class="form-control border-start-0 ps-1"
                                 value="<?= e($_GET['date_to'] ?? '') ?>">
                         </div>
