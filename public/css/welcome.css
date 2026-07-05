@@ -197,7 +197,7 @@
     font-size: 0.8rem;
 }
 
-.feature-copy h3 {
+.feature-copy h2 {
     font-size: 1.55rem;
     line-height: 1.25;
     font-weight: 700;
@@ -407,9 +407,11 @@
     font-weight: 800;
 }
 
-.mvp-card h4 {
+.mvp-card .mvp-name {
     margin: 0;
     color: #ffffff;
+    font-weight: bold;
+    font-size: 1.1rem;
 }
 
 .mvp-card p {
@@ -465,7 +467,7 @@
         padding: 1.25rem;
     }
 
-    .feature-copy h3 {
+    .feature-copy h2 {
         font-size: 1.3rem;
     }
 }

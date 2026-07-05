@@ -8,7 +8,7 @@
                             <img src="<?= url('/images/logo-text.svg') ?>" alt="AlmaKick Logo" class="form-logo">
                         </span>
                     </div>
-                    <h2 class="fw-bold fs-3 mt-2">Bentornato</h2>
+                    <h1 class="fw-bold fs-3 mt-2">Bentornato</h1>
                     <p class="text-secondary">Accedi a AlmaKick</p>
                 </div>
 
@@ -55,7 +55,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm login-btn">
-                        Accedi <i class="bi bi-box-arrow-in-right ms-1"></i>
+                        Accedi <span class="bi bi-box-arrow-in-right ms-1"></span>
                     </button>
 
                     <div class="text-center mt-4">
