@@ -1,6 +1,4 @@
-/**
- * Matches page JavaScript logic with AJAX filtering and Pagination
- */
+/* Matches page logic with AJAX filtering and pagination */
 function switchToExploreTab() {
     var triggerEl = document.querySelector('#explore-tab');
     if (triggerEl) {
@@ -17,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!filterForm || !matchesContainer) return;
 
-    // Helper to check if form has active filters
+    // Check if form has active filters
     function hasActiveFilters() {
         var location = filterForm.querySelector('input[name="location"]').value.trim();
         var dateFromInput = filterForm.querySelector('input[name="date_from"]');
@@ -32,21 +30,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return location !== "" || dateFrom !== "" || dateTo !== "" || format !== "" || onlyFriends || excludeChecked;
     }
 
-    // Function to perform AJAX filter request
+    // Perform AJAX filter request
     function performFilter(pageNumber) {
         var page = (typeof pageNumber === 'number' || typeof pageNumber === 'string') ? pageNumber : 1;
         var formData = new FormData(filterForm);
         var searchParams = new URLSearchParams(formData);
         
-        // Add ajax and page flag
         searchParams.set('ajax', '1');
         searchParams.set('page', page.toString());
 
-        // Visual loading feedback: dim container and add smooth transition
         matchesContainer.style.transition = 'opacity 0.2s ease-in-out';
         matchesContainer.style.opacity = '0.5';
 
-        // Fetch filtered matches (returns JSON with html & pagination fields)
         fetch(filterForm.action + '?' + searchParams.toString(), {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -56,23 +51,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(function(res) {
-            // Update matches list container with smooth fade-in
             matchesContainer.innerHTML = res.html;
             matchesContainer.style.opacity = '1';
 
-            // Update pagination container
             if (paginationContainer) {
                 paginationContainer.innerHTML = res.pagination || '';
                 bindPaginationEvents();
             }
 
-            // Update browser URL query string without reloading the page
             searchParams.delete('ajax');
             searchParams.set('tab', 'explore');
             var newUrl = filterForm.action + '?' + searchParams.toString();
             window.history.pushState(null, '', newUrl);
 
-            // Update reset button visibility
             updateResetButton();
         })
         .catch(function(err) {
@@ -91,14 +82,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 var page = link.getAttribute('data-page');
                 if (page && !link.parentElement.classList.contains('disabled')) {
                     performFilter(page);
-                    // Smooth scroll to top of list
                     matchesContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
     }
 
-    // Function to render/remove reset button
+    // Update reset button
     function updateResetButton() {
         if (!resetButtonContainer) return;
 
@@ -109,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="bi bi-arrow-counterclockwise"></i>
                     </a>
                 `;
-                // Add click listener to the newly created button
                 resetButtonContainer.querySelector('a').addEventListener('click', handleReset);
             }
         } else {
@@ -117,11 +106,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to handle reset action
+    // Handle reset action
     function handleReset(e) {
         if (e) e.preventDefault();
         
-        // Reset all inputs in form
         filterForm.querySelector('input[name="location"]').value = '';
         var dateFromInput = filterForm.querySelector('input[name="date_from"]');
         var dateToInput = filterForm.querySelector('input[name="date_to"]');
@@ -133,11 +121,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var excludeMyMatches = filterForm.querySelector('input[name="exclude_my_matches"]');
         if (excludeMyMatches) excludeMyMatches.checked = false;
 
-        // Perform filter with cleared inputs (starts at page 1)
         performFilter(1);
     }
 
-    // Bind event listeners for auto-submit (reset page to 1 on filter changes)
+    // Auto-submit on change
     var autoInputs = filterForm.querySelectorAll('select, input[type="date"], input[type="checkbox"]');
     autoInputs.forEach(function(input) {
         input.addEventListener('change', function() {
@@ -145,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Debounce text input keyup/input to search as you type (reset page to 1)
+    // Search input debounce
     var textInput = filterForm.querySelector('input[name="location"]');
     if (textInput) {
         var debounceTimeout = null;
@@ -153,26 +140,23 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(function() {
                 performFilter(1);
-            }, 300); // 300ms debounce
+            }, 300);
         });
     }
 
-    // Add submit intercept to avoid normal form submission
     filterForm.addEventListener('submit', function(e) {
         e.preventDefault();
         performFilter(1);
     });
 
-    // Initialize reset button click listener if it was rendered by PHP
     var initialResetBtn = resetButtonContainer ? resetButtonContainer.querySelector('a') : null;
     if (initialResetBtn) {
         initialResetBtn.addEventListener('click', handleReset);
     }
 
-    // Initialize pagination click listeners on first load
     bindPaginationEvents();
 
-    // Listen for tab changes to update URL
+    // Tab state sync
     var tabs = document.querySelectorAll('#homeTabs button[data-bs-toggle="pill"]');
     tabs.forEach(function(tabEl) {
         tabEl.addEventListener('shown.bs.tab', function(event) {

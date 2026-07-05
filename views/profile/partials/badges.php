@@ -53,7 +53,7 @@ if (!function_exists('getBadgeStatus')) {
 }
 ?>
 
-<!-- BADGE E OBIETTIVI -->
+<!-- Badges & Achievements -->
 <div class="row g-4 mt-2 mb-2">
     <div class="col-12">
         <div class="card shadow-sm border rounded-4 p-4 bg-body">
@@ -67,10 +67,9 @@ if (!function_exists('getBadgeStatus')) {
                     ?>
                     
                     <div class="col-6 col-sm-4 col-md-3">
-                        <div class="card h-100 <?= $borderStyle ?> bg-body-tertiary text-center p-3 badge-card animate-hover" 
-                             data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>" style="cursor: pointer;">
+                        <div class="card h-100 <?= $borderStyle ?> bg-body-tertiary text-center p-3 badge-card animate-hover cursor-pointer" 
+                             data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>">
                             
-                            <!-- Icona -->
                             <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 badge-card-avatar" 
                                  style="background-color: <?= $isLocked ? 'rgba(108, 117, 125, 0.1)' : $status['color_hex'].'33' ?>;
                                         color: <?= $isLocked ? '#6c757d' : $status['color_hex'] ?>;
@@ -78,13 +77,11 @@ if (!function_exists('getBadgeStatus')) {
                                 <i class="bi <?= $b['icon'] ?>"></i>
                             </div>
                             
-                            <!-- Titolo -->
                             <span class="small fw-bold d-block text-truncate"><?= e($b['title']) ?></span>
                             <span class="badge mb-2 font-size-2xs" style="background-color: <?= $status['color_hex'] ?>; color: <?= $status['level'] === 'Oro' ? '#000' : '#fff' ?>">
                                 <?= e($status['level']) ?>
                             </span>
                             
-                            <!-- Barra di Progresso -->
                             <div class="progress mt-auto bg-light border height-6px">
                                 <div class="progress-bar" role="progressbar" style="width: <?= $status['progress'] ?>%; background-color: <?= $status['color_hex'] ?>;" 
                                      aria-valuenow="<?= $status['progress'] ?>" aria-valuemin="0" aria-valuemax="100"></div>
@@ -104,7 +101,7 @@ if (!function_exists('getBadgeStatus')) {
     </div>
 </div>
 
-<!-- Modali per Info Badge (inserite fuori dalla griglia per evitare problemi di z-index) -->
+<!-- Badge info modals -->
 <?php foreach($badges as $b): ?>
     <?php 
         $status = getBadgeStatus($b['value'], $b['tiers']);
@@ -112,7 +109,7 @@ if (!function_exists('getBadgeStatus')) {
     ?>
     <div class="modal fade" id="badgeModal<?= $b['id'] ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow rounded-4 text-center p-3" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+            <div class="modal-content border-0 shadow rounded-4 text-center p-3">
                 <div class="modal-header border-0 p-0 justify-content-end">
                     <button type="button" class="btn-close badge-modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

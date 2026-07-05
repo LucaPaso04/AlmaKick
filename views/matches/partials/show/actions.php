@@ -1,5 +1,5 @@
 <?php
-// views/matches/partials/show/actions.php
+
 
 $my_registration = null;
 if (isset($_SESSION['user']['username'])) {
@@ -70,30 +70,7 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
                             </div>
                         </div>
                         
-                        <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            const timerEl = document.getElementById("offer-timer");
-                            if (timerEl) {
-                                const expires = parseInt(timerEl.getAttribute("data-expires"), 10) * 1000;
-                                const span = timerEl.querySelector("span");
-                                function updateTimer() {
-                                    const now = new Date().getTime();
-                                    const distance = expires - now;
-                                    if (distance < 0) {
-                                        span.innerText = "Tempo scaduto!";
-                                        span.classList.add("text-danger");
-                                        setTimeout(() => { window.location.reload(); }, 1500);
-                                        return;
-                                    }
-                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                                    span.innerText = "Tempo rimasto: " + minutes + "m " + seconds + "s";
-                                    setTimeout(updateTimer, 1000);
-                                }
-                                updateTimer();
-                            }
-                        });
-                        </script>
+
                     <?php else: ?>
                         <p class="text-warning fw-bold mb-3"><span class="bi bi-hourglass-split me-2"></span>Sei in Panchina (Lista d'attesa)!</p>
                         <small class="d-block mb-3 text-muted">Subentrerai automaticamente in caso di ritiri.</small>
@@ -145,13 +122,13 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
         </div>
     </div>
 
-    <?php // Host Controls ?>
+
     <?php if ($is_host): ?>
         <div class="card shadow-sm border-0 mb-4 rounded-4 border-start border-4 border-warning">
             <div class="card-body p-4">
                 <h2 class="fw-bold mb-3 fs-5"><span class="bi bi-gear-fill me-2 text-warning"></span>Gestione Organizzatore</h2>
                 <div class="row g-3">
-                    <?php // Generate Teams ?>
+                    <!-- Generate Teams -->
                     <div class="col-12 col-md-6">
                         <form action="<?= url('/matches/' . $match['id'] . '/generate-teams?from=' . urlencode($from)) ?>" method="POST">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -160,7 +137,7 @@ $canCancelNoPenaltyPlayers = ($timeDiff <= 3600 && $occupied < $match['max_playe
                             </button>
                         </form>
                     </div>
-                    <?php // Close Match ?>
+                    <!-- Close Match -->
                     <div class="col-12 col-md-6">
                         <?php if ($canClose): ?>
                             <form action="<?= url('/matches/' . $match['id'] . '/close?from=' . urlencode($from)) ?>" method="POST"

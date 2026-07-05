@@ -1,11 +1,11 @@
 <?php
-// views/matches/create.php
+
 ?>
 <!-- Leaflet Map CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-<!-- Custom Modular Stylesheet for Matches Creation Page -->
-<link rel="stylesheet" href="<?= url('/css/matches-create.css') ?>">
+<!-- Custom styles -->
+<link rel="stylesheet" href="<?= url('/css/matches.css') ?>">
 
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
@@ -44,12 +44,12 @@
                         </div>
                     </div>
 
-                    <!-- Leaflet Map for location picking -->
+                    <!-- Leaflet Map -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold"><i class="bi bi-pin-map-fill text-danger me-1"></i>Posizione sulla Mappa</label>
                         <p class="text-muted small mb-2" id="map-description">Cerca l'indirizzo dell'impianto o clicca direttamente sulla mappa per posizionare il campo.</p>
                         
-                        <!-- Address Search Bar -->
+                        <!-- Address search -->
                         <div class="input-group mb-2">
                             <input type="text" id="map-search-input" class="form-control bg-body-tertiary border-0" placeholder="Es. Centro Sportivo Olimpia, Milano">
                             <button class="btn btn-primary fw-bold" type="button" id="map-search-btn">
@@ -59,7 +59,7 @@
 
                         <div id="create-map" class="rounded-4 border shadow-sm" aria-label="Mappa interattiva" aria-describedby="map-description" role="region" tabindex="0"></div>
                         
-                        <!-- Reverse Geocoding Address Alert -->
+                        <!-- Geocoding alert -->
                         <div id="detected-address-alert" class="d-none mt-3 p-3 bg-body-tertiary border rounded-4 shadow-sm d-flex flex-column align-items-center justify-content-center gap-2 text-center">
                             <div class="d-flex flex-column align-items-center gap-1">
                                 <span class="bi bi-geo-alt-fill text-danger fs-4" aria-hidden="true"></span>
@@ -79,7 +79,7 @@
 
                     <h5 class="fw-bold mb-4 mt-5 text-primary"><i class="bi bi-people-fill me-2"></i>Formato e Costi</h5>
 
-                    <!-- Visual Format Selection (Radio Cards) -->
+                    <!-- Format cards -->
                     <div class="row g-3 mb-4">
                         <div class="col-12">
                             <label class="form-label fw-semibold">Formato (Totale Giocatori)</label>
@@ -139,7 +139,7 @@
                             <div class="invalid-feedback">Inserisci un costo valido per il campo.</div>
                         </div>
                         
-                        <!-- Fast Cost Presets -->
+                        <!-- Cost presets -->
                         <div class="d-flex gap-2 flex-wrap mb-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="0">Gratis</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="50">€50</button>
@@ -167,5 +167,5 @@
 <!-- Leaflet Map JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Custom Modular JavaScript for Matches Creation Page -->
+<!-- Custom script -->
 <script src="<?= url('/js/matches-create.js') ?>" defer></script>

@@ -1,4 +1,4 @@
-/* Glassmorphism card utility */
+/* Glassmorphism panel styling */
 .glass-panel {
     background: var(--bg-secondary);
     backdrop-filter: blur(12px);
@@ -8,8 +8,8 @@
     box-shadow: var(--card-shadow);
 }
 
-/* Custom Buttons */
-.btn {
+/* Custom global buttons layout */
+body .btn {
     padding: 0.6rem 1.2rem;
     border-radius: 8px;
     font-weight: 600;
@@ -19,40 +19,43 @@
     font-family: var(--font-sans);
 }
 
-.btn-primary {
-    background-color: var(--accent) !important;
-    border-color: var(--accent) !important;
-    color: #fff !important;
+/* Primary actions buttons */
+body .btn-primary {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
 }
 
-.btn-primary:hover {
+body .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 15px var(--accent-glow) !important;
+    box-shadow: 0 0 15px var(--accent-glow);
 }
 
-.btn-outline {
-    background: transparent !important;
-    border: 1px solid var(--accent) !important;
-    color: var(--accent) !important;
+/* Outline style buttons */
+body .btn-outline {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
 }
 
-.btn-outline:hover {
-    background: var(--accent) !important;
-    color: #fff !important;
+body .btn-outline:hover {
+    background: var(--accent);
+    color: #fff;
 }
 
-.btn-danger {
-    background-color: var(--danger) !important;
-    border-color: var(--danger) !important;
-    color: #fff !important;
+/* Danger actions buttons */
+body .btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
 }
 
-.btn-danger:hover {
+body .btn-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(251, 54, 64, 0.4) !important;
+    box-shadow: 0 0 15px rgba(251, 54, 64, 0.4);
 }
 
-/* Hero Section */
+/* Hero section for landing screens */
 .hero {
     text-align: center;
     padding: 5rem 1rem;
@@ -74,7 +77,7 @@
     margin: 0 auto 2rem auto;
 }
 
-/* Alerts */
+/* Informational feedback banners */
 .alert {
     padding: 1rem;
     border-radius: 8px;
@@ -94,7 +97,7 @@
     color: #4ade80;
 }
 
-/* Dynamic Floating Toast System */
+/* Float system alerts container */
 .custom-toast-container {
     position: fixed;
     top: 24px;
@@ -117,6 +120,7 @@
     }
 }
 
+/* Individual alert popups */
 .custom-toast {
     position: relative;
     display: flex;
@@ -216,44 +220,43 @@
     }
 }
 
-/* Forms container custom styling */
+/* User authentication forms layout */
 .form-container {
     max-width: 450px;
     margin: 3rem auto;
     padding: 2.5rem;
 }
 
-/* Override Form Controls */
-.form-control, .form-select {
+/* Customized inputs and dropdown fields */
+body .form-control, body .form-select {
     padding: 0.75rem 1rem;
-    background: rgba(var(--twilight-rgb), 0.4) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 8px !important;
-    color: var(--text-primary) !important;
+    background: rgba(var(--twilight-rgb), 0.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
     font-family: var(--font-sans);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-control:focus, .form-select:focus {
-    background: rgba(var(--twilight-rgb), 0.5) !important;
-    outline: none !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 8px var(--accent-glow) !important;
-    color: var(--text-primary) !important;
+body .form-control:focus, body .form-select:focus {
+    background: rgba(var(--twilight-rgb), 0.5);
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    color: var(--text-primary);
 }
 
-.form-control::placeholder {
+body .form-control::placeholder {
     color: var(--text-secondary);
     opacity: 0.6;
 }
 
-/* Select options dropdown color reset */
-.form-select option {
+body .form-select option {
     background-color: var(--option-bg);
     color: var(--text-primary);
 }
 
-/* Match Cards */
+/* Shared cards and formats layout for matches */
 .match-card {
     padding: 1.5rem;
     display: flex;
@@ -305,7 +308,7 @@
     color: #fca5a5;
 }
 
-/* Custom Text Helpers */
+/* Custom brand colors helpers */
 .text-accent {
     color: var(--accent) !important;
 }
@@ -314,8 +317,8 @@
     color: var(--text-secondary) !important;
 }
 
-/* Back to Top Button */
-#back-to-top {
+/* Back to top dynamic button */
+body #back-to-top {
     position: fixed;
     bottom: 108px;
     right: 38px;
@@ -325,43 +328,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50% !important;
-    background: rgba(var(--twilight-rgb), 0.75) !important;
+    border-radius: 50%;
+    background: rgba(var(--twilight-rgb), 0.75);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border) !important;
-    color: var(--text-primary) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-#back-to-top.show {
+body #back-to-top.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
 
-#back-to-top:hover {
-    background: var(--accent) !important;
-    border-color: var(--accent) !important;
-    color: #fff !important;
+body #back-to-top:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 12px 28px var(--accent-glow) !important;
+    box-shadow: 0 12px 28px var(--accent-glow);
 }
 
 @media (max-width: 991.98px) {
-    #back-to-top {
-        bottom: calc(160px + env(safe-area-inset-bottom, 0px)) !important;
-        right: 22px !important;
-        left: auto !important;
-        z-index: 1040 !important;
+    body #back-to-top {
+        bottom: calc(160px + env(safe-area-inset-bottom, 0px));
+        right: 22px;
+        left: auto;
+        z-index: 1040;
     }
 }
 
-/* Mobile Bottom Bar Hover/Touch Animations */
+/* Mobile footer bar custom animations */
 .d-lg-none.fixed-bottom .nav-link {
     transition: color 0.2s ease;
 }
@@ -373,10 +376,9 @@
 .d-lg-none.fixed-bottom .nav-link:hover .transition-transform,
 .d-lg-none.fixed-bottom .nav-link:active .transition-transform,
 .d-lg-none.fixed-bottom .nav-link:focus .transition-transform {
-    transform: scale(1.2) !important;
+    transform: scale(1.2);
 }
 
-/* Add specialized glow filters depending on the icon category */
 .d-lg-none.fixed-bottom .nav-link.text-primary:hover .transition-transform,
 .d-lg-none.fixed-bottom .nav-link.text-primary:active .transition-transform {
     filter: drop-shadow(0 0 6px var(--accent-glow));
@@ -387,7 +389,7 @@
     filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.5));
 }
 
-/* Shared Input Icon Group Styles */
+/* Custom form inputs with icons */
 .input-icon-group {
     display: flex;
     align-items: center;
@@ -410,18 +412,18 @@
 
 .input-icon-group .form-control,
 .input-icon-group .form-select {
-    padding-left: 1rem !important;
+    padding-left: 1rem;
 }
 
 .input-icon-group .form-floating > label {
-    left: 0 !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    left: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
     width: 100%;
     z-index: 2;
 }
 
-/* Shared fadeInUp Animation */
+/* Animation utilities */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -432,3 +434,23 @@
         transform: translateY(0);
     }
 }
+
+/* Static utility classes to replace inline styles */
+.cursor-pointer { cursor: pointer; }
+.cursor-default { cursor: default; }
+.outline-none { outline: none; }
+.shadow-none { box-shadow: none; }
+.line-height-1 { line-height: 1; }
+.object-fit-cover { object-fit: cover; }
+.z-index-10 { z-index: 10; }
+.z-index-1000 { z-index: 1000; }
+.font-size-xs { font-size: 0.75rem; }
+.font-size-sm { font-size: 0.85rem; }
+.font-size-lg { font-size: 1.1rem; }
+.size-32 { width: 32px; height: 32px; }
+.size-60 { width: 60px; height: 60px; }
+.size-70 { width: 70px; height: 70px; }
+.progress-h-10 { height: 10px; overflow: hidden; }
+.cursor-grab { cursor: grab; }
+.size-38 { width: 38px; height: 38px; }
+.width-70 { width: 70px; }

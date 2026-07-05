@@ -86,7 +86,7 @@ class AuthController extends BaseController {
         $preferred_role = trim($_POST['preferred_role'] ?? 'Jolly');
         $password = $_POST['password'] ?? '';
 
-        // Salva i vecchi valori per ripopolare il form in caso di errore
+        // Keep old input values
         $_SESSION['old_fullname'] = $fullname;
         $_SESSION['old_email'] = $email;
         $_SESSION['old_phone'] = $phone;
@@ -113,12 +113,12 @@ class AuthController extends BaseController {
             $this->redirect('/register');
         }
 
-        // Dividi il nome completo in name e last_name
+        // Split fullname
         $nameParts = explode(' ', trim($fullname), 2);
         $name = $nameParts[0];
         $lastName = $nameParts[1] ?? $nameParts[0];
 
-        // Genera username da email (parte prima dell'@)
+        // Generate username from email
         $username = strtolower(explode('@', $email)[0]);
         $baseUsername = $username;
         $counter = 1;
@@ -127,7 +127,7 @@ class AuthController extends BaseController {
             $counter++;
         }
 
-        // Genera friend code univoco di 6 caratteri alfanumerici
+        // Generate friend code
         $friendCode = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 6));
 
         $userData = [
@@ -143,7 +143,7 @@ class AuthController extends BaseController {
         ];
 
         if ($userModel->createWithRole($userData)) {
-            // Pulisci i vecchi valori
+            // Clear old input values
             unset($_SESSION['old_fullname']);
             unset($_SESSION['old_email']);
             unset($_SESSION['old_phone']);
@@ -163,7 +163,7 @@ class AuthController extends BaseController {
         unset($_SESSION['user']);
         session_destroy();
         
-        // Ricrea sessione per mostrare un eventuale messaggio o permettere nuove operazioni CSRF
+        // Restart session
         session_start();
         $_SESSION['success'] = "Disconnessione effettuata con successo.";
         $this->redirect('/login');

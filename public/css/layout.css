@@ -1,4 +1,57 @@
-/* Header & Navigation */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+/* Color variables for light and dark themes */
+:root {
+    --bg-primary: #0e1626;
+    --twilight-rgb: 29, 52, 97;
+    --bg-secondary: rgba(var(--twilight-rgb), 0.65);
+    --bg-gradient-start: #1d3461;
+    --accent: #247ba0;
+    --accent-glow: rgba(36, 123, 160, 0.4);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border: rgba(96, 95, 94, 0.35);
+    --font-sans: 'Outfit', sans-serif;
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    --danger: #fb3640;
+    --card-bg: #15223c;
+    --card-hover-bg: #1c2d4e;
+    --option-bg: #0e1626;
+}
+
+html[data-bs-theme="light"] {
+    --bg-primary: #f8fafc;
+    --twilight-rgb: 226, 232, 240;
+    --bg-secondary: rgba(var(--twilight-rgb), 0.7);
+    --bg-gradient-start: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border: rgba(148, 163, 184, 0.35);
+    --card-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15);
+    --card-bg: #ffffff;
+    --card-hover-bg: #f1f5f9;
+    --option-bg: #ffffff;
+}
+
+/* Global body resets and base styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: radial-gradient(circle at top, var(--bg-gradient-start) 0%, var(--bg-primary) 80%);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Global header and navigation bar */
 body > header {
     border-bottom: 1px solid var(--border);
     background: rgba(14, 22, 38, 0.85);
@@ -14,6 +67,7 @@ body > header .navbar {
     -webkit-backdrop-filter: blur(16px);
 }
 
+/* Scroll progress bar at top of layout */
 #scroll-progress-container {
     position: fixed;
     top: 0;
@@ -31,6 +85,7 @@ body > header .navbar {
     transition: width 0.05s linear;
 }
 
+/* Brand logo and footer text */
 .footer-tagline {
     max-width: 500px;
 }
@@ -54,13 +109,12 @@ body > header .navbar {
     color: var(--text-primary);
 }
 
-/* Main Content Area */
+/* Main page body and global footer */
 main {
     flex: 1;
     width: 100%;
 }
 
-/* Footer */
 footer {
     text-align: center;
     padding: 2rem;
@@ -70,7 +124,7 @@ footer {
     background: rgba(14, 22, 38, 0.5);
 }
 
-/* Logo Image Styling */
+/* Images and logo wrapping elements */
 .header-logo-mobile {
     height: 32px;
     width: auto;
@@ -93,7 +147,6 @@ footer {
     filter: drop-shadow(0 0 8px rgba(36, 123, 160, 0.2));
 }
 
-/* Light Backdrop Wrapper for high-contrast accessibility */
 .logo-bg-wrapper {
     background: #ffffff;
     padding: 0.35rem 0.75rem;
@@ -111,7 +164,7 @@ footer {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-/* Custom transitions and hover effects matching app.blade.php styling */
+/* Utility animations and scale effects */
 .transition-all {
     transition: all 0.25s ease-in-out;
 }
@@ -136,12 +189,11 @@ footer {
     color: var(--bs-primary) !important;
 }
 
-/* Safe Area Utility for Mobile Screens with notch */
 .pb-safe {
     padding-bottom: env(safe-area-inset-bottom) !important;
 }
 
-/* Dropdown Animation */
+/* Header dropdown menu and animations */
 .fade-down {
     animation: fadeDown 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -157,7 +209,7 @@ footer {
     }
 }
 
-/* Topbar and mobile nav helpers */
+/* Mobile navigation bar and profile badges */
 .user-avatar-img,
 .user-avatar-fallback,
 .profile-nav-avatar {
@@ -201,7 +253,7 @@ footer {
     font-weight: 700;
 }
 
-/* Search Hover Reveal Effect */
+/* Navbar search expand component */
 .search-hover-reveal {
     overflow: hidden;
     max-width: 32px;
@@ -230,12 +282,8 @@ footer {
     transform: translateX(0);
 }
 
-/* Active Logo/Home Styling */
 .logo-active {
     box-shadow: 0 0 15px rgba(var(--bs-primary-rgb), 0.5) !important;
     border-color: var(--bs-primary) !important;
     transform: scale(1.05);
 }
-
-
-

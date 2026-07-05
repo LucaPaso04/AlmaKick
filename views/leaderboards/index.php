@@ -1,5 +1,5 @@
 <div class="container-fluid py-2">
-    <!-- Hero Section Moderno -->
+    <!-- Hero Section -->
     <div class="row mb-5">
         <div class="col-12">
             <header class="leaderboard-hero text-white text-center py-5 px-3 shadow-lg">
@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <!-- TABS NAVIGATION -->
+    <!-- Tabs navigation -->
     <nav aria-label="Navigazione classifiche">
         <ul class="nav nav-pills nav-fill bg-body shadow-sm rounded-pill p-2 mb-4 border" id="leaderboardTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -29,10 +29,10 @@
         </ul>
     </nav>
 
-    <!-- TABS CONTENT -->
+    <!-- Tabs content -->
     <div class="tab-content" id="leaderboardTabsContent" aria-live="polite">
         
-        <!-- TAB GLOBALE -->
+        <!-- Tab: Global -->
         <div class="tab-pane fade show active" id="global" role="tabpanel" aria-labelledby="global-tab" tabindex="0">
             <?php 
             $scorers = $topScorers;
@@ -43,7 +43,7 @@
         </div>
 
         <?php if (isset($_SESSION['user'])): ?>
-        <!-- TAB AMICI -->
+        <!-- Tab: Friends -->
         <div class="tab-pane fade" id="friends" role="tabpanel" aria-labelledby="friends-tab" tabindex="0">
             <?php if ($friendsCount === 0): ?>
                 <div class="alert alert-info text-center border-0 shadow-sm rounded-4 py-5 mb-4 d-flex flex-column align-items-center">

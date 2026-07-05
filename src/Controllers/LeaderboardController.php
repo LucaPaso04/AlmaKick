@@ -14,12 +14,12 @@ class LeaderboardController extends BaseController {
 
         $userModel = new User();
         
-        // Classifiche globali
+        // Global leaderboards
         $topScorers = $userModel->getTopScorers(10);
         $topMVPs = $userModel->getTopMVPs(10);
         $topRated = $userModel->getTopRated(10);
         
-        // Classifiche amici
+        // Friends leaderboards
         $friendsScorers = [];
         $friendsMVPs = [];
         $friendsRated = [];
@@ -33,7 +33,7 @@ class LeaderboardController extends BaseController {
             $friendsCount = $userModel->getFriendsCount($username);
         }
         
-        view('leaderboard', [
+        view('leaderboards/index', [
             'title' => 'Classifiche - AlmaKick',
             'topScorers' => $topScorers,
             'topMVPs' => $topMVPs,

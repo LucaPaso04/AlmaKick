@@ -32,7 +32,7 @@ if ($pct >= 100) {
 }
 
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/matches';
-// Rimuovi eventuale parametro ajax=1 per evitare che al ritorno il server restituisca un JSON
+// Remove ajax parameter from return URL
 $requestUri = str_replace(['?ajax=1&', '&ajax=1&', '&ajax=1', '?ajax=1'], ['?', '&', '', ''], $requestUri);
 if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 0) {
     $requestUri = substr($requestUri, strlen(BASE_URL));
@@ -45,7 +45,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
      style="<?= $canClick ? 'cursor: pointer;' : 'cursor: default;' ?>">
         <div class="match-header rounded-top-4" style="background: <?= $gradient ?>; height: 8px;"></div>
 
-        <!-- Host Avatar Overlapping -->
+        <!-- Host avatar -->
         <div class="position-absolute top-0 start-50 translate-middle-x" style="margin-top: -12px;">
             <a href="#" title="Organizzatore: <?= e($p['host_name'] ?? '') ?>" onclick="event.stopPropagation();">
                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['host_name'] ?? '') ?>&background=random&color=fff&size=64"
@@ -56,7 +56,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
 
         <div class="card-body position-relative pt-4 mt-2 d-flex flex-column h-100">
 
-            <!-- Badges Superiori -->
+            <!-- Top badges -->
             <div class="d-flex justify-content-between align-items-start mb-3 gap-1 flex-wrap">
                 <div class="d-flex gap-1 align-items-center">
                     <span class="badge bg-body-secondary text-body border rounded-pill px-2 py-1 shadow-sm">
@@ -90,7 +90,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
                 <?php endif; ?>
             </div>
 
-            <!-- Etichette Personali -->
+            <!-- Personal labels -->
             <div class="mb-2 text-center" style="min-height: 24px;">
                 <?php if (isset($_SESSION['user']['username']) && $p['host_username'] === $_SESSION['user']['username']): ?>
                     <span
@@ -117,7 +117,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
             <p class="text-center text-muted small mb-2"><span class="bi bi-person-fill text-secondary"></span> Org:
                 @<?= e($p['host_username'] ?? '') ?></p>
 
-            <!-- Barra di Progresso Iscritti -->
+            <!-- Registration progress bar -->
             <div class="my-2 px-1">
                 <div class="progress rounded-pill shadow-sm" style="height: 6px;"
                     title="Iscritti: <?= $p['posti_occupati'] ?? 0 ?>/<?= $p['max_players'] ?> (<?= $pct ?>%)">
@@ -145,7 +145,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
                 </div>
             </div>
 
-            <!-- Azioni Card -->
+            <!-- Card actions -->
             <div class="mt-3 pt-3 border-top border-opacity-10 d-block w-100" onclick="event.stopPropagation();">
                 <?php if (($p['status'] ?? '') === 'cancelled'): ?>
                     <div

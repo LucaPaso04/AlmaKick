@@ -15,7 +15,7 @@ if ($username) {
 
 
 
-<!-- HERO SECTION -->
+<!-- Hero Section -->
 <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
     <div>
         <h1 class="h3 fw-bold mb-1">
@@ -29,7 +29,7 @@ if ($username) {
     </div>
 </div>
 
-<!-- TABS SYSTEM Pill switcher -->
+<!-- Tabs switcher -->
 <ul class="nav nav-pills nav-fill bg-body shadow-sm rounded-4 p-2 mb-4 border" id="homeTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link <?= $activeTab === 'bacheca' ? 'active' : '' ?> rounded-pill fw-bold py-2"
@@ -47,14 +47,14 @@ if ($username) {
     </li>
 </ul>
 
-<!-- TABS CONTENT -->
+<!-- Tabs content -->
 <div class="tab-content" id="homeTabsContent">
 
-    <!-- TAB 1: LA MIA BACHECA -->
+    <!-- Tab: My Board -->
     <div class="tab-pane fade <?= $activeTab === 'bacheca' ? 'show active' : '' ?>" id="bacheca" role="tabpanel"
         aria-labelledby="bacheca-tab" tabindex="0">
 
-        <!-- Le mie Partite in Programma -->
+        <!-- My Upcoming Matches -->
         <div class="mb-4">
             <h2 class="h5 fw-bold mb-3"><span class="bi bi-calendar-check text-primary me-2"></span>Le tue Prossime Partite</h2>
 
@@ -96,11 +96,11 @@ if ($username) {
 
     </div>
 
-    <!-- TAB 2: TROVA PARTITE (ESPLORA) -->
+    <!-- Tab: Find Matches -->
     <div class="tab-pane fade <?= $activeTab === 'explore' ? 'show active' : '' ?>" id="explore" role="tabpanel"
         aria-labelledby="explore-tab" tabindex="0">
 
-        <!-- MATCH DISCOVERY SECTION CON FILTRI COMPATTI -->
+        <!-- Filters section -->
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="h5 fw-bold mb-0"><span class="bi bi-funnel text-primary me-2"></span>Filtra i Risultati</h2>
@@ -114,7 +114,7 @@ if ($username) {
                 <form action="<?= url('/matches') ?>" method="GET"
                     class="filter-form p-3 rounded-4 shadow-sm d-flex flex-wrap align-items-center gap-3">
                     <input type="hidden" name="tab" value="explore">
-                    <!-- Ricerca Luogo -->
+                    <!-- Location search -->
                     <div style="flex: 2 1 200px;">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text border-end-0"><span class="bi bi-search text-muted"></span></span>
@@ -124,7 +124,7 @@ if ($username) {
                         </div>
                     </div>
 
-                    <!-- Data Inizio (Dal) -->
+                    <!-- Date from -->
                     <div style="flex: 1 1 140px;">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text border-end-0 bg-transparent text-muted small">Dal</span>
@@ -133,7 +133,7 @@ if ($username) {
                         </div>
                     </div>
 
-                    <!-- Data Fine (Al) -->
+                    <!-- Date to -->
                     <div style="flex: 1 1 140px;">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text border-end-0 bg-transparent text-muted small">Al</span>
@@ -142,7 +142,7 @@ if ($username) {
                         </div>
                     </div>
 
-                    <!-- Formato -->
+                    <!-- Format -->
                     <div style="flex: 1 1 120px;">
                         <label for="filter-format" class="visually-hidden">Filtra per formato</label>
                         <select id="filter-format" name="format" class="form-select form-select-sm">
@@ -159,7 +159,7 @@ if ($username) {
                     </div>
 
 
-                    <!-- Partite di Amici -->
+                    <!-- Friends matches -->
                     <div class="d-flex align-items-center py-1">
                         <div class="form-check form-switch mb-0">
                             <input class="form-check-input" type="checkbox" role="switch" id="only_friends"
@@ -169,7 +169,7 @@ if ($username) {
                     </div>
 
                     <?php if ($username): ?>
-                    <!-- Nascondi mie iscrizioni -->
+                    <!-- Hide my matches -->
                     <div class="d-flex align-items-center py-1">
                         <div class="form-check form-switch mb-0">
                             <input class="form-check-input" type="checkbox" role="switch" id="exclude_my_matches"
@@ -179,7 +179,7 @@ if ($username) {
                     </div>
                     <?php endif; ?>
 
-                    <!-- Pulsante Resetta -->
+                    <!-- Reset button -->
                     <div id="resetButtonContainer" class="ms-md-auto d-flex align-items-center justify-content-center">
                         <?php if ($hasFilters): ?>
                             <a href="<?= url('/matches?tab=explore') ?>"
@@ -193,7 +193,7 @@ if ($username) {
             </div>
         </div>
 
-        <!-- Lista Partite -->
+        <!-- Matches list -->
         <div id="matchesContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
             <?php if (!empty($matches)): ?>
                 <?php foreach ($matches as $p): ?>

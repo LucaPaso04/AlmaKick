@@ -1,11 +1,7 @@
-/**
- * AlmaKick Match Details JavaScript Integration
- * Manages Leaflet Map mounting and dynamic weather forecast loading from OpenWeatherMap.
- */
-
+/* Match details Leaflet map and weather integration */
 document.addEventListener('DOMContentLoaded', function() {
     
-    // 1. Initialize Leaflet Map
+    // Initialize map
     var mapEl = document.getElementById('match-map');
     if (mapEl) {
         var lat = parseFloat(mapEl.getAttribute('data-lat'));
@@ -14,17 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isNaN(lat) && !isNaN(lng)) {
             try {
-                // Initialize map centered at location
                 var map = L.map('match-map', {
                     scrollWheelZoom: false
                 }).setView([lat, lng], 15);
 
-                // Add OpenStreetMap tiles (always white/light as requested)
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(map);
 
-                // Add Marker
                 var marker = L.marker([lat, lng]).addTo(map);
                 marker.bindPopup(`<strong>${locationName}</strong>`).openPopup();
                 
@@ -37,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 2. Fetch Weather Info
+    // Weather integrations
     var weatherEl = document.getElementById('weather-display');
     if (weatherEl) {
         var lat = weatherEl.getAttribute('data-lat');
@@ -46,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var status = weatherEl.getAttribute('data-status');
         var dateStr = weatherEl.getAttribute('data-date');
         var timeStr = weatherEl.getAttribute('data-time');
-
         var weatherIconEl = document.getElementById('weather-icon');
 
         if (status === 'finished') {
@@ -64,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (iconWrap) iconWrap.className = 'rounded-circle bg-danger bg-opacity-10 mx-auto d-flex align-items-center justify-content-center mb-3 icon-wrap-50';
             }
         } else if (!apiKey || apiKey.trim() === '') {
-            // Se non c'è una chiave API configurata, mostra un messaggio pulito di default
             weatherEl.textContent = 'Meteo N/D';
             weatherEl.title = 'Configura OPENWEATHER_KEY in config.php per abilitare le previsioni meteo.';
         } else if (lat && lng) {
@@ -79,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(function(data) {
                     if (data.list && data.list.length > 0) {
-                        // Trova la slot oraria più vicina all'orario della partita
                         var matchTime = new Date(dateStr + 'T' + timeStr).getTime();
                         var closest = data.list[0];
                         var minDiff = Math.abs(new Date(closest.dt * 1000).getTime() - matchTime);
@@ -96,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         var desc = closest.weather[0].description;
                         var iconCode = closest.weather[0].icon;
 
-                        // Mappa l'icona OpenWeather ad un'icona Bootstrap corrispondente
                         if (weatherIconEl && iconCode) {
                             var iconClass = 'bi-cloud-sun-fill';
                             switch(iconCode) {
@@ -122,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             weatherIconEl.className = `bi ${iconClass} fs-3 text-warning`;
                         }
 
-                        // Capitalize description first letter
                         desc = desc.charAt(0).toUpperCase() + desc.slice(1);
                         weatherEl.innerHTML = `<span class="fs-4 fw-bold">${temp}°C</span><br><span class="small fw-normal text-muted d-block mt-1 text-wrap">${desc}</span>`;
                     } else {
@@ -137,4 +125,150 @@ document.addEventListener('DOMContentLoaded', function() {
             weatherEl.textContent = 'Meteo N/D';
         }
     }
+    
+    // Copy link
+    var copyBtn = document.getElementById('copy-link-btn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', function() {
+            var urlToCopy = copyBtn.getAttribute('data-url') || window.location.href;
+            navigator.clipboard.writeText(urlToCopy).then(function() {
+                if (typeof window.showToast === 'function') {
+                    window.showToast("Link della partita copiato negli appunti!", "success");
+                } else {
+                    alert("Link della partita copiato negli appunti!");
+                }
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        });
+    }
+
+    // Countdown timer
+    const timerEl = document.getElementById("offer-timer");
+    if (timerEl) {
+        const expires = parseInt(timerEl.getAttribute("data-expires"), 10) * 1000;
+        const span = timerEl.querySelector("span");
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = expires - now;
+            if (distance < 0) {
+                span.innerText = "Tempo scaduto!";
+                span.classList.add("text-danger");
+                setTimeout(() => { window.location.reload(); }, 1500);
+                return;
+            }
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            span.innerText = "Tempo rimasto: " + minutes + "m " + seconds + "s";
+            setTimeout(updateTimer, 1000);
+        }
+        updateTimer();
+    }
+
+    // Interactive stars rating
+    document.querySelectorAll('.star-rating').forEach(function(ratingEl) {
+        var username = ratingEl.getAttribute('data-username');
+        var hiddenInput = document.getElementById('vote_val_' + username);
+        var stars = ratingEl.querySelectorAll('.star-item');
+
+        stars.forEach(function(star) {
+            star.addEventListener('mouseenter', function() {
+                var hoverVal = parseInt(this.getAttribute('data-value'));
+                stars.forEach(function(s, idx) {
+                    if (idx < hoverVal) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseleave', function() {
+                var currentVal = parseInt(hiddenInput.value) || 0;
+                stars.forEach(function(s, idx) {
+                    if (idx < currentVal) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                    }
+                });
+            });
+
+            star.addEventListener('click', function() {
+                var clickVal = this.getAttribute('data-value');
+                hiddenInput.value = clickVal;
+                stars.forEach(function(s, idx) {
+                    if (idx < clickVal) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                    }
+                });
+            });
+        });
+    });
+
+    // Thumb down check
+    document.querySelectorAll('.thumb-down-check').forEach(function(checkbox) {
+        var label = document.querySelector('label[for="' + checkbox.id + '"]');
+        if (label) {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    label.classList.replace('btn-outline-danger', 'btn-danger');
+                    label.querySelector('.bi').classList.replace('bi-hand-thumbs-down', 'bi-hand-thumbs-down-fill');
+                } else {
+                    label.classList.replace('btn-danger', 'btn-outline-danger');
+                    label.querySelector('.bi').classList.replace('bi-hand-thumbs-down-fill', 'bi-hand-thumbs-down');
+                }
+            });
+        }
+    });
+
 });
+
+// Global ICS generator
+function downloadICS(btn) {
+    if (!btn) return;
+    var title = btn.getAttribute("data-title") || "Partita AlmaKick";
+    var location = btn.getAttribute("data-location") || "";
+    var description = btn.getAttribute("data-description") || "";
+    var dateStr = btn.getAttribute("data-date") || "";
+    var timeStr = btn.getAttribute("data-time") || "";
+    var matchId = btn.getAttribute("data-match-id") || "";
+    var absoluteUrl = btn.getAttribute("data-url") || window.location.href;
+
+    var startLocal = new Date(dateStr + 'T' + timeStr);
+    var endLocal = new Date(startLocal.getTime() + 90 * 60 * 1000);
+    
+    function formatICSDate(date) {
+        return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    }
+
+    var icsContent = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//AlmaKick//NONSGML v1.0//IT",
+        "BEGIN:VEVENT",
+        "UID:almakick_" + matchId + "_" + Date.now() + "@almakick.it",
+        "DTSTAMP:" + formatICSDate(new Date()),
+        "DTSTART:" + formatICSDate(startLocal),
+        "DTEND:" + formatICSDate(endLocal),
+        "SUMMARY:" + title,
+        "DESCRIPTION:" + description,
+        "LOCATION:" + location,
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\r\n");
+
+    var blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8;" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "partita_almakick_" + matchId + ".ics");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    if (typeof window.showToast === 'function') {
+        window.showToast("Promemoria salvato! Aggiungilo al tuo calendario.", "success");
+    }
+}

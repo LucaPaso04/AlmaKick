@@ -1,6 +1,4 @@
-/* AlmaKick Admin Dashboard Premium Stylesheet */
-
-/* Header Decor */
+/* Admin dashboard header banner and design decor */
 .admin-header {
     background: linear-gradient(135deg, var(--bs-primary) 0%, #1f487e 100%);
     padding: 2rem;
@@ -19,35 +17,35 @@
     pointer-events: none;
 }
 
-/* Stats Grid Layout */
+/* Overview layout stats grid */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 1rem;
 }
 
-/* Stat Cards */
-.admin-stat-card {
-    background: rgba(var(--bs-body-bg-rgb), 0.5) !important;
+/* Individual KPI metric card styling */
+body .admin-stat-card {
+    background: rgba(var(--bs-body-bg-rgb), 0.5);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1.5rem 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.admin-stat-card:hover {
+body .admin-stat-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
-    border-color: rgba(var(--bs-primary-rgb), 0.3) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(var(--bs-primary-rgb), 0.3);
 }
 
-.admin-stat-card h3 {
+body .admin-stat-card h3 {
     font-size: 1.75rem;
     margin-top: 0.75rem;
     color: var(--bs-body-color);
 }
 
-/* Icon Circles */
+/* Stats circle icons and variations */
 .icon-circle {
     width: 48px;
     height: 48px;
@@ -94,7 +92,7 @@
     color: #6c757d;
 }
 
-/* Pulsing warning for pending reports */
+/* Warning pulsing effect for pending items */
 .pulse-danger {
     box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
     animation: danger-pulse-animation 2s infinite;
@@ -112,47 +110,49 @@
     }
 }
 
-/* Table Row Highlights */
-.clickable-row {
+/* Interactive tables row highlights */
+body .clickable-row {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.clickable-row:hover {
-    background-color: rgba(255, 255, 255, 0.04) !important;
+body .clickable-row:hover {
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
-.table-banned {
-    background-color: rgba(220, 53, 69, 0.08) !important;
+body .table-banned {
+    background-color: rgba(220, 53, 69, 0.08);
     color: rgba(255, 255, 255, 0.85);
 }
-.table-banned a {
-    color: #ff6b6b !important;
+
+body .table-banned a {
+    color: #ff6b6b;
 }
 
-.table-suspicious {
-    background-color: rgba(255, 193, 7, 0.08) !important;
+body .table-suspicious {
+    background-color: rgba(255, 193, 7, 0.08);
     color: rgba(255, 255, 255, 0.85);
 }
-.table-suspicious a {
-    color: #ffd43b !important;
+
+body .table-suspicious a {
+    color: #ffd43b;
 }
 
-.table-cancelled {
-    background-color: rgba(108, 117, 125, 0.08) !important;
+body .table-cancelled {
+    background-color: rgba(108, 117, 125, 0.08);
     text-decoration: line-through;
     opacity: 0.75;
 }
 
-.table-positive {
-    background-color: rgba(25, 135, 84, 0.06) !important;
+body .table-positive {
+    background-color: rgba(25, 135, 84, 0.06);
 }
 
-.table-negative {
-    background-color: rgba(220, 53, 69, 0.06) !important;
+body .table-negative {
+    background-color: rgba(220, 53, 69, 0.06);
 }
 
-/* Truncate long descriptions in reports */
+/* Truncating setup for report descriptions */
 .admin-reports-table-desc {
     max-width: 250px;
     white-space: nowrap;
@@ -160,31 +160,31 @@
     text-overflow: ellipsis;
 }
 
-/* Light theme support */
-[data-bs-theme="light"] .admin-stat-card {
-    background: rgba(255, 255, 255, 0.8) !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+/* Light mode overrides for cards and rows */
+html[data-bs-theme="light"] body .admin-stat-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-bs-theme="light"] .clickable-row:hover {
-    background-color: rgba(0, 0, 0, 0.03) !important;
+html[data-bs-theme="light"] body .clickable-row:hover {
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
-[data-bs-theme="light"] .table-banned {
-    background-color: rgba(220, 53, 69, 0.05) !important;
+html[data-bs-theme="light"] body .table-banned {
+    background-color: rgba(220, 53, 69, 0.05);
 }
 
-[data-bs-theme="light"] .table-suspicious {
-    background-color: rgba(255, 193, 7, 0.05) !important;
+html[data-bs-theme="light"] body .table-suspicious {
+    background-color: rgba(255, 193, 7, 0.05);
 }
 
-/* Premium Tab Navigation Styles */
-.admin-tabs {
-    background-color: rgba(21, 34, 60, 0.45) !important;
+/* Premium admin tabs pill switchers styling */
+body .admin-tabs {
+    background-color: rgba(21, 34, 60, 0.45);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 1.25rem !important;
-    padding: 0.35rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    padding: 0.35rem;
     display: flex;
     gap: 0.25rem;
 }
@@ -193,10 +193,10 @@
     margin: 0;
 }
 
-.admin-tabs .nav-link {
+body .admin-tabs .nav-link {
     color: var(--text-secondary);
-    background-color: transparent !important;
-    border: none !important;
+    background-color: transparent;
+    border: none;
     padding: 0.75rem 1.2rem;
     font-size: 0.95rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -206,23 +206,23 @@
     gap: 0.5rem;
 }
 
-.admin-tabs .nav-link:hover {
+body .admin-tabs .nav-link:hover {
     color: var(--text-primary);
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-.admin-tabs .nav-link.active {
-    color: #fff !important;
-    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--accent) 100%) !important;
-    box-shadow: 0 4px 15px var(--accent-glow) !important;
+body .admin-tabs .nav-link.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--accent) 100%);
+    box-shadow: 0 4px 15px var(--accent-glow);
     transform: scale(1.02);
 }
 
-/* Glassmorphism Panels and Chart Cards */
-.glass-panel {
-    background: rgba(21, 34, 60, 0.55) !important;
+/* Overview panel charts and dashboard metrics panels */
+body .glass-panel {
+    background: rgba(21, 34, 60, 0.55);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     box-shadow: var(--card-shadow);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
@@ -231,13 +231,13 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.chart-card:hover {
+body .chart-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
-    border-color: rgba(36, 123, 160, 0.3) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    border-color: rgba(36, 123, 160, 0.3);
 }
 
-/* Tab Transitions */
+/* Tabs visual transitions */
 .tab-content > .tab-pane {
     display: none;
 }
@@ -257,52 +257,52 @@
     }
 }
 
-/* Light Theme overrides for tabs & charts */
-[data-bs-theme="light"] .admin-tabs {
-    background-color: rgba(226, 232, 240, 0.5) !important;
-    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+/* Light mode overrides for dashboard tabs and metrics panels */
+html[data-bs-theme="light"] body .admin-tabs {
+    background-color: rgba(226, 232, 240, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
-[data-bs-theme="light"] .admin-tabs .nav-link {
+html[data-bs-theme="light"] body .admin-tabs .nav-link {
     color: var(--text-secondary);
 }
 
-[data-bs-theme="light"] .admin-tabs .nav-link:hover {
+html[data-bs-theme="light"] body .admin-tabs .nav-link:hover {
     color: var(--text-primary);
-    background-color: rgba(0, 0, 0, 0.04) !important;
+    background-color: rgba(0, 0, 0, 0.04);
 }
 
-[data-bs-theme="light"] .admin-tabs .nav-link.active {
-    color: #fff !important;
-    background: linear-gradient(135deg, #1f487e 0%, var(--accent) 100%) !important;
-    box-shadow: 0 4px 15px rgba(36, 123, 160, 0.25) !important;
+html[data-bs-theme="light"] body .admin-tabs .nav-link.active {
+    color: #fff;
+    background: linear-gradient(135deg, #1f487e 0%, var(--accent) 100%);
+    box-shadow: 0 4px 15px rgba(36, 123, 160, 0.25);
 }
 
-[data-bs-theme="light"] .glass-panel {
-    background: rgba(255, 255, 255, 0.75) !important;
-    border: 1px solid rgba(148, 163, 184, 0.15) !important;
+html[data-bs-theme="light"] body .glass-panel {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.15);
     box-shadow: var(--card-shadow);
 }
 
-[data-bs-theme="light"] .chart-card:hover {
-    box-shadow: 0 12px 30px rgba(148, 163, 184, 0.2) !important;
-    border-color: rgba(36, 123, 160, 0.3) !important;
+html[data-bs-theme="light"] body .chart-card:hover {
+    box-shadow: 0 12px 30px rgba(148, 163, 184, 0.2);
+    border-color: rgba(36, 123, 160, 0.3);
 }
 
-/* Responsive improvements */
+/* Responsiveness adjustments */
 @media (max-width: 768px) {
-    .admin-tabs {
+    body .admin-tabs {
         flex-direction: column;
-        border-radius: 1rem !important;
-        padding: 0.5rem !important;
+        border-radius: 1rem;
+        padding: 0.5rem;
     }
-    .admin-tabs .nav-link {
+    body .admin-tabs .nav-link {
         justify-content: flex-start;
         padding: 0.6rem 1rem;
     }
 }
 
-/* AJAX Loading State Transition */
+/* AJAX background loading visual indicators */
 .tab-pane {
     transition: opacity 0.25s ease-in-out;
 }
