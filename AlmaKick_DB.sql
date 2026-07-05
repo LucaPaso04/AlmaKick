@@ -224,100 +224,100 @@ INSERT INTO users (username, friend_code, name, last_name, email, password, phon
 -- --------------------------------------------------------
 
 -- Match 1: Future open match (5v5), partially filled, no teams assigned
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(1, 'mario_rossi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '19:30:00', 'Bologna Sports Center', '5v5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(1, 'mario_rossi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '19:30:00', 'Bologna Sports Center', 44.4949, 11.3426, '5v5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 2: Future open match (7v7), hosted by Tommaso Stella, private visibility, no teams assigned
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(2, 'tommaso_st', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Centro Sportivo San Siro', '7v7', 14, 70.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(2, 'tommaso_st', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Centro Sportivo San Siro', 45.4781, 9.1240, '7v7', 14, 70.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 3: Finished match (5v5), scores are entered (4-2), but MVP is not assigned yet (users can vote)
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(3, 'mario_rossi', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 8 DAY), '20:00:00', 'Bologna Sports Center', '5v5', 10, 50.00, 4, 2, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(3, 'mario_rossi', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 8 DAY), '20:00:00', 'Bologna Sports Center', 44.4949, 11.3426, '5v5', 10, 50.00, 4, 2, 0, NOW(), NOW());
 
 -- Match 4: Finished match (5v5) where scores are NOT entered yet (host needs to report scores)
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(4, 'admin_test', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 7 DAY), '21:00:00', 'Bologna Center Pitch', '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(4, 'admin_test', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 7 DAY), '21:00:00', 'Bologna Center Pitch', 44.5000, 11.3500, '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 5: Finished match (7v7), completely resolved, scores set (3-3), MVP assigned to Lorenzo Zaffiro
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
-(5, 'luca_celeste', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 15 DAY), '20:00:00', 'Centro Sportivo Olimpia', '7v7', 14, 100.00, 3, 3, 1, 'lorenzo_zaffiro', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
+(5, 'luca_celeste', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 15 DAY), '20:00:00', 'Centro Sportivo Olimpia', 44.4850, 11.3200, '7v7', 14, 100.00, 3, 3, 1, 'lorenzo_zaffiro', NOW(), NOW());
 
 -- Match 11: Future open match (5v5) with few registrations (3/10), private visibility
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(11, 'stefano_viola', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '18:00:00', 'Campetti San Paolo', '5v5', 10, 55.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(11, 'stefano_viola', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '18:00:00', 'Campetti San Paolo', 44.4750, 11.3600, '5v5', 10, 55.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 12: Future open match (7v7) with guest registrations (4 seats occupied)
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(12, 'luca_celeste', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 4 DAY), '20:00:00', 'Polisportiva Nord', '7v7', 14, 120.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(12, 'luca_celeste', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 4 DAY), '20:00:00', 'Polisportiva Nord', 44.5200, 11.3300, '7v7', 14, 120.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 13: Future open match (5v5) with very few registrations (2/10), private visibility
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(13, 'simone_smeraldo', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 6 DAY), '21:30:00', 'Calcetto Club', '5v5', 10, 70.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(13, 'simone_smeraldo', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 6 DAY), '21:30:00', 'Calcetto Club', 44.5100, 11.3700, '5v5', 10, 70.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 14: Future full match (5v5), 10 players registered, 1 in waitlist, no teams assigned (ready for team generation)
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(14, 'sofia_corallo', 'full', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '19:30:00', 'Arena Sport', '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(14, 'sofia_corallo', 'full', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '19:30:00', 'Arena Sport', 44.4900, 11.3000, '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 888: Future full match (5v5) starting in 2 hours (urgent/last-minute), 10 players registered, 1 waitlisted, no teams assigned
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(888, 'sofia_corallo', 'full', 'public', DATE(DATE_ADD(NOW(), INTERVAL 2 HOUR)), TIME(DATE_ADD(NOW(), INTERVAL 2 HOUR)), 'Campo Test Manuale', '5vs5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(888, 'sofia_corallo', 'full', 'public', DATE(DATE_ADD(NOW(), INTERVAL 2 HOUR)), TIME(DATE_ADD(NOW(), INTERVAL 2 HOUR)), 'Campo Test Manuale', 44.4950, 11.3400, '5vs5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 111: Future open match (5v5), urgent (in 2 days), 8/10 spots occupied (one guest), no teams assigned
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(111, 'luigi_verdi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '20:30:00', 'Campus calcetto CUS', '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(111, 'luigi_verdi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '20:30:00', 'Campus calcetto CUS', 44.5150, 11.3800, '5v5', 10, 60.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 211: Future open match (7v7) with 6 registrations (6/14), public visibility, no teams assigned
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(211, 'marco_bianchi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '19:00:00', 'Centro Sportivo Olimpia', '7v7', 14, 98.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(211, 'marco_bianchi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '19:00:00', 'Centro Sportivo Olimpia', 44.4850, 11.3200, '7v7', 14, 98.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 311: Future full match (5v5), 10 players registered, no teams assigned (ready for team generation)
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(311, 'paolo_marroni', 'full', 'public', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '21:00:00', 'Campetti San Paolo', '5v5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(311, 'paolo_marroni', 'full', 'public', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '21:00:00', 'Campetti San Paolo', 44.4750, 11.3600, '5v5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 15: Finished match (5v5), completely resolved, scores set (4-8), MVP assigned to Vittorio Ossidiana
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
-(15, 'luigi_verdi', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 3 DAY), '21:00:00', 'Campetti San Paolo', '5v5', 10, 55.00, 4, 8, 1, 'vittorio_ossidiana', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
+(15, 'luigi_verdi', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 3 DAY), '21:00:00', 'Campetti San Paolo', 44.4750, 11.3600, '5v5', 10, 55.00, 4, 8, 1, 'vittorio_ossidiana', NOW(), NOW());
 
 -- Match 16: Finished match (5v5), completely resolved, scores set (10-2), MVP assigned to Chiara Rosa
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
-(16, 'chiara_rosa', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 7 DAY), '19:00:00', 'Campus calcetto CUS', '5v5', 10, 60.00, 10, 2, 1, 'chiara_rosa', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
+(16, 'chiara_rosa', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 7 DAY), '19:00:00', 'Campus calcetto CUS', 44.5150, 11.3800, '5v5', 10, 60.00, 10, 2, 1, 'chiara_rosa', NOW(), NOW());
 
 -- Match 17: Finished match (7v7), completely resolved, scores set (5-5), MVP assigned to Vittorio Ossidiana
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
-(17, 'marco_diamante', 'finished', 'private', DATE_SUB(CURDATE(), INTERVAL 14 DAY), '20:00:00', 'Centro Sportivo Olimpia', '7v7', 14, 98.00, 5, 5, 1, 'vittorio_ossidiana', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
+(17, 'marco_diamante', 'finished', 'private', DATE_SUB(CURDATE(), INTERVAL 14 DAY), '20:00:00', 'Centro Sportivo Olimpia', 44.4850, 11.3200, '7v7', 14, 98.00, 5, 5, 1, 'vittorio_ossidiana', NOW(), NOW());
 
 -- Match 18: Finished match (5v5), completely resolved, scores set (6-7), MVP assigned to Lorenzo Zaffiro
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
-(18, 'lorenzo_zaffiro', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 21 DAY), '22:00:00', 'Calcetto Club', '5v5', 10, 70.00, 6, 7, 1, 'lorenzo_zaffiro', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `mvp_username`, `created_at`, `updated_at`) VALUES
+(18, 'lorenzo_zaffiro', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 21 DAY), '22:00:00', 'Calcetto Club', 44.5100, 11.3700, '5v5', 10, 70.00, 6, 7, 1, 'lorenzo_zaffiro', NOW(), NOW());
 
 -- Match 411: Finished match (5v5), completely resolved, scores set (7-5), MVP not assigned
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(411, 'roberto_arancio', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '18:30:00', 'Playground Stadio', '5v5', 10, 60.00, 7, 5, 0, NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(411, 'roberto_arancio', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '18:30:00', 'Playground Stadio', 44.4925, 11.3090, '5v5', 10, 60.00, 7, 5, 0, NOW(), NOW());
 
 -- Match 6: Cancelled match due to bad weather
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(6, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Campo Periferia', '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(6, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Campo Periferia', 44.5300, 11.3900, '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
 
 -- Match 7: Cancelled match due to bad weather
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(7, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 12 DAY), '21:00:00', 'Campo Periferia', '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(7, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 12 DAY), '21:00:00', 'Campo Periferia', 44.5300, 11.3900, '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
 
 -- Match 8: Cancelled match due to bad weather
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(8, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 20 DAY), '21:00:00', 'Campo Periferia', '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(8, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 20 DAY), '21:00:00', 'Campo Periferia', 44.5300, 11.3900, '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
 
 -- Match 9: Cancelled match due to bad weather
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(9, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 25 DAY), '21:00:00', 'Campo Periferia', '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(9, 'giovanni_neri', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 25 DAY), '21:00:00', 'Campo Periferia', 44.5300, 11.3900, '5v5', 10, 50.00, 'Meteo avverso', NOW(), NOW());
 
 -- Match 10: Cancelled match due to insufficient player count
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(10, 'andrea_gialli', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '22:00:00', 'Campetti San Paolo', '5v5', 10, 50.00, 'Non abbiamo raggiunto il numero', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(10, 'andrea_gialli', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '22:00:00', 'Campetti San Paolo', 44.4750, 11.3600, '5v5', 10, 50.00, 'Non abbiamo raggiunto il numero', NOW(), NOW());
 
 -- Match 19: Cancelled match due to pitch issues
-INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(19, 'vittorio_ossidiana', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '20:30:00', 'Arena Sport', '5v5', 10, 60.00, 'Infortunio del campo', NOW(), NOW());
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
+(19, 'vittorio_ossidiana', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '20:30:00', 'Arena Sport', 44.4900, 11.3000, '5v5', 10, 60.00, 'Infortunio del campo', NOW(), NOW());
 
 
 -- --------------------------------------------------------
