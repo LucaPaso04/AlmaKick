@@ -1,6 +1,6 @@
 <div id="matches-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3">
-        <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event-fill me-2 text-success"></i>Gestione Partite</h5>
+        <h2 class="h5 fw-bold mb-0"><span class="bi bi-calendar-event-fill me-2 text-success"></span>Gestione Partite</h2>
     </div>
 
     <?php // Filters & Search ?>
@@ -8,13 +8,15 @@
         <form method="GET" action="<?= url('/admin') ?>#matches-section" class="row g-2">
             <div class="col-md-4">
                 <div class="input-group">
-                    <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
-                    <input type="text" name="search_match" class="form-control" placeholder="Cerca..." value="<?= e($searchMatch) ?>">
+                    <span class="input-group-text bg-body-tertiary"><span class="bi bi-search text-body"></span></span>
+                    <label for="search-match-input" class="visually-hidden">Cerca partite</label>
+                    <input type="text" id="search-match-input" name="search_match" class="form-control" placeholder="Cerca..." value="<?= e($searchMatch) ?>">
                 </div>
             </div>
 
             <div class="col-md-2">
-                <select name="status_match" class="form-select">
+                <label for="filter-status-match-select" class="visually-hidden">Filtra per stato partita</label>
+                <select id="filter-status-match-select" name="status_match" class="form-select">
                     <option value="">Stato</option>
                     <option value="open" <?= $statusMatch === 'open' ? 'selected' : '' ?>>Aperte</option>
                     <option value="full" <?= $statusMatch === 'full' ? 'selected' : '' ?>>Complete</option>
@@ -24,11 +26,13 @@
             </div>
 
             <div class="col-md-4">
-                <input type="date" name="date_match" class="form-control" value="<?= e($dateMatch) ?>" title="Filtra per data">
+                <label for="filter-date-match-input" class="visually-hidden">Filtra per data partita</label>
+                <input type="date" id="filter-date-match-input" name="date_match" class="form-control" value="<?= e($dateMatch) ?>" title="Filtra per data">
             </div>
 
             <div class="col-md-2">
-                <select name="format_match" class="form-select">
+                <label for="filter-format-match-select" class="visually-hidden">Filtra per formato partita</label>
+                <select id="filter-format-match-select" name="format_match" class="form-select">
                     <option value="">Formato</option>
                     <option value="5v5" <?= $formatMatch === '5v5' ? 'selected' : '' ?>>5v5</option>
                     <option value="7v7" <?= $formatMatch === '7v7' ? 'selected' : '' ?>>7v7</option>
@@ -40,7 +44,7 @@
         <?php if ($searchMatch || $statusMatch || $dateMatch || $formatMatch): ?>
             <div class="mt-2">
                 <a href="<?= url('/admin') ?>#matches-section" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-x-circle me-1"></i>Resetta filtri partite
+                    <span class="bi bi-x-circle me-1"></span>Resetta filtri partite
                 </a>
             </div>
         <?php endif; ?>
@@ -103,16 +107,18 @@
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                         <input type="hidden" name="match_id" value="<?= e($m['id']) ?>">
                                         <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill me-1"
-                                            onclick="return confirm('Annullare questa partita?');"><i
-                                                class="bi bi-x-lg"></i></button>
+                                            title="Annulla partita" aria-label="Annulla partita"
+                                            onclick="return confirm('Annullare questa partita?');"><span
+                                                class="bi bi-x-lg"></span></button>
                                     </form>
                                 <?php endif; ?>
                                 <form action="<?= url('/admin/matches/delete') ?>" method="POST" class="d-inline-block">
                                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                     <input type="hidden" name="match_id" value="<?= e($m['id']) ?>">
                                     <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill"
-                                        onclick="return confirm('ELIMINARE definitivamente la partita? Questa azione è irreversibile.');"><i
-                                            class="bi bi-trash3"></i></button>
+                                        title="Elimina partita" aria-label="Elimina partita"
+                                        onclick="return confirm('ELIMINARE definitivamente la partita? Questa azione è irreversibile.');"><span
+                                            class="bi bi-trash3"></span></button>
                                 </form>
                             </td>
                         </tr>

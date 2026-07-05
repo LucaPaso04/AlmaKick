@@ -4,12 +4,12 @@
 <div class="admin-header mb-4 d-flex align-items-center justify-content-between">
     <div>
         <h1 class="fw-bolder mb-1 text-white admin-header-subtitle">
-            <i class="bi bi-shield-lock-fill text-warning me-2"></i>Dashboard Amministratore
+            <span class="bi bi-shield-lock-fill text-warning me-2"></span>Dashboard Amministratore
         </h1>
         <p class="text-white-50 mb-0">Supervisiona utenti, partite, Trust Score e moderazione sulla piattaforma.</p>
     </div>
     <div class="d-none d-md-block">
-        <i class="bi bi-graph-up-arrow text-white-50 admin-header-decor"></i>
+        <span class="bi bi-graph-up-arrow text-white-50 admin-header-decor"></span>
     </div>
 </div>
 
@@ -44,51 +44,51 @@
         <div class="stats-grid mb-5">
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-primary">
-            <i class="bi bi-people-fill"></i>
+            <span class="bi bi-people-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['total_users']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['total_users']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Utenti Totali</small>
     </div>
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-danger">
-            <i class="bi bi-person-x-fill"></i>
+            <span class="bi bi-person-x-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['banned_users']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['banned_users']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Bannati</small>
     </div>
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-success">
-            <i class="bi bi-calendar-event-fill"></i>
+            <span class="bi bi-calendar-event-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['total_matches']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['total_matches']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Partite Totali</small>
     </div>
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-info">
-            <i class="bi bi-play-circle-fill"></i>
+            <span class="bi bi-play-circle-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['active_matches']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['active_matches']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Attive</small>
     </div>
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-dark">
-            <i class="bi bi-flag-fill"></i>
+            <span class="bi bi-flag-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['finished_matches']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['finished_matches']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Concluse</small>
     </div>
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100">
         <div class="icon-circle icon-warning text-dark">
-            <i class="bi bi-x-circle-fill"></i>
+            <span class="bi bi-x-circle-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['cancelled_matches']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['cancelled_matches']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Annullate</small>
     </div>
     <div class="card admin-stat-card border-0 shadow-sm rounded-4 text-center h-100 <?= $stats['pending_reports'] > 0 ? 'border border-danger border-opacity-50' : '' ?>">
         <div class="icon-circle <?= $stats['pending_reports'] > 0 ? 'icon-danger pulse-danger' : 'icon-secondary' ?> <?= $stats['pending_reports'] > 0 ? 'pending-reports-active' : 'pending-reports-inactive' ?>">
-            <i class="bi bi-flag-fill"></i>
+            <span class="bi bi-flag-fill"></span>
         </div>
-        <h3 class="fw-bold mb-0"><?= e($stats['pending_reports']) ?></h3>
+        <div class="h3 fw-bold mb-0"><?= e($stats['pending_reports']) ?></div>
         <small class="text-muted fw-semibold admin-stat-card-label">Segnalazioni</small>
     </div>
 </div>

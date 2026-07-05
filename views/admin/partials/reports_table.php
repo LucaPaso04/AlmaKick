@@ -1,8 +1,8 @@
 <div id="reports-section-card" class="card shadow border-0 rounded-4 overflow-hidden mb-5">
     <div class="card-header bg-body-tertiary border-0 p-3 d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold mb-0"><i class="bi bi-flag-fill me-2 text-danger"></i>Gestione Segnalazioni</h5>
+        <h2 class="h5 fw-bold mb-0"><span class="bi bi-flag-fill me-2 text-danger"></span>Gestione Segnalazioni</h2>
         <?php if($stats['pending_reports'] > 0): ?>
-            <span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-exclamation-triangle-fill me-1"></i><?= e($stats['pending_reports']) ?> Da Gestire</span>
+            <span class="badge bg-danger rounded-pill px-3 py-2"><span class="bi bi-exclamation-triangle-fill me-1"></span><?= e($stats['pending_reports']) ?> Da Gestire</span>
         <?php endif; ?>
     </div>
 
@@ -11,14 +11,16 @@
         <form method="GET" action="<?= url('/admin') ?>#reports-section" class="row g-2">
             <div class="col-md-8">
                 <div class="input-group">
-                    <span class="input-group-text bg-body-tertiary"><i class="bi bi-search text-body"></i></span>
-                    <input type="text" name="search_report" class="form-control" placeholder="Cerca in segnalazioni..."
+                    <span class="input-group-text bg-body-tertiary"><span class="bi bi-search text-body"></span></span>
+                    <label for="search-report-input" class="visually-hidden">Cerca in segnalazioni</label>
+                    <input type="text" id="search-report-input" name="search_report" class="form-control" placeholder="Cerca in segnalazioni..."
                         value="<?= e($searchReport) ?>">
                 </div>
             </div>
 
             <div class="col-md-4">
-                <select name="status_report" class="form-select">
+                <label for="filter-status-report-select" class="visually-hidden">Filtra per stato segnalazione</label>
+                <select id="filter-status-report-select" name="status_report" class="form-select">
                     <option value="">Tutti gli stati</option>
                     <option value="pending" <?= $statusReport === 'pending' ? 'selected' : '' ?>>Pendenti</option>
                     <option value="resolved" <?= $statusReport === 'resolved' ? 'selected' : '' ?>>Risolte</option>
@@ -40,7 +42,7 @@
         <?php if ($searchReport || $statusReport !== 'pending'): ?>
             <div class="mt-2">
                 <a href="<?= url('/admin') ?>#reports-section" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-x-circle me-1"></i>Resetta filtri segnalazioni
+                    <span class="bi bi-x-circle me-1"></span>Resetta filtri segnalazioni
                 </a>
             </div>
         <?php endif; ?>
@@ -98,7 +100,7 @@
                                 <?php if (!empty($r['match_id'])): ?>
                                     <div class="mt-1">
                                         <a href="<?= url('/matches/' . $r['match_id']) ?>?from=admin" class="badge bg-info-subtle text-info-emphasis text-decoration-none rounded-3 px-2 py-1" onclick="event.stopPropagation();">
-                                            <i class="bi bi-calendar-event me-1"></i>Partita #<?= e($r['match_id']) ?>
+                                            <span class="bi bi-calendar-event me-1"></span>Partita #<?= e($r['match_id']) ?>
                                         </a>
                                     </div>
                                 <?php endif; ?>
@@ -109,17 +111,17 @@
                                 </div>
                                 <?php if($r['admin_notes']): ?>
                                     <div class="mt-1 small border-top pt-1 text-info">
-                                        <i class="bi bi-chat-right-text-fill me-1"></i><strong>Nota Admin:</strong> <?= e($r['admin_notes']) ?>
+                                        <span class="bi bi-chat-right-text-fill me-1"></span><strong>Nota Admin:</strong> <?= e($r['admin_notes']) ?>
                                     </div>
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">
                                 <?php if($r['status'] === 'pending'): ?>
-                                    <span class="badge bg-warning text-dark px-2 py-1"><i class="bi bi-clock-fill me-1"></i>Pendente</span>
+                                    <span class="badge bg-warning text-dark px-2 py-1"><span class="bi bi-clock-fill me-1"></span>Pendente</span>
                                 <?php elseif($r['status'] === 'resolved'): ?>
-                                    <span class="badge bg-success text-white px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i>Risolta</span>
+                                    <span class="badge bg-success text-white px-2 py-1"><span class="bi bi-check-circle-fill me-1"></span>Risolta</span>
                                 <?php elseif($r['status'] === 'dismissed'): ?>
-                                    <span class="badge bg-secondary text-white px-2 py-1"><i class="bi bi-eye-slash-fill me-1"></i>Ignorata</span>
+                                    <span class="badge bg-secondary text-white px-2 py-1"><span class="bi bi-eye-slash-fill me-1"></span>Ignorata</span>
                                 <?php endif; ?>
                             </td>
                             <td class="text-end pe-4" onclick="event.stopPropagation();">
@@ -127,12 +129,12 @@
                                     <div class="d-flex justify-content-end gap-1">
                                         <button type="button" class="btn btn-sm btn-success rounded-pill fw-bold" 
                                             data-bs-toggle="modal" data-bs-target="#resolveReportModal<?= $r['id'] ?>">
-                                            <i class="bi bi-check-lg me-1"></i>Risolvi
+                                            <span class="bi bi-check-lg me-1"></span>Risolvi
                                         </button>
                                         
                                         <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold" 
                                             data-bs-toggle="modal" data-bs-target="#dismissReportModal<?= $r['id'] ?>">
-                                            <i class="bi bi-slash-circle me-1"></i>Ignora
+                                            <span class="bi bi-slash-circle me-1"></span>Ignora
                                         </button>
 
                                         <?php if($r['reported'] && !$r['reported']['is_banned'] && $r['reported']['id'] !== $_SESSION['user']['username']): ?>
@@ -141,68 +143,10 @@
                                                 <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                                 <input type="hidden" name="user_id" value="<?= e($r['reported']['id']) ?>">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold">
-                                                    <i class="bi bi-ban me-1"></i>Banna
+                                                    <span class="bi bi-ban me-1"></span>Banna
                                                 </button>
                                             </form>
                                         <?php endif; ?>
-                                    </div>
-
-                                    <?php // Resolve modal ?>
-                                    <div class="modal fade text-start" id="resolveReportModal<?= $r['id'] ?>" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
-                                                <div class="modal-header border-bottom-0 pb-0">
-                                                    <h5 class="modal-title fw-bold text-success"><i class="bi bi-check-circle-fill me-2"></i>Risolvi Segnalazione #<?= $r['id'] ?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
-                                                </div>
-                                                <form action="<?= url('/admin/reports/' . $r['id'] . '/resolve') ?>" method="POST">
-                                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                                    <div class="modal-body py-3">
-                                                        <p class="text-muted small">
-                                                            Contrassegna questa segnalazione come **Risolta**. Aggiungi una nota interna per documentare l'azione intrapresa (es. "Utente ammonito" o "Nessuna violazione riscontrata").
-                                                        </p>
-                                                        <div class="mb-0">
-                                                            <label for="admin_notes<?= $r['id'] ?>" class="form-label fw-semibold">Note dell'Amministratore (opzionale)</label>
-                                                            <textarea name="admin_notes" id="admin_notes<?= $r['id'] ?>" rows="3" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
-                                                                placeholder="Scrivi qui i dettagli della risoluzione..."></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer border-top-0 pt-0">
-                                                        <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Annulla</button>
-                                                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">Conferma Risoluzione</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <?php // Dismiss modal ?>
-                                    <div class="modal fade text-start" id="dismissReportModal<?= $r['id'] ?>" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
-                                                <div class="modal-header border-bottom-0 pb-0">
-                                                    <h5 class="modal-title fw-bold text-secondary"><i class="bi bi-eye-slash-fill me-2"></i>Ignora Segnalazione #<?= $r['id'] ?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
-                                                </div>
-                                                <form action="<?= url('/admin/reports/' . $r['id'] . '/dismiss') ?>" method="POST">
-                                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                                    <div class="modal-body py-3">
-                                                        <p class="text-muted small">
-                                                            Contrassegna questa segnalazione come **Ignorata/Archiviata**. Puoi aggiungere una breve spiegazione del perché la segnalazione è stata ritenuta non fondata.
-                                                        </p>
-                                                        <div class="mb-0">
-                                                            <label for="dismiss_notes<?= $r['id'] ?>" class="form-label fw-semibold">Note dell'Amministratore (opzionale)</label>
-                                                            <textarea name="admin_notes" id="dismiss_notes<?= $r['id'] ?>" rows="3" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
-                                                                placeholder="Scrivi qui il motivo dell'archiviazione..."></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer border-top-0 pt-0">
-                                                        <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Annulla</button>
-                                                        <button type="submit" class="btn btn-secondary rounded-pill px-4 fw-bold text-white shadow-sm">Archivia Segnalazione</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </div>
                                 <?php else: ?>
                                     <span class="text-muted small">—</span>
@@ -255,3 +199,68 @@
         </div>
     <?php endif; ?>
 </div>
+
+<!-- Modals section (moved outside the table to fix nested headers table accessibility warning) -->
+<?php if (!empty($reports)): ?>
+    <?php foreach ($reports as $r): ?>
+        <?php if($r['status'] === 'pending'): ?>
+            <!-- Resolve modal -->
+            <div class="modal fade text-start" id="resolveReportModal<?= $r['id'] ?>" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                        <div class="modal-header border-bottom-0 pb-0">
+                            <h2 class="h5 modal-title fw-bold text-success"><span class="bi bi-check-circle-fill me-2"></span>Risolvi Segnalazione #<?= $r['id'] ?></h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                        </div>
+                        <form action="<?= url('/admin/reports/' . $r['id'] . '/resolve') ?>" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                            <div class="modal-body py-3">
+                                <p class="text-muted small">
+                                    Contrassegna questa segnalazione come **Risolta**. Aggiungi una nota interna per documentare l'azione intrapresa (es. "Utente ammonito" o "Nessuna violazione riscontrata").
+                                </p>
+                                <div class="mb-0">
+                                    <label for="admin_notes<?= $r['id'] ?>" class="form-label fw-semibold">Note dell'Amministratore (opzionale)</label>
+                                    <textarea name="admin_notes" id="admin_notes<?= $r['id'] ?>" rows="3" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
+                                        placeholder="Scrivi qui i dettagli della risoluzione..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 pt-0">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">Conferma Risoluzione</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dismiss modal -->
+            <div class="modal fade text-start" id="dismissReportModal<?= $r['id'] ?>" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow" style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                        <div class="modal-header border-bottom-0 pb-0">
+                            <h2 class="h5 modal-title fw-bold text-secondary"><span class="bi bi-eye-slash-fill me-2"></span>Ignora Segnalazione #<?= $r['id'] ?></h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                        </div>
+                        <form action="<?= url('/admin/reports/' . $r['id'] . '/dismiss') ?>" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                            <div class="modal-body py-3">
+                                <p class="text-muted small">
+                                    Contrassegna questa segnalazione come **Ignorata/Archiviata**. Puoi aggiungere una breve spiegazione del perché la segnalazione è stata ritenuta non fondata.
+                                </p>
+                                <div class="mb-0">
+                                    <label for="dismiss_notes<?= $r['id'] ?>" class="form-label fw-semibold">Note dell'Amministratore (opzionale)</label>
+                                    <textarea name="admin_notes" id="dismiss_notes<?= $r['id'] ?>" rows="3" class="form-control rounded-3 bg-body-secondary border-secondary-subtle text-body" 
+                                        placeholder="Scrivi qui il motivo dell'archiviazione..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 pt-0">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" class="btn btn-secondary rounded-pill px-4 fw-bold text-white shadow-sm">Archivia Segnalazione</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php endif; ?>
