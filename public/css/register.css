@@ -4,54 +4,17 @@
     min-height: calc(100vh - 200px);
 }
 
-.register-side-content {
-    max-width: 32rem;
-    color: var(--bs-body-color) !important;
+.register-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
 }
 
-.register-side-badge {
-    display: inline-block;
-    padding: 0.45rem 0.8rem;
-    border-radius: 999px;
-    background: rgba(13, 110, 253, 0.12);
-    color: var(--bs-primary) !important;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.register-side-title,
-.register-side-copy {
-    color: inherit;
-}
-
-/* Card Styling */
-/*--------REMOVED MOVEMENT-------------
-.register-card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--bs-card-bg);
-    backdrop-filter: blur(10px);
-    animation: slideUp 0.6s ease-out;
-}
-
-.register-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-}
-*/
 /* Form Styling */
 .register-form {
     animation: fadeInUp 0.8s ease-out 0.3s both;
 }
-
-/*---------------RIMOSSO--------------
-.form-section {
-    padding: 1.15rem 1.1rem;
-    border: 1px solid rgba(13, 110, 253, 0.08);
-    border-radius: 1.15rem;
-    background: rgba(255, 255, 255, 0.5);
-    margin-bottom: 1.1rem;
-}
-*/
 
 .section-label {
     font-size: 2rem;
@@ -59,7 +22,6 @@
     color: var(--bs-emphasis-color);
     margin-bottom: 0.8rem;
 }
-
 
 .register-card .form-floating .form-control,
 .register-card .form-floating .form-select {
@@ -207,8 +169,13 @@
     }
 }
 
-
 /* Responsive Design */
+@media (min-width: 900px) {
+    .register-card {
+        width: min(100%, 720px);
+    }
+}
+
 @media (max-width: 768px) {
     .register-card {
         margin-top: 2rem;

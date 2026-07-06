@@ -80,20 +80,24 @@ class AuthController extends BaseController {
     public function register() {
         $this->validateCsrf();
 
-        $fullname = trim($_POST['fullname'] ?? '');
+        $name = trim($_POST['name'] ?? '');
+        $lastName = trim($_POST['last_name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
+        $username = trim($_POST['username'] ?? '');
         $preferred_role = trim($_POST['preferred_role'] ?? 'Jolly');
         $password = $_POST['password'] ?? '';
 
         // Keep old input values
-        $_SESSION['old_fullname'] = $fullname;
+        $_SESSION['old_name'] = $name;
+        $_SESSION['old_last_name'] = $lastName;
+        $_SESSION['old_username'] = $username;
         $_SESSION['old_email'] = $email;
         $_SESSION['old_phone'] = $phone;
         $_SESSION['old_preferred_role'] = $preferred_role;
 
-        if (empty($fullname) || empty($email) || empty($phone) || empty($password)) {
-            $_SESSION['error'] = "I campi Nome Completo, Email, Telefono e Password sono obbligatori.";
+        if (empty($name) || empty($lastName) || empty($email) || empty($phone) || empty($username) || empty($password)) {
+            $_SESSION['error'] = "I campi Nome, Cognome, Email, Telefono, Username e Password sono obbligatori.";
             $this->redirect('/register');
         }
 
@@ -113,17 +117,12 @@ class AuthController extends BaseController {
             $this->redirect('/register');
         }
 
-        // Split fullname
-        $nameParts = explode(' ', trim($fullname), 2);
-        $name = $nameParts[0];
-        $lastName = $nameParts[1] ?? $nameParts[0];
-
-        // Generate username from email
-        $username = strtolower(explode('@', $email)[0]);
-        $baseUsername = $username;
+        // Ensure username is unique
+        $baseUsername = strtolower($username);
         $counter = 1;
-        while ($userModel->find($username)) {
-            $username = $baseUsername . $counter;
+        $uniqueUsername = $baseUsername;
+        while ($userModel->find($uniqueUsername)) {
+            $uniqueUsername = $baseUsername . $counter;
             $counter++;
         }
 
@@ -131,7 +130,7 @@ class AuthController extends BaseController {
         $friendCode = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 6));
 
         $userData = [
-            'username' => $username,
+            'username' => $uniqueUsername,
             'name' => $name,
             'last_name' => $lastName,
             'email' => $email,
@@ -144,7 +143,9 @@ class AuthController extends BaseController {
 
         if ($userModel->createWithRole($userData)) {
             // Clear old input values
-            unset($_SESSION['old_fullname']);
+            unset($_SESSION['old_name']);
+            unset($_SESSION['old_last_name']);
+            unset($_SESSION['old_username']);
             unset($_SESSION['old_email']);
             unset($_SESSION['old_phone']);
             unset($_SESSION['old_preferred_role']);
