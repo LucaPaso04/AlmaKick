@@ -463,3 +463,10 @@ body #back-to-top:focus-visible {
 .cursor-grab { cursor: grab; }
 .size-38 { width: 38px; height: 38px; }
 .width-70 { width: 70px; }
+
+body .back-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(36, 123, 160, 0.6), 0 4px 10px rgba(0, 0, 0, 0.15);
+    background-color: var(--accent);
+    color: #fff;
+}

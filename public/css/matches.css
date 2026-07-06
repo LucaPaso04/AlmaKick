@@ -530,3 +530,21 @@ html[data-bs-theme="light"] body .btn-outline-warning:hover {
     border-color: #ffc107;
     box-shadow: 0 4px 18px rgba(255, 193, 7, 0.3);
 }
+
+body .cost-presets-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body .cost-presets-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+body .btn-outline-primary .format-players-count {
+    color: var(--text-secondary);
+    transition: color 0.2s ease-in-out;
+}
+
+body .btn-check:checked + .btn-outline-primary .format-players-count {
+    color: rgba(255, 255, 255, 0.85);
+}

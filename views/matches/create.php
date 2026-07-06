@@ -7,7 +7,7 @@
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
         <div class="d-flex align-items-center mb-4">
-            <a href="<?= url('/matches') ?>" class="btn btn-light rounded-circle me-3 shadow-sm border-0" title="Torna alle partite" aria-label="Torna alle partite">
+            <a href="<?= url('/matches') ?>" class="btn btn-light rounded-circle me-3 shadow-sm border-0 back-btn" title="Torna alle partite" aria-label="Torna alle partite">
                 <span class="bi bi-arrow-left"></span>
             </a>
             <h1 class="h3 fw-bold mb-0">Organizza Partita</h1>
@@ -87,7 +87,7 @@
                                     <label class="btn btn-outline-primary w-100 h-100 p-3 rounded-4 d-flex flex-column align-items-center justify-content-center border-2" for="format-5vs5">
                                         <span class="fs-3 mb-1">5️⃣</span>
                                         <span class="fw-bold d-block small">Calcio a 5</span>
-                                        <span class="small-text text-secondary-custom">10 Giocatori</span>
+                                        <span class="small-text format-players-count">10 Giocatori</span>
                                     </label>
                                 </div>
                                 <div class="col-6 col-md-3">
@@ -95,7 +95,7 @@
                                     <label class="btn btn-outline-primary w-100 h-100 p-3 rounded-4 d-flex flex-column align-items-center justify-content-center border-2" for="format-7vs7">
                                         <span class="fs-3 mb-1">7️⃣</span>
                                         <span class="fw-bold d-block small">Calcio a 7</span>
-                                        <span class="small-text text-secondary-custom">14 Giocatori</span>
+                                        <span class="small-text format-players-count">14 Giocatori</span>
                                     </label>
                                 </div>
                                 <div class="col-6 col-md-3">
@@ -103,7 +103,7 @@
                                     <label class="btn btn-outline-primary w-100 h-100 p-3 rounded-4 d-flex flex-column align-items-center justify-content-center border-2" for="format-8vs8">
                                         <span class="fs-3 mb-1">8️⃣</span>
                                         <span class="fw-bold d-block small">Calcio a 8</span>
-                                        <span class="small-text text-secondary-custom">16 Giocatori</span>
+                                        <span class="small-text format-players-count">16 Giocatori</span>
                                     </label>
                                 </div>
                                 <div class="col-6 col-md-3">
@@ -111,7 +111,7 @@
                                     <label class="btn btn-outline-primary w-100 h-100 p-3 rounded-4 d-flex flex-column align-items-center justify-content-center border-2" for="format-11vs11">
                                         <span class="fs-3 mb-1">⚽</span>
                                         <span class="fw-bold d-block small">Calcio a 11</span>
-                                        <span class="small-text text-secondary-custom">22 Giocatori</span>
+                                        <span class="small-text format-players-count">22 Giocatori</span>
                                     </label>
                                 </div>
                             </div>
@@ -138,12 +138,12 @@
                         </div>
                         
                         <!-- Cost presets -->
-                        <div class="d-flex gap-2 flex-wrap mb-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="0">Gratis</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="50">€50</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="60">€60</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="80">€80</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cost-preset-btn" data-value="100">€100</button>
+                        <div class="d-flex gap-1 gap-sm-2 flex-nowrap overflow-x-auto pb-1 mb-2 cost-presets-scroll">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-2 cost-preset-btn" data-value="0">Gratis</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-2 cost-preset-btn" data-value="50">€50</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-2 cost-preset-btn" data-value="60">€60</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-2 cost-preset-btn" data-value="80">€80</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-2 cost-preset-btn" data-value="100">€100</button>
                         </div>
                         
                         <div id="quota_preview" class="text-muted small mt-2"></div>
