@@ -127,3 +127,12 @@ html[data-bs-theme="dark"] .text-darken {
     border-left: 4px solid #cd7f32 !important;
     background: linear-gradient(90deg, rgba(205, 127, 50, 0.05) 0%, transparent 100%) !important;
 }
+
+@media (min-width: 576px) {
+    body #leaderboardTabs {
+        border-radius: 50rem;
+    }
+    body #leaderboardTabs .nav-link {
+        border-radius: 50rem;
+    }
+}
