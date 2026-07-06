@@ -7,3 +7,4 @@ show.blade.php
 colorpalette.txt
 AlmaKick_DB_backup.sql
 AlmaKick_DB_backup 2.sql
+public/uploads/*

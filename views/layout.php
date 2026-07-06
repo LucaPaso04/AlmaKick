@@ -77,7 +77,7 @@ if ($userAvatar) {
     <?php endif; ?>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100<?= isset($_SESSION['user']) ? ' has-mobile-bottom-bar' : '' ?>">
 
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress-container">
