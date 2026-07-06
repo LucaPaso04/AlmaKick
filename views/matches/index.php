@@ -52,7 +52,7 @@ if ($username) {
 
     <!-- Tab: My Board -->
     <div class="tab-pane fade <?= $activeTab === 'bacheca' ? 'show active' : '' ?>" id="bacheca" role="tabpanel"
-        aria-labelledby="bacheca-tab" tabindex="0">
+        aria-labelledby="bacheca-tab">
 
         <!-- My Upcoming Matches -->
         <div class="mb-4">
@@ -86,7 +86,7 @@ if ($username) {
                     </button>
                 </div>
             <?php else: ?>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                     <?php foreach ($myMatches as $p): ?>
                         <?php require VIEW_PATH . '/matches/partials/match_card.php'; ?>
                     <?php endforeach; ?>
@@ -98,7 +98,7 @@ if ($username) {
 
     <!-- Tab: Find Matches -->
     <div class="tab-pane fade <?= $activeTab === 'explore' ? 'show active' : '' ?>" id="explore" role="tabpanel"
-        aria-labelledby="explore-tab" tabindex="0">
+        aria-labelledby="explore-tab">
 
         <!-- Filters section -->
         <div class="mb-4">
@@ -112,89 +112,90 @@ if ($username) {
             </div>
             <div class="collapse d-md-block" id="filterCollapse">
                 <form action="<?= url('/matches') ?>" method="GET"
-                    class="filter-form p-3 rounded-4 shadow-sm d-flex flex-wrap align-items-center gap-3">
+                    class="filter-form p-3 rounded-4 shadow-sm">
                     <input type="hidden" name="tab" value="explore">
-                    <!-- Location search -->
-                    <div style="flex: 2 1 200px;">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text border-end-0"><span class="bi bi-search text-muted"></span></span>
-                            <label for="filter-location" class="visually-hidden">Cerca città o campo</label>
-                            <input type="text" id="filter-location" name="location" class="form-control border-start-0 ps-2"
-                                placeholder="Cerca città o campo..." value="<?= e($_GET['location'] ?? '') ?>">
+                    <div class="row g-2 align-items-center">
+                        <!-- Location search -->
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text border-end-0"><span class="bi bi-search text-muted"></span></span>
+                                <label for="filter-location" class="visually-hidden">Cerca città o campo</label>
+                                <input type="text" id="filter-location" name="location" class="form-control border-start-0 ps-2"
+                                    placeholder="Cerca città o campo..." value="<?= e($_GET['location'] ?? '') ?>">
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Date from -->
-                    <div style="flex: 1 1 140px;">
-                        <div class="input-group input-group-sm">
-                            <label for="filter-date-from" class="input-group-text border-end-0 bg-transparent text-muted small">Dal</label>
-                            <input type="date" id="filter-date-from" name="date_from" class="form-control border-start-0 ps-1"
-                                value="<?= e($_GET['date_from'] ?? '') ?>">
+                        <!-- Date from -->
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-2">
+                            <div class="input-group input-group-sm">
+                                <label for="filter-date-from" class="input-group-text border-end-0 bg-transparent text-muted small filter-label">Dal</label>
+                                <input type="date" id="filter-date-from" name="date_from" class="form-control border-start-0 ps-1"
+                                    value="<?= e($_GET['date_from'] ?? '') ?>">
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Date to -->
-                    <div style="flex: 1 1 140px;">
-                        <div class="input-group input-group-sm">
-                            <label for="filter-date-to" class="input-group-text border-end-0 bg-transparent text-muted small">Al</label>
-                            <input type="date" id="filter-date-to" name="date_to" class="form-control border-start-0 ps-1"
-                                value="<?= e($_GET['date_to'] ?? '') ?>">
+                        <!-- Date to -->
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-2">
+                            <div class="input-group input-group-sm">
+                                <label for="filter-date-to" class="input-group-text border-end-0 bg-transparent text-muted small filter-label">Al</label>
+                                <input type="date" id="filter-date-to" name="date_to" class="form-control border-start-0 ps-1"
+                                    value="<?= e($_GET['date_to'] ?? '') ?>">
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Format -->
-                    <div style="flex: 1 1 120px;">
-                        <label for="filter-format" class="visually-hidden">Filtra per formato</label>
-                        <select id="filter-format" name="format" class="form-select form-select-sm">
-                            <option value="">Tutti i formati</option>
-                            <option value="5vs5" <?= (($_GET['format'] ?? '') == '5vs5') ? 'selected' : '' ?>>5 vs 5
-                            </option>
-                            <option value="7vs7" <?= (($_GET['format'] ?? '') == '7vs7') ? 'selected' : '' ?>>7 vs 7
-                            </option>
-                            <option value="8vs8" <?= (($_GET['format'] ?? '') == '8vs8') ? 'selected' : '' ?>>8 vs 8
-                            </option>
-                            <option value="11vs11" <?= (($_GET['format'] ?? '') == '11vs11') ? 'selected' : '' ?>>11 vs 11
-                            </option>
-                        </select>
-                    </div>
-
-
-                    <!-- Friends matches -->
-                    <div class="d-flex align-items-center py-1">
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" id="only_friends"
-                                name="only_friends" value="1" <?= !empty($_GET['only_friends']) ? 'checked' : '' ?>>
-                            <label class="form-check-label small ms-1 text-nowrap" for="only_friends">Partite di amici</label>
+                        <!-- Format -->
+                        <div class="col-12 col-md-6 col-lg-2 col-xl-2">
+                            <div class="input-group input-group-sm">
+                                <label for="filter-format" class="input-group-text border-end-0 bg-transparent text-muted small filter-label">Tipo</label>
+                                <select id="filter-format" name="format" class="form-select border-start-0 ps-1">
+                                    <option value="">Tutti</option>
+                                    <option value="5vs5" <?= (($_GET['format'] ?? '') == '5vs5') ? 'selected' : '' ?>>5 vs 5</option>
+                                    <option value="7vs7" <?= (($_GET['format'] ?? '') == '7vs7') ? 'selected' : '' ?>>7 vs 7</option>
+                                    <option value="8vs8" <?= (($_GET['format'] ?? '') == '8vs8') ? 'selected' : '' ?>>8 vs 8</option>
+                                    <option value="11vs11" <?= (($_GET['format'] ?? '') == '11vs11') ? 'selected' : '' ?>>11 vs 11</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <?php if ($username): ?>
-                    <!-- Hide my matches -->
-                    <div class="d-flex align-items-center py-1">
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" id="exclude_my_matches"
-                                name="exclude_my_matches" value="1" <?= !empty($_GET['exclude_my_matches']) ? 'checked' : '' ?>>
-                            <label class="form-check-label small ms-1 text-nowrap" for="exclude_my_matches">Nascondi iscritte</label>
+                        <!-- Switches group -->
+                        <div class="col-12 col-md-6 col-lg-auto col-xl-auto mx-xl-auto d-flex flex-column align-items-start gap-1 justify-content-center">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" role="switch" id="only_friends"
+                                    name="only_friends" value="1" <?= !empty($_GET['only_friends']) ? 'checked' : '' ?>>
+                                <label class="form-check-label small ms-1 text-nowrap" for="only_friends">Amici</label>
+                            </div>
+                            <?php if ($username): ?>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" role="switch" id="exclude_my_matches"
+                                    name="exclude_my_matches" value="1" <?= !empty($_GET['exclude_my_matches']) ? 'checked' : '' ?>>
+                                <label class="form-check-label small ms-1 text-nowrap" for="exclude_my_matches">Nascondi iscritte</label>
+                            </div>
+                            <?php endif; ?>
                         </div>
-                    </div>
-                    <?php endif; ?>
 
-                    <!-- Reset button -->
-                    <div id="resetButtonContainer" class="ms-md-auto d-flex align-items-center justify-content-center">
-                        <?php if ($hasFilters): ?>
-                            <a href="<?= url('/matches?tab=explore') ?>"
-                                class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 32px; height: 32px; padding: 0;" title="Resetta Filtri">
-                                <span class="bi bi-arrow-counterclockwise"></span>
-                            </a>
-                        <?php endif; ?>
+                        <!-- Reset button -->
+                        <div class="col-12 col-md-auto ms-md-auto col-xl-auto d-flex justify-content-end align-items-center" id="resetButtonContainer">
+                            <?php if ($hasFilters): ?>
+                                <a href="<?= url('/matches?tab=explore') ?>"
+                                    class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center reset-btn"
+                                    title="Resetta Filtri">
+                                    <span class="bi bi-arrow-counterclockwise"></span>
+                                </a>
+                            <?php else: ?>
+                                <button type="button"
+                                    class="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center reset-btn-disabled"
+                                    title="Nessun filtro attivo" disabled>
+                                    <span class="bi bi-arrow-counterclockwise"></span>
+                                </button>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Matches list -->
-        <div id="matchesContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        <div id="matchesContainer" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-5">
             <?php if (!empty($matches)): ?>
                 <?php foreach ($matches as $p): ?>
                     <?php $fromTab = 'explore'; ?>

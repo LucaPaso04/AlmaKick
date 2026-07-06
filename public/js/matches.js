@@ -93,16 +93,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!resetButtonContainer) return;
 
         if (hasActiveFilters()) {
-            if (!resetButtonContainer.querySelector('a')) {
-                resetButtonContainer.innerHTML = `
-                    <a href="#" class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; padding: 0;" title="Resetta Filtri">
-                        <i class="bi bi-arrow-counterclockwise"></i>
-                    </a>
-                `;
-                resetButtonContainer.querySelector('a').addEventListener('click', handleReset);
-            }
+            resetButtonContainer.innerHTML = `
+                <a href="#" class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center reset-btn" title="Resetta Filtri">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            `;
+            resetButtonContainer.querySelector('a').addEventListener('click', handleReset);
         } else {
-            resetButtonContainer.innerHTML = '';
+            resetButtonContainer.innerHTML = `
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center reset-btn-disabled" title="Nessun filtro attivo" disabled>
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </button>
+            `;
         }
     }
 

@@ -57,9 +57,15 @@ body .fab-btn {
     color: #fff;
 }
 
-body .fab-btn:hover {
+body .fab-btn:hover,
+body .fab-btn:focus-visible {
     transform: scale(1.08) translateY(-2px);
     box-shadow: 0 12px 30px var(--accent-glow);
+}
+
+body .fab-btn:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
 }
 
 /* Filters panel forms controls and search bar */
@@ -123,6 +129,20 @@ body #homeTabs .nav-link.active {
     box-shadow: 0 4px 12px var(--accent-glow);
 }
 
+body #homeTabs .nav-link:focus-visible {
+    outline: none;
+}
+
+body #homeTabs .nav-link.active:focus-visible {
+    box-shadow: 0 0 0 4px rgba(36, 123, 160, 0.6), 0 4px 12px var(--accent-glow);
+}
+
+body #homeTabs .nav-link:not(.active):focus-visible {
+    background-color: rgba(var(--twilight-rgb), 0.4);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 4px rgba(36, 123, 160, 0.4);
+}
+
 /* Match listing cards component */
 body .match-card, body .card-partita {
     background: var(--card-bg);
@@ -132,13 +152,19 @@ body .match-card, body .card-partita {
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-body .match-card:hover, body .card-partita:hover {
+body .match-card:hover, body .card-partita:hover,
+body .match-card:focus-visible, body .card-partita:focus-visible {
     transform: translateY(-6px) scale(1.015);
     border-color: var(--accent);
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 
                 0 0 20px var(--accent-glow),
                 0 0 40px rgba(56, 189, 248, 0.15);
     background: var(--card-hover-bg);
+}
+
+body .match-card:focus-visible, body .card-partita:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
 }
 
 body .card-partita .card-title,
@@ -157,6 +183,26 @@ body .match-card .card-title span {
     max-width: 100%;
     display: inline-block;
     color: var(--text-primary);
+}
+
+body .card-partita .card-title a {
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+body .card-partita .card-title a:hover {
+    color: var(--bs-warning) !important;
+    transform: scale(1.25);
+}
+
+body .card-partita .card-title a:focus-visible {
+    color: var(--bs-warning) !important;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    transform: scale(1.25);
 }
 
 body .card-partita .text-body,
@@ -437,4 +483,50 @@ body .card-partita.card-partita-urgent:hover {
 .small-text {
     font-size: 0.75rem;
     opacity: 0.85;
+}
+
+body .filter-form .filter-label {
+    min-width: 36px;
+    justify-content: center;
+}
+
+body .filter-form .reset-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+body .filter-form .reset-btn-disabled {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+html[data-bs-theme="dark"] body .btn-outline-warning {
+    color: #ffc107;
+    border: 1.5px solid #ffc107;
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.25);
+}
+
+html[data-bs-theme="dark"] body .btn-outline-warning:hover {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.5);
+}
+
+html[data-bs-theme="light"] body .btn-outline-warning {
+    color: #ffc107;
+    border: 1.5px solid #ffc107;
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.1);
+}
+
+html[data-bs-theme="light"] body .btn-outline-warning:hover {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+    box-shadow: 0 4px 18px rgba(255, 193, 7, 0.3);
 }

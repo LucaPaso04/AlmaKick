@@ -355,6 +355,15 @@ body #back-to-top:hover {
     box-shadow: 0 12px 28px var(--accent-glow);
 }
 
+body #back-to-top:focus-visible {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 0 0 4px rgba(36, 123, 160, 0.6), 0 12px 28px var(--accent-glow);
+    outline: none;
+}
+
 @media (max-width: 991.98px) {
     body #back-to-top {
         bottom: calc(160px + env(safe-area-inset-bottom, 0px));

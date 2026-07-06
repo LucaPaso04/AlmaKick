@@ -37,17 +37,24 @@ $requestUri = str_replace(['?ajax=1&', '&ajax=1&', '&ajax=1', '?ajax=1'], ['?', 
 if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 0) {
     $requestUri = substr($requestUri, strlen(BASE_URL));
 }
+
+if (!empty($p['latitude']) && !empty($p['longitude'])) {
+    $mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($p['latitude'] . ',' . $p['longitude']);
+} else {
+    $mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($p['location'] ?? '');
+}
 ?>
 
 <div class="col">
     <div class="card h-100 card-partita rounded-4 shadow-sm bg-body overflow-visible mt-3 position-relative d-flex flex-column <?= !empty($p['is_urgent']) ? 'card-partita-urgent' : '' ?>"
      <?= $canClick ? 'onclick="window.location.href=\'' . url('/matches/' . $p['id']) . '?from=' . urlencode($requestUri) . '\';"' : '' ?> 
+     <?= $canClick ? 'tabindex="0" role="button" aria-label="Partita a ' . e($p['location'] ?? '') . '" onkeydown="if(event.key === \'Enter\' || event.key === \' \') { event.preventDefault(); window.location.href=\'' . url('/matches/' . $p['id']) . '?from=' . urlencode($requestUri) . '\'; }"' : '' ?>
      style="<?= $canClick ? 'cursor: pointer;' : 'cursor: default;' ?>">
         <div class="match-header rounded-top-4" style="background: <?= $gradient ?>; height: 8px;"></div>
 
         <!-- Host avatar -->
         <div class="position-absolute top-0 start-50 translate-middle-x" style="margin-top: -12px;">
-            <a href="#" title="Organizzatore: <?= e($p['host_name'] ?? '') ?>" onclick="event.stopPropagation();">
+            <a href="<?= url('/profile?username=' . urlencode($p['host_username'])) ?>" title="Organizzatore: <?= e($p['host_name'] ?? '') ?>" onclick="event.stopPropagation();">
                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['host_name'] ?? '') ?>&background=random&color=fff&size=64"
                     alt="<?= e($p['host_name'] ?? '') ?>" class="rounded-circle border border-3 border-white shadow-sm"
                     style="width: 48px; height: 48px; object-fit: cover;">
@@ -57,14 +64,14 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
         <div class="card-body position-relative pt-4 mt-2 d-flex flex-column h-100">
 
             <!-- Top badges -->
-            <div class="d-flex justify-content-between align-items-start mb-3 gap-1 flex-wrap">
+            <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="d-flex gap-1 align-items-center">
                     <span class="badge bg-body-secondary text-body border rounded-pill px-2 py-1 shadow-sm">
                         <span class="bi bi-calendar-event me-1 text-primary"></span>
                         <?= e(date('d/m H:i', strtotime($p['date'] . ' ' . $p['time']))) ?>
                     </span>
                     <?php if (($p['visibility'] ?? 'public') === 'public'): ?>
-                        <span class="badge bg-body-secondary text-secondary border rounded-pill px-2 py-1 shadow-sm"
+                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-2 py-1 shadow-sm"
                             title="Partita Pubblica">
                             <span class="bi bi-globe"></span>
                         </span>
@@ -77,18 +84,21 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
                     <?php endif; ?>
                 </div>
 
-                <?php if (($p['status'] ?? '') === 'full' || ($p['posti_occupati'] ?? 0) >= $p['max_players']): ?>
-                    <span class="badge bg-success rounded-pill shadow-sm py-1 px-2"><span
-                            class="bi bi-check-circle-fill me-1"></span>Completa</span>
-                <?php elseif (!empty($p['is_urgent'])): ?>
-                    <span
-                        class="badge bg-danger rounded-pill shadow-sm py-1 px-2 animate__animated animate__pulse animate__infinite">🔥
-                        Urgente: Mancano <?= ($p['max_players'] - $p['posti_occupati']) ?>!</span>
-                <?php else: ?>
-                    <span
-                        class="badge <?= $bgClass ?> rounded-pill shadow-sm py-1 px-2 border border-opacity-25"><?= strtoupper(e($p['format'] ?? '')) ?></span>
-                <?php endif; ?>
+                <span class="badge <?= $bgClass ?> rounded-pill shadow-sm py-1 px-2 border border-opacity-25"><?= strtoupper(e($p['format'] ?? '')) ?></span>
             </div>
+
+            <!-- Status Banner (Urgent or Complete) -->
+            <?php if (($p['status'] ?? '') === 'full' || ($p['posti_occupati'] ?? 0) >= $p['max_players']): ?>
+                <div class="text-center mb-2">
+                    <span class="badge bg-success rounded-pill shadow-sm py-1 px-3 d-inline-block"><span
+                            class="bi bi-check-circle-fill me-1"></span>Completa</span>
+                </div>
+            <?php elseif (!empty($p['is_urgent'])): ?>
+                <div class="text-center mb-2">
+                    <span class="badge bg-danger rounded-pill shadow-sm py-1 px-3 d-inline-block animate__animated animate__pulse animate__infinite">🔥
+                        Urgente: Mancano <?= ($p['max_players'] - $p['posti_occupati']) ?>!</span>
+                </div>
+            <?php endif; ?>
 
             <!-- Personal labels -->
             <div class="mb-2 text-center" style="min-height: 24px;">
@@ -108,7 +118,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($requestUri, BASE_URL) === 
             <h3
                 class="card-title h5 fw-bold text-center text-white mb-1 d-flex align-items-center justify-content-center gap-1">
                 <span><?= e($p['location'] ?? '') ?></span>
-                <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($p['location'] ?? '') ?>"
+                <a href="<?= $mapsUrl ?>"
                     target="_blank" rel="noopener noreferrer" class="text-primary fs-6" title="Apri su Google Maps"
                     onclick="event.stopPropagation();">
                     <span class="bi bi-geo-alt-fill"></span>
