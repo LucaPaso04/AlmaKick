@@ -7,36 +7,16 @@
     margin: 0;
 }
 
-.welcome-hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7rem 1rem 5rem;
-    background:
-        linear-gradient(125deg, rgba(2, 8, 23, 0.95) 0%, rgba(2, 8, 23, 0.55) 45%, rgba(2, 8, 23, 0.85) 100%);
-    border-radius: 1.75rem;
-    margin-bottom: 3rem;
-}
-
-.welcome-hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top, rgba(34, 211, 238, 0.16), transparent 42%);
-    pointer-events: none;
-}
-
 .welcome-hero-content {
     position: relative;
     z-index: 1;
     width: 100%;
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1rem 4rem;
 }
 
 .welcome-hero-card {
-    max-width: 760px;
     margin: 0 auto;
     text-align: center;
     padding: 2.3rem;
@@ -116,10 +96,6 @@
     color: #03111f;
 }
 
-.welcome-primary-btn i {
-    animation: bounceArrow 1.2s infinite;
-}
-
 .welcome-secondary-btn {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.08);
@@ -171,19 +147,40 @@
     will-change: transform;
 }
 
+.welcome-feature-card.feature-card--text-only {
+    grid-template-columns: 1fr;
+}
+
+.welcome-feature-card.feature-card--text-only .feature-copy {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.welcome-feature-card.feature-card--text-only .feature-badge {
+    margin: 0 auto;
+}
+
+.welcome-feature-card.feature-card--text-only .feature-list {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.welcome-feature-card.feature-card--text-only .feature-list li {
+    justify-content: center;
+}
+
 .welcome-feature-card:hover {
     transform: translate3d(0, -6px, 0);
     box-shadow: 0 26px 60px rgba(0, 0, 0, 0.25);
-}
-
-.welcome-feature-card.reverse {
-    grid-template-columns: 0.98fr 1.02fr;
 }
 
 .feature-copy {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
 }
 
 .feature-kicker {
@@ -235,8 +232,6 @@
     justify-content: center;
 }
 
-.formation-card,
-.weather-card,
 .mvp-card {
     width: 100%;
     border-radius: 1.25rem;
@@ -245,106 +240,6 @@
     background: rgba(2, 10, 24, 0.72);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-
-.formation-pitch {
-    position: relative;
-    min-height: 260px;
-    border-radius: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.16);
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.22), rgba(4, 120, 87, 0.28));
-    overflow: hidden;
-}
-
-.formation-line {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.22);
-}
-
-.line-top {
-    top: 30%;
-}
-
-.line-mid {
-    top: 50%;
-}
-
-.line-bottom {
-    top: 70%;
-}
-
-.player {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #f8fafc, #38bdf8);
-    box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
-}
-
-.player-1 { top: 16%; left: 50%; }
-.player-2 { top: 32%; left: 24%; }
-.player-3 { top: 32%; left: 76%; }
-.player-4 { top: 48%; left: 39%; }
-.player-5 { top: 48%; left: 61%; }
-.player-6 { top: 62%; left: 50%; }
-.player-7 { top: 72%; left: 26%; }
-.player-8 { top: 72%; left: 74%; }
-.player-9 { top: 82%; left: 40%; }
-.player-10 { top: 82%; left: 60%; }
-.player-11 { top: 92%; left: 50%; }
-
-.weather-top {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.weather-icon {
-    display: grid;
-    place-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 1rem;
-    background: rgba(56, 189, 248, 0.2);
-    color: #7dd3fc;
-    font-size: 1.35rem;
-}
-
-.weather-top strong {
-    display: block;
-    font-size: 1.4rem;
-    color: #ffffff;
-}
-
-.weather-top p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.72);
-}
-
-.weather-bars {
-    display: flex;
-    gap: 0.6rem;
-    align-items: flex-end;
-    height: 120px;
-}
-
-.weather-bars span {
-    flex: 1;
-    border-radius: 999px;
-    background: linear-gradient(180deg, #38bdf8, #0f766e);
-    animation: riseBars 1.5s ease-in-out infinite alternate;
-    transform: translateZ(0);
-    will-change: transform;
-}
-
-.weather-bars span:nth-child(1) { height: 40%; }
-.weather-bars span:nth-child(2) { height: 65%; animation-delay: 0.15s; }
-.weather-bars span:nth-child(3) { height: 85%; animation-delay: 0.3s; }
-.weather-bars span:nth-child(4) { height: 55%; animation-delay: 0.45s; }
 
 .feature-badge {
     display: inline-flex;
@@ -355,38 +250,6 @@
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.86);
-}
-
-.mvp-preview {
-    display: grid;
-    gap: 0.8rem;
-    margin-top: 0.7rem;
-}
-
-.mvp-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    width: fit-content;
-    padding: 0.7rem 0.95rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffe082;
-}
-
-.trust-meter {
-    position: relative;
-    height: 0.6rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-}
-
-.trust-fill {
-    width: 92%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #2fe486, #2bb8ff);
 }
 
 .mvp-card {
@@ -439,18 +302,9 @@
     }
 }
 
-@keyframes riseBars {
-    from {
-        transform: scaleY(0.85);
-    }
-    to {
-        transform: scaleY(1.05);
-    }
-}
-
 @media (max-width: 768px) {
-    .welcome-hero {
-        padding: 6rem 1rem 3.5rem;
+    .welcome-hero-content {
+        padding: 3rem 1rem 3rem;
     }
 
     .welcome-hero-card {
@@ -476,8 +330,7 @@
     .welcome-hero-card,
     .welcome-primary-btn,
     .welcome-secondary-btn,
-    .welcome-feature-card,
-    .weather-bars span {
+    .welcome-feature-card {
         animation: none;
         transition: none;
     }

@@ -142,14 +142,16 @@ footer {
 }
 
 .form-logo {
-    height: 55px;
+    height: 46px;
+    max-height: 46px;
     width: auto;
+    max-width: 100%;
     filter: drop-shadow(0 0 8px rgba(36, 123, 160, 0.2));
 }
 
 .logo-bg-wrapper {
     background: #ffffff;
-    padding: 0.35rem 0.75rem;
+    padding: 0.3rem 0.65rem;
     border-radius: 8px;
     display: inline-flex;
     align-items: center;
@@ -157,6 +159,8 @@ footer {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border: 2px solid transparent;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .logo-bg-wrapper:hover {
