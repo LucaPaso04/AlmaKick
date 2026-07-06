@@ -495,7 +495,7 @@ class MatchController extends BaseController {
             $notificationModel->create([
                 'user_recipient' => $playerUsername,
                 'type' => 'match_cancellation',
-                'message' => '⚠️ La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata dall\'organizzatore (Motivo: ' . $reason . ').',
+                'message' => 'La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata dall\'organizzatore (Motivo: ' . $reason . ').',
                 'link' => url('/matches/' . $id)
             ]);
         }

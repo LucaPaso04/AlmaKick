@@ -445,7 +445,7 @@ class AdminController extends BaseController {
                     $notificationModel->create([
                         'user_recipient' => $playerUsername,
                         'type' => 'match_cancellation',
-                        'message' => '⚠️ La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata forzatamente dall\'amministratore.',
+                        'message' => 'La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata forzatamente dall\'amministratore.',
                         'link' => url('/matches/' . $matchId)
                     ]);
                 }

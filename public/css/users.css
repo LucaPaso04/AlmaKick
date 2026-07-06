@@ -108,3 +108,12 @@
 .fs-7 {
     font-size: 0.85rem !important;
 }
+
+body #clear-all-history {
+    color: var(--text-secondary);
+    transition: color 0.2s ease-in-out;
+}
+
+body #clear-all-history:hover {
+    color: var(--bs-danger);
+}

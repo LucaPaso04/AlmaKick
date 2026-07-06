@@ -3,7 +3,7 @@
     <div id="search-history-container" class="d-none mb-4">
         <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2 border-secondary border-opacity-10">
             <div class="fw-bold text-muted text-uppercase tracking-wider mb-0 fs-7">Ricerche recenti</div>
-            <button id="clear-all-history" class="btn btn-link btn-sm text-secondary text-decoration-none p-0 small">Cancella tutto</button>
+            <button id="clear-all-history" class="btn btn-link btn-sm text-decoration-none p-0 small">Cancella tutto</button>
         </div>
         <div id="search-history-list" class="d-flex flex-column"></div>
     </div>

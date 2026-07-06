@@ -191,7 +191,7 @@ class MatchScheduler
                         $notificationModel->create([
                             'user_recipient' => $playerUsername,
                             'type' => 'match_cancellation',
-                            'message' => '⚠️ La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata automaticamente (numero iscritti insufficiente).',
+                            'message' => 'La partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . ' è stata annullata automaticamente (numero iscritti insufficiente).',
                             'link' => url('/matches/' . $matchId)
                         ]);
                     }
@@ -236,7 +236,7 @@ class MatchScheduler
             $notificationModel->create([
                 'user_recipient' => $reg['username'],
                 'type' => 'offer_expired',
-                'message' => '⏰ L\'offerta per partecipare alla partita a ' . $reg['location'] . ' del ' . date('d/m/Y', strtotime($reg['date'])) . ' è scaduta.',
+                'message' => 'L\'offerta per partecipare alla partita a ' . $reg['location'] . ' del ' . date('d/m/Y', strtotime($reg['date'])) . ' è scaduta.',
                 'link' => url('/matches/' . $reg['match_id'])
             ]);
 
@@ -315,7 +315,7 @@ class MatchScheduler
                     $notificationModel->create([
                         'user_recipient' => $next['username'],
                         'type' => 'match_offer',
-                        'message' => '⚡ Si è liberato un posto per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '! Hai 15 minuti per accettare.',
+                        'message' => 'Si è liberato un posto per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '! Hai 15 minuti per accettare.',
                         'link' => url('/matches/' . $matchId)
                     ]);
                 } else {
@@ -329,7 +329,7 @@ class MatchScheduler
                     $notificationModel->create([
                         'user_recipient' => $next['username'],
                         'type' => 'match_promotion',
-                        'message' => '🔔 Congratulazioni! Sei stato promosso a giocatore attivo per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '.',
+                        'message' => 'Congratulazioni! Sei stato promosso a giocatore attivo per la partita a ' . $match['location'] . ' del ' . date('d/m/Y', strtotime($match['date'])) . '.',
                         'link' => url('/matches/' . $matchId)
                     ]);
                 }
@@ -478,7 +478,7 @@ class MatchScheduler
                 $notificationModel->create([
                     'user_recipient' => $host,
                     'type' => 'match_autoclose_host',
-                    'message' => '⚠️ La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio per mancato inserimento del tabellino entro 48 ore. Hai ricevuto una penalità di -15 al Trust Score.',
+                    'message' => 'La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio per mancato inserimento del tabellino entro 48 ore. Hai ricevuto una penalità di -15 al Trust Score.',
                     'link' => url('/matches/' . $matchId)
                 ]);
 
@@ -497,7 +497,7 @@ class MatchScheduler
                     $notificationModel->create([
                         'user_recipient' => $player,
                         'type' => 'match_autoclose_player',
-                        'message' => '📢 La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio senza risultato (tabellino mancante). Ora puoi votare per i compagni e per l\'MVP!',
+                        'message' => 'La partita a ' . $location . ' del ' . $dateFormatted . ' è stata chiusa d\'ufficio senza risultato (tabellino mancante). Ora puoi votare per i compagni e per l\'MVP!',
                         'link' => url('/matches/' . $matchId)
                     ]);
                 }

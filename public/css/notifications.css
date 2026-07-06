@@ -58,9 +58,11 @@ body .notification-item {
     border-bottom: none;
 }
 
-.notification-item:hover {
+.notification-item:hover,
+body .notification-item:focus-visible {
     background-color: var(--card-hover-bg);
     transform: translateX(2px);
+    outline: none;
 }
 
 .notification-item.unread {
@@ -98,7 +100,14 @@ body .notification-item {
     z-index: 10;
 }
 
-.notification-item:hover .notification-delete-btn {
+
+body .notification-item:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--accent);
+    z-index: 5;
+}
+
+.notification-item:hover .notification-delete-btn,
+.notification-item:focus-within .notification-delete-btn {
     opacity: 0.7;
     transform: translateY(-50%) scale(1);
 }
@@ -106,6 +115,13 @@ body .notification-item {
 body .notification-delete-btn:hover {
     opacity: 1;
     color: var(--danger);
+}
+
+body .notification-delete-btn:focus-visible {
+    outline: none;
+    opacity: 1;
+    color: var(--danger);
+    transform: translateY(-50%) scale(1.15);
 }
 
 /* Icon box and content wrapping */

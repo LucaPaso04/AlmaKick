@@ -370,7 +370,7 @@ class UserController extends BaseController {
                     $notificationModel->create([
                         'user_recipient' => $recipient['username'],
                         'type' => 'friend_accept',
-                        'message' => '🤝 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
+                        'message' => $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
                         'link' => url('/profile?username=' . urlencode($myUsername))
                     ]);
                     // Mark request as read
@@ -398,7 +398,7 @@ class UserController extends BaseController {
             $notificationModel->create([
                 'user_recipient' => $recipient['username'],
                 'type' => 'friend_request',
-                'message' => '👋 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ti ha inviato una richiesta di amicizia!',
+                'message' => $_SESSION['user']['name'] . ' (@' . $myUsername . ') ti ha inviato una richiesta di amicizia!',
                 'link' => url('/profile?tab=social')
             ]);
         }
@@ -424,7 +424,7 @@ class UserController extends BaseController {
         $notificationModel->create([
             'user_recipient' => $username,
             'type' => 'friend_accept',
-            'message' => '🤝 ' . $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
+            'message' => $_SESSION['user']['name'] . ' (@' . $myUsername . ') ha accettato la tua richiesta di amicizia!',
             'link' => url('/profile?username=' . urlencode($myUsername))
         ]);
 
