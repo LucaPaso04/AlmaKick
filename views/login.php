@@ -14,7 +14,7 @@
             <form action="<?= url('/login') ?>" method="POST" class="login-form">
                <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
                <div class="mb-3 input-icon-group">
-                  <span class="bi bi-person-fill form-icon" aria-hidden="true"></span>
+                  <span class="bi bi-person-badge form-icon" aria-hidden="true"></span>
                   <div class="form-floating w-100">
                      <input type="text"
                         class="form-control bg-body-tertiary border-0"
@@ -28,7 +28,7 @@
                   </div>
                </div>
                <div class="mb-3 input-icon-group password-group">
-                  <span class="bi bi-lock-fill form-icon" aria-hidden="true"></span>
+                  <span class="bi bi-shield-lock form-icon" aria-hidden="true"></span>
                   <div class="form-floating w-100 position-relative">
                      <input type="password"
                         class="form-control bg-body-tertiary border-0"

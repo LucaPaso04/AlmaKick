@@ -93,12 +93,13 @@
                         <select class="form-select bg-body-tertiary border-0"
                            id="preferred_role"
                            name="preferred_role">
-                           <option value="" selected disabled hidden>Scegli il tuo ruolo</option>
-                           <option value="Jolly">Jolly</option>
-                           <option value="Portiere">Portiere</option>
-                           <option value="Difensore">Difensore</option>
-                           <option value="Centrocampista">Centrocampista</option>
-                           <option value="Attaccante">Attaccante</option>
+                           <?php $oldRole = $_SESSION['old_preferred_role'] ?? ''; ?>
+                           <option value="" <?= $oldRole === '' ? 'selected' : '' ?> disabled hidden>Scegli il tuo ruolo</option>
+                           <option value="Jolly" <?= $oldRole === 'Jolly' ? 'selected' : '' ?>>Jolly</option>
+                           <option value="Portiere" <?= $oldRole === 'Portiere' ? 'selected' : '' ?>>Portiere</option>
+                           <option value="Difensore" <?= $oldRole === 'Difensore' ? 'selected' : '' ?>>Difensore</option>
+                           <option value="Centrocampista" <?= $oldRole === 'Centrocampista' ? 'selected' : '' ?>>Centrocampista</option>
+                           <option value="Attaccante" <?= $oldRole === 'Attaccante' ? 'selected' : '' ?>>Attaccante</option>
                         </select>
                         <label for="preferred_role">Ruolo in Campo Preferito</label>
                      </div>

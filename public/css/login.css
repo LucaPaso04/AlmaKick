@@ -36,16 +36,16 @@
     font-size: 1rem;
     padding: 1.15rem 1rem 0.35rem;
     min-height: 3.5rem;
-    color: var(--bs-body-color);
-    background-color: var(--bs-body-bg);
-    border: 1px solid var(--bs-border-color);
-    box-shadow: none;
+    color: var(--bs-body-color) !important;
+    background-color: var(--bs-body-bg) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    box-shadow: none !important;
 }
 
 .login-card .form-floating .form-control:focus {
-    background-color: var(--bs-body-bg);
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.18);
+    background-color: var(--bs-body-bg) !important;
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.18) !important;
     transform: translateY(-1px);
 }
 
@@ -58,6 +58,7 @@
 .login-card .form-floating .form-control:focus ~ label,
 .login-card .form-floating .form-control:not(:placeholder-shown) ~ label {
     color: var(--bs-primary);
+    transform: scale(0.8) translateY(-0.85rem) translateX(0.15rem);
 }
 
 .password-group .form-floating {
@@ -195,18 +196,14 @@
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    .login-card {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(255, 255, 255, 0.12);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-    }
+html[data-bs-theme="dark"] .login-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
 
-    .login-card .form-floating .form-control {
-        color: var(--bs-body-color);
-        background-color: rgba(255, 255, 255, 0.04);
-        border-color: rgba(255, 255, 255, 0.12);
-    }
+html[data-bs-theme="dark"] .login-card .form-floating .form-control {
+    color: var(--bs-body-color) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

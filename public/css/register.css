@@ -12,6 +12,23 @@
 }
 
 /* Form Styling */
+.register-card {
+    background: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    box-shadow: 0 24px 60px rgba(13, 110, 253, 0.06);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.register-card:hover {
+    box-shadow: 0 30px 70px rgba(13, 110, 253, 0.12);
+}
+
+html[data-bs-theme="dark"] .register-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
 .register-form {
     animation: fadeInUp 0.8s ease-out 0.3s both;
 }
@@ -38,6 +55,10 @@
 .register-card .form-floating .form-control::placeholder,
 .register-card .form-floating .form-select::placeholder {
     color: transparent;
+}
+
+html[data-bs-theme="light"] .register-card .form-floating .form-control:focus::placeholder {
+    color: rgba(15, 23, 42, 0.4) !important;
 }
 
 .register-card .form-floating .form-control:focus,
@@ -69,8 +90,10 @@
 
 .form-floating .form-control:focus ~ label,
 .form-floating .form-control:not(:placeholder-shown) ~ label,
-.form-floating .form-select:focus ~ label {
+.form-floating .form-select:focus ~ label,
+.form-floating .form-select:not([value=""]) ~ label {
     color: var(--bs-primary);
+    transform: scale(0.8) translateY(-0.85rem) translateX(0.15rem);
 }
 
 /* Select Box Specific */
@@ -239,20 +262,23 @@
 }
 
 /* Dark Theme Support */
-@media (prefers-color-scheme: dark) {
-    .register-card {
-        background: rgba(255, 255, 255, 0.05);
-    }
+html[data-bs-theme="dark"] .register-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
 
-    .form-floating .form-control,
-    .form-floating .form-select {
-        color: var(--bs-body-color);
-    }
+html[data-bs-theme="dark"] .form-floating .form-control,
+html[data-bs-theme="dark"] .form-floating .form-select {
+    color: var(--bs-body-color);
+}
 
-    .form-floating .form-control::placeholder,
-    .form-select option {
-        color: rgba(255, 255, 255, 0.5);
-    }
+html[data-bs-theme="dark"] .form-floating .form-control:focus::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+html[data-bs-theme="dark"] .form-select option {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Accessibility */

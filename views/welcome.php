@@ -47,7 +47,7 @@
          </div>
       </div>
    </article>
-   <article class="welcome-feature-card">
+   <article class="welcome-feature-card feature-card-centered">
       <div class="feature-copy">
          <span class="feature-kicker">MVP & Trust Score</span>
          <h2>Premia il talento e riconosci chi fa la differenza.</h2>

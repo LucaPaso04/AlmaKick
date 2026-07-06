@@ -21,19 +21,19 @@
                     <h2 class="h5 fw-bold mb-4 text-primary"><span class="bi bi-geo-alt-fill me-2"></span>Dettagli Evento</h2>
 
                     <div class="row g-3 mb-4">
-                        <div class="col-md-4">
+                        <div class="col-sm-6 col-md-4">
                             <label for="date" class="form-label fw-semibold">Data</label>
                             <input type="date" class="form-control bg-body-tertiary border-0" id="date"
                                 name="date" required min="<?= date('Y-m-d') ?>">
                             <div class="invalid-feedback">Inserisci una data valida (oggi o successiva).</div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-sm-6 col-md-3">
                             <label for="time" class="form-label fw-semibold">Ora</label>
                             <input type="time" class="form-control bg-body-tertiary border-0" id="time"
                                 name="time" required>
                             <div class="invalid-feedback">Inserisci un'ora valida per la partita.</div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-5">
                             <label for="location" class="form-label fw-semibold">Nome Campo / Impianto</label>
                             <input type="text" class="form-control bg-body-tertiary border-0" id="location"
                                 name="location" placeholder="Es. Campus CUS" required>

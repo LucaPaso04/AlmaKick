@@ -129,7 +129,7 @@
 .welcome-features {
     max-width: 1200px;
     margin: -1.5rem auto 0;
-    padding: 0 1rem 5rem;
+    padding: 0 1rem 1rem;
     display: grid;
     gap: 1.35rem;
 }
@@ -169,6 +169,23 @@
 
 .welcome-feature-card.feature-card--text-only .feature-list li {
     justify-content: center;
+}
+
+/* MVP / Centered layouts with visuals */
+.welcome-feature-card.feature-card-centered {
+    grid-template-columns: 1fr;
+}
+
+.welcome-feature-card.feature-card-centered .feature-copy {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.welcome-feature-card.feature-card-centered .feature-visual {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 420px;
 }
 
 .welcome-feature-card:hover {
@@ -335,3 +352,88 @@
         transition: none;
     }
 }
+
+/* Light Mode Styles for Welcome Page */
+html[data-bs-theme="light"] .welcome-hero-card {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+}
+
+html[data-bs-theme="light"] .welcome-hero-card h1 {
+    color: #0f172a;
+}
+
+html[data-bs-theme="light"] .welcome-hero-card h1 span {
+    background: linear-gradient(90deg, #0f172a 0%, #059669 45%, #0284c7 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+html[data-bs-theme="light"] .welcome-hero-card p {
+    color: #334155;
+}
+
+html[data-bs-theme="light"] .welcome-eyebrow {
+    color: #0284c7;
+    background: rgba(14, 165, 233, 0.12);
+}
+
+html[data-bs-theme="light"] .welcome-pill {
+    background: rgba(15, 23, 42, 0.05);
+    color: #475569;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+html[data-bs-theme="light"] .welcome-feature-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.05);
+}
+
+html[data-bs-theme="light"] .feature-copy h2 {
+    color: #0f172a;
+}
+
+html[data-bs-theme="light"] .feature-copy p {
+    color: #475569;
+}
+
+html[data-bs-theme="light"] .feature-list {
+    color: #334155;
+}
+
+html[data-bs-theme="light"] .feature-kicker {
+    color: #059669;
+}
+
+html[data-bs-theme="light"] .feature-badge {
+    background: rgba(15, 23, 42, 0.05);
+    color: #334155;
+}
+
+html[data-bs-theme="light"] .mvp-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+html[data-bs-theme="light"] .mvp-card .mvp-name {
+    color: #0f172a;
+}
+
+html[data-bs-theme="light"] .mvp-card p {
+    color: #475569;
+}
+
+html[data-bs-theme="light"] .welcome-secondary-btn {
+    color: #0f172a;
+    background: rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+html[data-bs-theme="light"] .welcome-secondary-btn:hover {
+    background: rgba(15, 23, 42, 0.12);
+    color: #0f172a;
+}
+

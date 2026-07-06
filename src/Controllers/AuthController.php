@@ -118,19 +118,16 @@ class AuthController extends BaseController {
         }
 
         // Ensure username is unique
-        $baseUsername = strtolower($username);
-        $counter = 1;
-        $uniqueUsername = $baseUsername;
-        while ($userModel->find($uniqueUsername)) {
-            $uniqueUsername = $baseUsername . $counter;
-            $counter++;
+        if ($userModel->find($username)) {
+            $_SESSION['error'] = "Questo username è già in uso.";
+            $this->redirect('/register');
         }
 
         // Generate friend code
         $friendCode = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 6));
 
         $userData = [
-            'username' => $uniqueUsername,
+            'username' => $username,
             'name' => $name,
             'last_name' => $lastName,
             'email' => $email,
