@@ -80,7 +80,7 @@
             </div>
             
             <div class="px-3 pt-3">
-                <ul class="nav nav-tabs border-bottom-0 gap-1 bg-light p-1 rounded-3 font-size-sm" id="settingsModalTabs" role="tablist">
+                <ul class="nav nav-tabs border-bottom-0 gap-1 bg-body-secondary p-1 rounded-3 font-size-sm" id="settingsModalTabs" role="tablist">
                     <li class="nav-item flex-grow-1 text-center" role="presentation">
                         <button class="nav-link active rounded-2 border-0 w-100 fw-semibold" id="modal-info-tab" data-bs-toggle="tab" data-bs-target="#modal-info-pane" type="button" role="tab" aria-controls="modal-info-pane" aria-selected="true">
                             <span class="bi bi-person me-1"></span>Profilo

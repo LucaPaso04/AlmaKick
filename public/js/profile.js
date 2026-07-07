@@ -3,7 +3,9 @@ function copyFriendCode(btn) {
     const textEl = document.getElementById('friendCodeText');
     if (!textEl) return;
     
-    navigator.clipboard.writeText(textEl.innerText).then(() => {
+    const textToCopy = textEl.innerText;
+
+    function handleSuccess() {
         const originalHTML = btn.innerHTML;
         btn.innerHTML = '<span class="bi bi-check-lg"></span>';
         btn.classList.replace('btn-outline-primary', 'btn-success');
@@ -12,9 +14,42 @@ function copyFriendCode(btn) {
             btn.innerHTML = originalHTML;
             btn.classList.replace('btn-success', 'btn-outline-primary');
         }, 2000);
-    }).catch(err => {
-        console.error("Errore durante la copia negli appunti: ", err);
-    });
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(handleSuccess).catch(err => {
+            console.error("Errore copia navigator.clipboard: ", err);
+            fallbackCopy(textToCopy);
+        });
+    } else {
+        fallbackCopy(textToCopy);
+    }
+
+    function fallbackCopy(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                handleSuccess();
+            } else {
+                console.error("Copia fallback non riuscita");
+            }
+        } catch (err) {
+            console.error("Errore copia fallback: ", err);
+        }
+
+        document.body.removeChild(textArea);
+    }
 }
 
 function switchSettingsTab(tabId) {
@@ -32,9 +67,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const avatarForm = document.getElementById('avatarForm');
 
     if (avatarInput && avatarLabel && avatarForm) {
-        // Change submit
-        avatarInput.addEventListener('change', () => {
-            avatarForm.submit();
+        // Compress and upload avatar
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (window.showToast) {
+                window.showToast('Elaborazione immagine in corso...', 'info', 3000);
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const max_size = 1020;
+                    
+                    if (width > height) {
+                        if (width > max_size) {
+                            height *= max_size / width;
+                            width = max_size;
+                        }
+                    } else {
+                        if (height > max_size) {
+                            width *= max_size / height;
+                            height = max_size;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    canvas.toBlob(function(blob) {
+                        if (!blob) {
+                            if (window.showToast) {
+                                window.showToast('Errore durante l\'elaborazione dell\'immagine.', 'danger');
+                            }
+                            return;
+                        }
+                        
+                        const formData = new FormData();
+                        formData.append('csrf_token', avatarForm.querySelector('input[name="csrf_token"]')?.value || '');
+                        formData.append('avatar', blob, 'avatar.jpg');
+                        
+                        fetch(avatarForm.action, {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(() => {
+                            window.location.reload();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            if (window.showToast) {
+                                window.showToast('Errore durante il caricamento.', 'danger');
+                            }
+                        });
+                    }, 'image/jpeg', 0.8);
+                };
+            };
         });
 
         // Keydown behavior
@@ -67,6 +164,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = row.getAttribute('data-href');
             if (url) {
                 window.location.href = url;
+            }
+        });
+        row.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const url = row.getAttribute('data-href');
+                if (url) {
+                    window.location.href = url;
+                }
+            }
+        });
+    });
+
+    // Badge cards click and keydown behavior
+    const badgeCards = document.querySelectorAll('.badge-card');
+    badgeCards.forEach(card => {
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
             }
         });
     });

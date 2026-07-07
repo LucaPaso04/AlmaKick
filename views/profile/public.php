@@ -33,6 +33,28 @@ if (!empty($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== $_SERVER['R
                             <span class="bi bi-three-dots-vertical"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 fade-down" aria-labelledby="profileActionsDropdown">
+                            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'super_admin' && $_SESSION['user']['username'] !== $user['username']): ?>
+                                <li>
+                                    <?php if (!empty($user['is_banned'])): ?>
+                                        <form action="<?= url('/admin/unban') ?>" method="POST" onsubmit="return confirm('Vuoi riabilitare questo utente?');" class="m-0">
+                                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                            <input type="hidden" name="user_id" value="<?= e($user['username']) ?>">
+                                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-success fw-semibold bg-transparent border-0 w-100 text-start">
+                                                <span class="bi bi-shield-check text-success"></span> Riabilita Utente
+                                            </button>
+                                        </form>
+                                    <?php else: ?>
+                                        <form action="<?= url('/admin/ban') ?>" method="POST" onsubmit="return confirm('Vuoi bannare questo utente in modo permanente? Questa operazione gli impedirà l\'accesso.');" class="m-0">
+                                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                            <input type="hidden" name="user_id" value="<?= e($user['username']) ?>">
+                                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger fw-semibold bg-transparent border-0 w-100 text-start">
+                                                <span class="bi bi-shield-slash text-danger"></span> Banna Utente
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+                                </li>
+                                <li><hr class="dropdown-divider opacity-25"></li>
+                            <?php endif; ?>
                             <li>
                                 <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#reportUserModal">
                                     <span class="bi bi-flag-fill"></span> Segnala Utente

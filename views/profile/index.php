@@ -339,27 +339,24 @@
         <div class="tab-content" id="profileTabsContent">
 
             <!-- Tab: Overview -->
-            <div class="tab-pane fade show active" id="activity" role="tabpanel" aria-labelledby="activity-tab"
-                tabindex="0">
+            <div class="tab-pane fade show active" id="activity" role="tabpanel" aria-labelledby="activity-tab">
                 <?php require VIEW_PATH . '/profile/partials/badges.php'; ?>
                 <?php require VIEW_PATH . '/profile/partials/history_tab.php'; ?>
 
             </div>
 
             <!-- Tab: Social & Friends -->
-            <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab" tabindex="0">
+            <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab">
                 <?php require VIEW_PATH . '/profile/partials/social_tab.php'; ?>
 
             </div>
 
             <!-- Tab: Settings -->
             <?php if ($is_own_profile): ?>
-                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab" tabindex="0">
+                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
                     <?php require VIEW_PATH . '/profile/partials/info_tab.php'; ?>
                 </div>
             <?php endif; ?>
         </div>
     </div>
-</div>
-
-<script src="<?= url('/js/profile.js') ?>"></script>
+</div>

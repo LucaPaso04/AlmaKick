@@ -139,7 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(event) {
+            if (event.defaultPrevented) return;
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn && !form.classList.contains('no-spinner')) {
                 if (submitBtn.classList.contains('no-loading-state')) return;

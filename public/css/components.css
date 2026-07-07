@@ -470,3 +470,79 @@ body .back-btn:focus-visible {
     background-color: var(--accent);
     color: #fff;
 }
+
+/* Enhancements for outline buttons in dark mode to show shadows and solid borders */
+html[data-bs-theme="dark"] body .btn-outline-primary {
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(36, 123, 160, 0.25);
+}
+
+html[data-bs-theme="dark"] body .btn-outline-primary:hover {
+    color: #fff;
+    background-color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 4px 20px rgba(36, 123, 160, 0.5);
+}
+
+html[data-bs-theme="dark"] body .btn-outline-danger {
+    color: var(--danger);
+    border: 1.5px solid var(--danger);
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(251, 54, 64, 0.25);
+}
+
+html[data-bs-theme="dark"] body .btn-outline-danger:hover {
+    color: #fff;
+    background-color: var(--danger);
+    border-color: var(--danger);
+    box-shadow: 0 4px 20px rgba(251, 54, 64, 0.5);
+}
+
+/* Enhancements for outline buttons in light mode to show shadows and solid borders */
+html[data-bs-theme="light"] body .btn-outline-primary {
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 4px 10px rgba(36, 123, 160, 0.15);
+}
+
+html[data-bs-theme="light"] body .btn-outline-primary:hover {
+    box-shadow: 0 4px 18px rgba(36, 123, 160, 0.35);
+}
+
+html[data-bs-theme="light"] body .btn-outline-danger {
+    border: 1.5px solid var(--danger);
+    box-shadow: 0 4px 10px rgba(251, 54, 64, 0.15);
+}
+
+html[data-bs-theme="light"] body .btn-outline-danger:hover {
+    box-shadow: 0 4px 18px rgba(251, 54, 64, 0.35);
+}
+
+/* Keyboard focus-visible accessibility rings for outline buttons in both themes */
+html[data-bs-theme="dark"] body .btn-outline-primary:focus-visible {
+    outline: none;
+    border-color: #fff;
+    box-shadow: 0 0 0 3px #fff, 0 4px 12px rgba(36, 123, 160, 0.25);
+}
+
+html[data-bs-theme="dark"] body .btn-outline-danger:focus-visible {
+    outline: none;
+    border-color: #fff;
+    box-shadow: 0 0 0 3px #fff, 0 4px 12px rgba(251, 54, 64, 0.25);
+}
+
+html[data-bs-theme="light"] body .btn-outline-primary:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent), 0 4px 10px rgba(36, 123, 160, 0.15);
+}
+
+html[data-bs-theme="light"] body .btn-outline-danger:focus-visible {
+    outline: none;
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px var(--danger), 0 4px 10px rgba(251, 54, 64, 0.15);
+}
+
+
+

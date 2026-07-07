@@ -22,7 +22,7 @@
                         <tbody>
                             <?php foreach($matchHistory as $reg): ?>
                                 <?php if($reg['match']): ?>
-                                    <tr class="cursor-pointer history-match-row" data-href="<?= url('/matches/' . $reg['match']['id']) ?>?from=profile">
+                                    <tr class="cursor-pointer history-match-row" data-href="<?= url('/matches/' . $reg['match']['id']) ?>?from=profile" tabindex="0" role="button" aria-label="Partita a <?= e($reg['match']['location']) ?> del <?= date('d/m/Y', strtotime($reg['match']['date'])) ?>">
                                         <td><strong><?= date('d/m/Y', strtotime($reg['match']['date'])) ?></strong></td>
                                         <td><?= date('H:i', strtotime($reg['match']['time'])) ?></td>
                                         <td>

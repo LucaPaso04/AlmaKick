@@ -98,22 +98,22 @@
                     <!-- Received requests -->
                     <?php foreach($pendingRequests as $richiesta): ?>
                         <div class="list-group-item px-0 py-3 border-bottom border-light">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-warning text-dark rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center min-width-0" style="min-width: 0;">
+                                    <div class="bg-warning text-dark rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar flex-shrink-0">
                                         <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
                                     </div>
-                                    <div>
-                                        <div class="mb-0 fw-bold">
+                                    <div class="min-width-0" style="min-width: 0;">
+                                        <div class="mb-0 fw-bold text-truncate">
                                             <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
                                         </div>
-                                        <small class="text-muted">
+                                        <small class="text-muted text-truncate d-block">
                                             <?= e($richiesta['preferred_role'] ?? 'Giocatore') ?> • 
                                             <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 font-size-2xs">Richiesta Ricevuta</span>
                                         </small>
                                     </div>
                                 </div>
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 flex-shrink-0">
                                     <form action="<?= url('/friends/accept/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
                                         <button type="submit" class="btn btn-sm btn-success rounded-pill fw-bold shadow-sm px-3" title="Accetta"><span class="bi bi-check-lg me-1"></span>Accetta</button>
@@ -130,22 +130,22 @@
                     <!-- Sent requests -->
                     <?php foreach($sentPendingRequests as $richiesta): ?>
                         <div class="list-group-item px-0 py-3 border-bottom border-light">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-secondary bg-opacity-20 text-secondary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center min-width-0" style="min-width: 0;">
+                                    <div class="bg-secondary bg-opacity-20 text-secondary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar flex-shrink-0">
                                         <?= strtoupper(substr($richiesta['name'], 0, 1)) ?>
                                     </div>
-                                    <div>
-                                        <div class="mb-0 fw-bold">
+                                    <div class="min-width-0" style="min-width: 0;">
+                                        <div class="mb-0 fw-bold text-truncate">
                                             <a href="<?= url('/profile?username=' . urlencode($richiesta['username'])) ?>" class="text-decoration-none text-body"><?= e($richiesta['name']) ?></a>
                                         </div>
-                                        <small class="text-muted">
+                                        <small class="text-muted text-truncate d-block">
                                             <?= e($richiesta['preferred_role'] ?? 'Giocatore') ?> • 
                                             <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 font-size-2xs">Richiesta Inviata (In attesa)</span>
                                         </small>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="flex-shrink-0">
                                     <form action="<?= url('/friends/remove/' . urlencode($richiesta['username'])) ?>" method="POST" class="m-0"
                                           onsubmit="return confirm('Sei sicuro di voler annullare questa richiesta di amicizia?');">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
@@ -159,16 +159,16 @@
                     <!-- Friends list -->
                     <?php foreach($friends as $amico): ?>
                         <div class="list-group-item px-0 py-3 border-bottom border-light">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center min-width-0" style="min-width: 0;">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold profile-list-avatar flex-shrink-0">
                                         <?= strtoupper(substr($amico['name'], 0, 1)) ?>
                                     </div>
-                                    <div>
-                                        <div class="mb-0 fw-bold">
+                                    <div class="min-width-0" style="min-width: 0;">
+                                        <div class="mb-0 fw-bold text-truncate">
                                             <a href="<?= url('/profile?username=' . urlencode($amico['username'])) ?>" class="text-decoration-none text-body"><?= e($amico['name']) ?></a>
                                         </div>
-                                        <small class="text-muted">
+                                        <small class="text-muted text-truncate d-block">
                                             <?= e($amico['preferred_role'] ?? 'Giocatore') ?> •
                                             <span class="bi bi-star-fill text-warning"></span>
                                             <?= $amico['skill_rating'] > 0 ? number_format($amico['skill_rating'], 1) : '-' ?>
@@ -176,12 +176,14 @@
                                     </div>
                                 </div>
                                 <?php if ($is_own_profile): ?>
-                                    <form action="<?= url('/friends/remove/' . urlencode($amico['username'])) ?>" method="POST"
-                                        class="m-0"
-                                        onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');">
-                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2 shadow-sm" title="Rimuovi"><span class="bi bi-person-dash"></span> Rimuovi</button>
-                                    </form>
+                                    <div class="flex-shrink-0">
+                                        <form action="<?= url('/friends/remove/' . urlencode($amico['username'])) ?>" method="POST"
+                                            class="m-0"
+                                            onsubmit="return confirm('Sei sicuro di voler rimuovere questo amico?');">
+                                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token'] ?? '') ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-2 shadow-sm" title="Rimuovi"><span class="bi bi-person-dash"></span> Rimuovi</button>
+                                        </form>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>

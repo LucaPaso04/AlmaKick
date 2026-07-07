@@ -69,7 +69,8 @@ if (!function_exists('getBadgeStatus')) {
                     
                     <div class="col-6 col-sm-4 col-md-3">
                         <div class="card h-100 <?= $borderStyle ?> bg-body-tertiary text-center p-3 badge-card animate-hover cursor-pointer" 
-                             data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>">
+                             data-bs-toggle="modal" data-bs-target="#badgeModal<?= $b['id'] ?>"
+                             tabindex="0" role="button" aria-label="Obiettivo <?= e($b['title']) ?> - livello <?= e($status['level']) ?>">
                             
                             <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 badge-card-avatar avatar-level-<?= $lvlLower ?>">
                                 <span class="bi <?= $b['icon'] ?>"></span>
