@@ -537,6 +537,19 @@ class MatchController extends BaseController {
             $this->redirect(url('/login'));
         }
 
+        $matchModel = new SoccerMatch();
+        $match = $matchModel->find($id);
+        if (!$match) {
+            $_SESSION['error'] = "Partita non trovata.";
+            $this->redirectToMatch($id);
+        }
+
+        $isMvpDeadlinePassed = !empty($match['mvp_deadline']) && (time() > strtotime($match['mvp_deadline']));
+        if (!empty($match['mvp_assigned']) || $isMvpDeadlinePassed) {
+            $_SESSION['error'] = "Le votazioni per questa partita sono chiuse.";
+            $this->redirectToMatch($id);
+        }
+
         $votes = $_POST['votes'] ?? [];
         if (empty($votes)) {
             $_SESSION['error'] = "Nessun voto compilato.";

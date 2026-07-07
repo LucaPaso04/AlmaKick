@@ -46,14 +46,11 @@ if (!empty($p['latitude']) && !empty($p['longitude'])) {
 ?>
 
 <div class="col">
-    <div class="card h-100 card-partita rounded-4 shadow-sm bg-body overflow-visible mt-3 position-relative d-flex flex-column <?= !empty($p['is_urgent']) ? 'card-partita-urgent' : '' ?>"
-     <?= $canClick ? 'onclick="window.location.href=\'' . url('/matches/' . $p['id']) . '?from=' . urlencode($requestUri) . '\';"' : '' ?> 
-     <?= $canClick ? 'tabindex="0" role="button" aria-label="Partita a ' . e($p['location'] ?? '') . '" onkeydown="if(event.key === \'Enter\' || event.key === \' \') { event.preventDefault(); window.location.href=\'' . url('/matches/' . $p['id']) . '?from=' . urlencode($requestUri) . '\'; }"' : '' ?>
-     style="<?= $canClick ? 'cursor: pointer;' : 'cursor: default;' ?>">
+    <div class="card h-100 card-partita rounded-4 shadow-sm bg-body overflow-visible mt-3 position-relative d-flex flex-column <?= !empty($p['is_urgent']) ? 'card-partita-urgent' : '' ?>">
         <div class="match-header rounded-top-4" style="background: <?= $gradient ?>; height: 8px;"></div>
 
         <!-- Host avatar -->
-        <div class="position-absolute top-0 start-50 translate-middle-x" style="margin-top: -12px;">
+        <div class="position-absolute top-0 start-50 translate-middle-x z-index-10" style="margin-top: -12px;">
             <a href="<?= url('/profile?username=' . urlencode($p['host_username'])) ?>" title="Organizzatore: <?= e($p['host_name'] ?? '') ?>" onclick="event.stopPropagation();">
                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['host_name'] ?? '') ?>&background=random&color=fff&size=64"
                     alt="<?= e($p['host_name'] ?? '') ?>" class="rounded-circle border border-3 border-white shadow-sm"
@@ -62,6 +59,9 @@ if (!empty($p['latitude']) && !empty($p['longitude'])) {
         </div>
 
         <div class="card-body position-relative pt-4 mt-2 d-flex flex-column h-100">
+            <?php if ($canClick): ?>
+                <a href="<?= url('/matches/' . $p['id']) ?>?from=<?= urlencode($requestUri) ?>" class="stretched-link" aria-label="Visualizza dettagli partita a <?= e($p['location'] ?? '') ?>"></a>
+            <?php endif; ?>
 
             <!-- Top badges -->
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -119,7 +119,7 @@ if (!empty($p['latitude']) && !empty($p['longitude'])) {
                 class="card-title h5 fw-bold text-center text-white mb-1 d-flex align-items-center justify-content-center gap-1">
                 <span><?= e($p['location'] ?? '') ?></span>
                 <a href="<?= $mapsUrl ?>"
-                    target="_blank" rel="noopener noreferrer" class="text-primary fs-6" title="Apri su Google Maps"
+                    target="_blank" rel="noopener noreferrer" class="text-primary fs-6 position-relative z-index-10" title="Apri su Google Maps"
                     onclick="event.stopPropagation();">
                     <span class="bi bi-geo-alt-fill"></span>
                 </a>
@@ -156,7 +156,7 @@ if (!empty($p['latitude']) && !empty($p['longitude'])) {
             </div>
 
             <!-- Card actions -->
-            <div class="mt-3 pt-3 border-top border-opacity-10 d-block w-100" onclick="event.stopPropagation();">
+            <div class="mt-3 pt-3 border-top border-opacity-10 d-block w-100 position-relative z-index-10" onclick="event.stopPropagation();">
                 <?php if (($p['status'] ?? '') === 'cancelled'): ?>
                     <div
                         class="w-100 text-center py-2 bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill fw-bold small">

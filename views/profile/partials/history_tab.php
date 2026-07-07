@@ -22,8 +22,8 @@
                         <tbody>
                             <?php foreach($matchHistory as $reg): ?>
                                 <?php if($reg['match']): ?>
-                                    <tr class="cursor-pointer history-match-row" data-href="<?= url('/matches/' . $reg['match']['id']) ?>?from=profile" tabindex="0" role="button" aria-label="Partita a <?= e($reg['match']['location']) ?> del <?= date('d/m/Y', strtotime($reg['match']['date'])) ?>">
-                                        <td><strong><?= date('d/m/Y', strtotime($reg['match']['date'])) ?></strong></td>
+                                    <tr class="cursor-pointer history-match-row" data-href="<?= url('/matches/' . $reg['match']['id']) ?>?from=profile">
+                                        <td><strong><a href="<?= url('/matches/' . $reg['match']['id']) ?>?from=profile" class="text-decoration-none text-body fw-bold focus-ring rounded" aria-label="Dettagli partita a <?= e($reg['match']['location']) ?> del <?= date('d/m/Y', strtotime($reg['match']['date'])) ?>"><?= date('d/m/Y', strtotime($reg['match']['date'])) ?></a></strong></td>
                                         <td><?= date('H:i', strtotime($reg['match']['time'])) ?></td>
                                         <td>
                                             <div class="d-flex align-items-center">

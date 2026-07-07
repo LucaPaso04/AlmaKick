@@ -20,7 +20,7 @@ foreach ($registrations as $reg) {
 <div class="card shadow-sm border-0 mb-4 rounded-4 bg-body">
     <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold fs-6"><i class="bi bi-people-fill text-primary me-2"></i>Posti Occupati</span>
+            <span class="fw-bold fs-6"><span class="bi bi-people-fill text-primary me-2"></span>Posti Occupati</span>
             <span class="fw-bold fs-6"><span class="text-primary"><?= $occupied_seats ?></span> / <?= $match['max_players'] ?></span>
         </div>
         <div class="progress rounded-pill shadow-sm bg-body-tertiary" style="height: 10px;">
@@ -31,9 +31,9 @@ foreach ($registrations as $reg) {
             <div class="progress-bar <?= $progressColor ?> progress-bar-striped progress-bar-animated" role="progressbar" style="width: <?= $percent ?>%" aria-valuenow="<?= $occupied_seats ?>" aria-valuemin="0" aria-valuemax="<?= $match['max_players'] ?>"></div>
         </div>
         <?php if($occupied_seats >= $match['max_players']): ?>
-            <div class="text-danger small mt-2 d-flex align-items-center"><i class="bi bi-exclamation-triangle-fill me-1"></i> Posti principali completati. I prossimi iscritti andranno in lista d'attesa (panchina).</div>
+            <div class="text-danger small mt-2 d-flex align-items-center"><span class="bi bi-exclamation-triangle-fill me-1"></span> Posti principali completati. I prossimi iscritti andranno in lista d'attesa (panchina).</div>
         <?php else: ?>
-            <div class="text-muted small mt-2 d-flex align-items-center"><i class="bi bi-info-circle me-1"></i> Rimangono ancora <?= ($match['max_players'] - $occupied_seats) ?> posti disponibili per scendere in campo!</div>
+            <div class="text-muted small mt-2 d-flex align-items-center"><span class="bi bi-info-circle me-1"></span> Rimangono ancora <?= ($match['max_players'] - $occupied_seats) ?> posti disponibili per scendere in campo!</div>
         <?php endif; ?>
     </div>
 </div>
@@ -70,13 +70,13 @@ foreach ($registrations as $reg) {
                                 <?= e($reg['name']) ?> (@<?= e($reg['username']) ?>)
                             </a>
                             <?php if($reg['has_guest']): ?>
-                                <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><i class="bi bi-person-plus-fill me-1"></i>+1 Ospite</span>
+                                <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><span class="bi bi-person-plus-fill me-1"></span>+1 Ospite</span>
                             <?php endif; ?>
                             <?php if($isPlayerHost): ?>
                                 <span class="badge bg-secondary shadow-sm"><span class="bi bi-star-fill text-warning me-1" aria-hidden="true"></span>Host</span>
                             <?php endif; ?>
                             <?php if($isOfferActive): ?>
-                                <span class="badge bg-warning text-dark shadow-sm d-inline-flex align-items-center pulse-badge"><i class="bi bi-lightning-fill me-1"></i>Da confermare</span>
+                                <span class="badge bg-warning text-dark shadow-sm d-inline-flex align-items-center pulse-badge"><span class="bi bi-lightning-fill me-1"></span>Da confermare</span>
                             <?php endif; ?>
                             <?php if($reg['team']): ?>
                                 <span class="badge bg-<?= $reg['team'] === 'home' ? 'danger' : 'primary' ?> shadow-sm"><?= ucfirst($reg['team']) ?></span>
@@ -121,7 +121,7 @@ foreach ($registrations as $reg) {
             <div class="list-group-item border-0 border-bottom d-flex justify-content-between align-items-center py-3 bg-body hover-scale transition-all" role="listitem">
                 <div class="d-flex align-items-center">
                     <div class="bg-danger text-white rounded-circle d-flex justify-content-center align-items-center me-3 fs-5 fw-bold shadow-sm border border-2 border-white match-show-avatar" aria-hidden="true">
-                        <i class="bi bi-person-plus-fill"></i>
+                        <span class="bi bi-person-plus-fill"></span>
                     </div>
                     <div>
                         <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6">
@@ -130,7 +130,7 @@ foreach ($registrations as $reg) {
                             <span class="badge bg-success shadow-sm" role="img" aria-label="Hanno segnato <?= $guestHomeGoals ?> gol">⚽ <?= $guestHomeGoals ?></span>
                         </h3>
                         <small class="text-muted d-flex align-items-center gap-1 mt-1">
-                            <i class="bi bi-people-fill" aria-hidden="true"></i> Gol complessivi degli ospiti
+                            <span class="bi bi-people-fill" aria-hidden="true"></span> Gol complessivi degli ospiti
                         </small>
                     </div>
                 </div>
@@ -141,7 +141,7 @@ foreach ($registrations as $reg) {
             <div class="list-group-item border-0 border-bottom d-flex justify-content-between align-items-center py-3 bg-body hover-scale transition-all" role="listitem">
                 <div class="d-flex align-items-center">
                     <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3 fs-5 fw-bold shadow-sm border border-2 border-white match-show-avatar" aria-hidden="true">
-                        <i class="bi bi-person-plus-fill"></i>
+                        <span class="bi bi-person-plus-fill"></span>
                     </div>
                     <div>
                         <h3 class="mb-0 fw-bold d-flex align-items-center gap-2 flex-wrap fs-6">
@@ -150,7 +150,7 @@ foreach ($registrations as $reg) {
                             <span class="badge bg-success shadow-sm" role="img" aria-label="Hanno segnato <?= $guestAwayGoals ?> gol">⚽ <?= $guestAwayGoals ?></span>
                         </h3>
                         <small class="text-muted d-flex align-items-center gap-1 mt-1">
-                            <i class="bi bi-people-fill" aria-hidden="true"></i> Gol complessivi degli ospiti
+                            <span class="bi bi-people-fill" aria-hidden="true"></span> Gol complessivi degli ospiti
                         </small>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ foreach ($registrations as $reg) {
                                 <?= e($reg['name']) ?> (@<?= e($reg['username']) ?>)
                             </a>
                             <?php if($reg['has_guest']): ?>
-                                <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><i class="bi bi-person-plus-fill me-1"></i>+1 Ospite</span>
+                                <span class="badge bg-info text-dark shadow-sm d-inline-flex align-items-center"><span class="bi bi-person-plus-fill me-1"></span>+1 Ospite</span>
                             <?php endif; ?>
                             <span class="badge bg-warning text-dark shadow-sm">In Attesa</span>
                         </h3>

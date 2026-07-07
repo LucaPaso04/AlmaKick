@@ -299,7 +299,7 @@ if ($userAvatar) {
                 <?php if (isset($_SESSION['user'])): ?>
                     <!-- Footer links -->
                     <div class="col-12 col-md-4 text-center text-md-end">
-                        <h2 class="h6 fw-semibold mb-3">Link Utili</h2>
+                        <p class="h6 fw-semibold mb-3">Link Utili</p>
                         <ul
                             class="list-unstyled small mb-0 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-center">
                             <li><a href="<?= url('/matches') ?>"

@@ -37,11 +37,40 @@
     height: 50px;
 }
 
-/* MVP Card */
-.mvp-custom-card {
+/* MVP Card & Glow */
+.mvp-radial-glow {
+    background: radial-gradient(circle, rgba(255, 193, 7, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+body .mvp-custom-card {
+    border-color: #ffc107;
+}
+
+html[data-bs-theme="dark"] body .mvp-custom-card {
     background: rgba(25, 20, 10, 0.6);
-    border-color: #ffc107 !important;
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.2) !important;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+}
+
+html[data-bs-theme="dark"] body .mvp-desc {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+html[data-bs-theme="dark"] body .mvp-name-link {
+    color: #ffffff;
+}
+
+html[data-bs-theme="light"] body .mvp-custom-card {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.12) 0%, rgba(255, 215, 0, 0.06) 100%);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.15);
+}
+
+html[data-bs-theme="light"] body .mvp-desc {
+    color: var(--bs-secondary-color);
+}
+
+html[data-bs-theme="light"] body .mvp-name-link {
+    color: var(--bs-body-color);
 }
 
 .mvp-avatar {
@@ -59,18 +88,44 @@
     font-size: 0.8rem;
 }
 
-.mvp-desc {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.75rem;
-}
-
 .mvp-name-link {
-    color: #ffffff;
     transition: color 0.15s ease;
 }
-.mvp-name-link:hover {
+
+body .mvp-name-link:hover {
     color: #ffc107;
 }
+
+/* Final Result Card Styles */
+html[data-bs-theme="dark"] body .final-result-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+html[data-bs-theme="dark"] body .final-result-card .score-text {
+    color: #ffffff;
+}
+html[data-bs-theme="dark"] body .final-result-card .divider-text {
+    color: rgba(255, 255, 255, 0.25);
+}
+html[data-bs-theme="dark"] body .final-result-card .title-text {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+html[data-bs-theme="light"] body .final-result-card {
+    background: linear-gradient(135deg, rgba(36, 123, 160, 0.08) 0%, rgba(36, 123, 160, 0.03) 100%);
+    border: 1px solid rgba(36, 123, 160, 0.15);
+}
+html[data-bs-theme="light"] body .final-result-card .score-text {
+    color: var(--bs-body-color);
+}
+html[data-bs-theme="light"] body .final-result-card .divider-text {
+    color: var(--bs-secondary-color);
+    opacity: 0.5;
+}
+html[data-bs-theme="light"] body .final-result-card .title-text {
+    color: var(--bs-secondary-color);
+}
+
 
 /* Soccer Pitch Graphics */
 .pitch-container {

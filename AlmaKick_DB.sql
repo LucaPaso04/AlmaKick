@@ -319,6 +319,11 @@ INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `t
 INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
 (19, 'vittorio_ossidiana', 'cancelled', 'public', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '20:30:00', 'Arena Sport', 44.4900, 11.3000, '5v5', 10, 60.00, 'Infortunio del campo', NOW(), NOW());
 
+-- Match 999: Finished match today, 1 hour ago, hosted by admin_test, result and MVP pending, full (10 players)
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(999, 'admin_test', 'finished', 'public', CURDATE(), TIME(DATE_SUB(NOW(), INTERVAL 1 HOUR)), 'Stadio Comunale AlmaKick', 44.4949, 11.3426, '5vs5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
+
+
 
 -- --------------------------------------------------------
 -- REGISTRATIONS
@@ -527,7 +532,19 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (10, 'andrea_gialli', 'cancelled', 0, NULL, 0, NOW(), NOW()),
 
 -- Registrations for Match 19 (Cancelled, host registered with cancelled status)
-(19, 'vittorio_ossidiana', 'cancelled', 0, NULL, 0, NOW(), NOW());
+(19, 'vittorio_ossidiana', 'cancelled', 0, NULL, 0, NOW(), NOW()),
+
+-- Registrations for Match 999 (Finished 1h ago, hosted by admin_test, full 10/10, no results/MVP set, teams assigned)
+(999, 'admin_test', 'registered', 0, 'home', 0, NOW(), NOW()),
+(999, 'mario_rossi', 'registered', 0, 'home', 0, NOW(), NOW()),
+(999, 'tommaso_st', 'registered', 0, 'home', 0, NOW(), NOW()),
+(999, 'michele_marrone', 'registered', 0, 'home', 0, NOW(), NOW()),
+(999, 'giulia_brunelli', 'registered', 0, 'home', 0, NOW(), NOW()),
+(999, 'luigi_verdi', 'registered', 0, 'away', 0, NOW(), NOW()),
+(999, 'giovanni_neri', 'registered', 0, 'away', 0, NOW(), NOW()),
+(999, 'marco_bianchi', 'registered', 0, 'away', 0, NOW(), NOW()),
+(999, 'andrea_gialli', 'registered', 0, 'away', 0, NOW(), NOW()),
+(999, 'paolo_marroni', 'registered', 0, 'away', 0, NOW(), NOW());
 
 
 -- --------------------------------------------------------
