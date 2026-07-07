@@ -36,7 +36,7 @@
                                             <?php if($reg['match']['result_home'] !== null && $reg['match']['result_away'] !== null): ?>
                                                 <span class="badge bg-secondary fs-6 shadow-sm"><?= e($reg['match']['result_home']) ?> - <?= e($reg['match']['result_away']) ?></span>
                                             <?php else: ?>
-                                                <span class="badge bg-light text-muted border">N/A</span>
+                                                <span class="badge bg-body-secondary text-body-secondary border">N/A</span>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
