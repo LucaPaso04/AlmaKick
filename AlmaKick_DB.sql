@@ -182,7 +182,7 @@ CREATE TABLE `notifications` (
 INSERT INTO `users` (`username`, `friend_code`, `name`, `last_name`, `email`, `password`, `phone`, `preferred_role`, `role`, `created_at`, `updated_at`) VALUES 
 ('admin_test', 'RWBMYD', 'Admin', 'Test', 'admin@email.it', '$2y$12$rMficTvQd3ZLBtPnPjp8VeoPSAs.5W.erlprPs.YbRCGniPyv3gTC', '3331234567', 'Difensore', 'super_admin', NOW(), NOW()),
 ('mario_rossi', '5JXTKP', 'Mario', 'Rossi', 'user@email.it', '$2y$12$tdivzfJLVFGBbQ1G88qw4ectIDlSoqRP07CnyBr2f1X81FeYR1nuW', '3339876543', 'Attaccante', 'user', NOW(), NOW()),
-('tommaso_st', 'MNCO0P', 'Tommaso', 'Stella', 'tommaso@email.it', '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3102877196', 'Centrocampista', 'user', NOW(), NOW()),
+('tommaso_sardelli', 'MNCO0P', 'Tommaso', 'Sardelli', 'tommaso@email.it', '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3102877196', 'Centrocampista', 'user', NOW(), NOW()),
 ('michele_marrone', 'CFWPXS', 'Michele', 'Marrone', 'michele@email.it', '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '5179122216', 'Portiere', 'user', NOW(), NOW()),
 ('giulia_brunelli', 'IR3TMB', 'Giulia', 'Brunelli', 'giulia@email.it', '$2y$12$navszHVgM7SEjtrrvyz.neckQu4BUbr7KuIcb4a.SmUt/291TTo3S', '3853907416', 'Portiere', 'user', NOW(), NOW());
 
@@ -199,7 +199,7 @@ INSERT INTO users (username, friend_code, name, last_name, email, password, phon
 ('luca_celeste', 'DOFUBC', 'Luca', 'Celeste', 'luca@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3338889999', 'user', 'Difensore', 75, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('alessandro_indaco', 'D4GQAN', 'Alessandro', 'Indaco', 'alessandro@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331010101', 'user', 'Portiere', 100, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('daniele_oliva', 'M3US68', 'Daniele', 'Oliva', 'daniele@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3332020202', 'user', 'Centrocampista', 50, 0.00, 0, 0, 0, 0, NOW(), NOW()),
-('matteo_perla', 'YAOBV3', 'Matteo', 'Perla', 'matteo@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3333030303', 'user', 'Attaccante', 95, 0.00, 0, 0, 0, 0, NOW(), NOW()),
+('matteo_goga', 'YAOBV3', 'Matteo', 'Goga', 'matteo@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3333030303', 'user', 'Attaccante', 95, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('simone_smeraldo', '82VE8Q', 'Simone', 'Smeraldo', 'simone@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3334040404', 'user', 'Difensore', 100, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('davide_topazio', '5GYTVE', 'Davide', 'Topazio', 'davide@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3335050505', 'user', 'Portiere', 65, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('federico_rubino', '1NX62W', 'Federico', 'Rubino', 'federico@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3336060606', 'user', 'Centrocampista', 100, 0.00, 0, 0, 0, 0, NOW(), NOW()),
@@ -215,8 +215,7 @@ INSERT INTO users (username, friend_code, name, last_name, email, password, phon
 ('marco_diamante', 'YMPU8K', 'Marco', 'Diamante', 'marcod@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331231236', 'user', 'Difensore', 90, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('elena_ametista', 'OUFSIB', 'Elena', 'Ametista', 'elena@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331231237', 'user', 'Centrocampista', 100, 0.00, 0, 0, 0, 0, NOW(), NOW()),
 ('fabio_quarzo', 'WFQ38W', 'Fabio', 'Quarzo', 'fabio@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331231238', 'user', 'Portiere', 85, 0.00, 0, 0, 0, 0, NOW(), NOW()),
-('vittorio_ossidiana', 'ZQYXY3', 'Vittorio', 'Ossidiana', 'vittorio@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331231239', 'user', 'Attaccante', 75, 0.00, 0, 0, 0, 0, NOW(), NOW()),
-('sara_rubino', 'Q620UF', 'Sara', 'Rubino', 'sara@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331231240', 'user', 'Difensore', 100, 0.00, 0, 0, 0, 0, NOW(), NOW());
+('vittorio_ossidiana', 'ZQYXY3', 'Vittorio', 'Ossidiana', 'vittorio@email.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3331231239', 'user', 'Attaccante', 75, 0.00, 0, 0, 0, 0, NOW(), NOW());
 
 
 -- --------------------------------------------------------
@@ -227,9 +226,9 @@ INSERT INTO users (username, friend_code, name, last_name, email, password, phon
 INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
 (1, 'mario_rossi', 'open', 'public', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '19:30:00', 'Bologna Sports Center', 44.4949, 11.3426, '5v5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
 
--- Match 2: Future open match (7v7), hosted by Tommaso Stella, private visibility, no teams assigned
+-- Match 2: Future open match (7v7), hosted by Tommaso Sardelli, private visibility, no teams assigned
 INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
-(2, 'tommaso_st', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Centro Sportivo San Siro', 45.4781, 9.1240, '7v7', 14, 70.00, NULL, NULL, 0, NOW(), NOW());
+(2, 'tommaso_sardelli', 'open', 'private', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Centro Sportivo San Siro', 45.4781, 9.1240, '7v7', 14, 70.00, NULL, NULL, 0, NOW(), NOW());
 
 -- Match 3: Finished match (5v5), scores are entered (4-2), but MVP is not assigned yet (users can vote)
 INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
@@ -323,6 +322,16 @@ INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `t
 INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
 (999, 'admin_test', 'finished', 'public', CURDATE(), TIME(DATE_SUB(NOW(), INTERVAL 1 HOUR)), 'Stadio Comunale AlmaKick', 44.4949, 11.3426, '5vs5', 10, 50.00, NULL, NULL, 0, NOW(), NOW());
 
+-- Match 20: Finished match (5v5) with very high score (100-100) for leaderboard testing
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(20, 'admin_test', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 10 DAY), '18:00:00', 'Stadio Storico Leaderboard', 44.4949, 11.3426, '5v5', 10, 50.00, 100, 100, 0, NOW(), NOW());
+
+-- Match 21: Finished match (5v5) for admin performance trend testing
+INSERT INTO `matches` (`id`, `host_username`, `status`, `visibility`, `date`, `time`, `location`, `latitude`, `longitude`, `format`, `max_players`, `total_cost`, `result_home`, `result_away`, `mvp_assigned`, `created_at`, `updated_at`) VALUES
+(21, 'mario_rossi', 'finished', 'public', DATE_SUB(CURDATE(), INTERVAL 5 DAY), '20:00:00', 'Bologna Sports Center', 44.4949, 11.3426, '5v5', 10, 50.00, 4, 2, 0, NOW(), NOW());
+
+
+
 
 
 -- --------------------------------------------------------
@@ -336,7 +345,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (1, 'giulia_brunelli', 'registered', 0, NULL, 0, NOW(), NOW()),
 
 -- Registrations for Match 2 (Future open, no teams, 2 seats occupied by tommaso and mario)
-(2, 'tommaso_st', 'registered', 0, NULL, 0, NOW(), NOW()),
+(2, 'tommaso_sardelli', 'registered', 0, NULL, 0, NOW(), NOW()),
 (2, 'mario_rossi', 'registered', 0, NULL, 0, NOW(), NOW()),
 
 -- Registrations for Match 3 (Finished 4-2, MVP pending, 10 players registered, 5 home / 5 away, goals matching score)
@@ -345,7 +354,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (3, 'giulia_brunelli', 'registered', 0, 'home', 1, NOW(), NOW()),
 (3, 'luigi_verdi', 'registered', 0, 'home', 0, NOW(), NOW()),
 (3, 'marco_bianchi', 'registered', 0, 'home', 0, NOW(), NOW()),
-(3, 'tommaso_st', 'registered', 0, 'away', 1, NOW(), NOW()),
+(3, 'tommaso_sardelli', 'registered', 0, 'away', 1, NOW(), NOW()),
 (3, 'michele_marrone', 'registered', 0, 'away', 1, NOW(), NOW()),
 (3, 'giovanni_neri', 'registered', 0, 'away', 0, NOW(), NOW()),
 (3, 'andrea_gialli', 'registered', 0, 'away', 0, NOW(), NOW()),
@@ -357,7 +366,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (4, 'luigi_verdi', 'registered', 0, 'home', 0, NOW(), NOW()),
 (4, 'marco_bianchi', 'registered', 0, 'home', 0, NOW(), NOW()),
 (4, 'paolo_marroni', 'registered', 0, 'home', 0, NOW(), NOW()),
-(4, 'tommaso_st', 'registered', 0, 'away', 0, NOW(), NOW()),
+(4, 'tommaso_sardelli', 'registered', 0, 'away', 0, NOW(), NOW()),
 (4, 'michele_marrone', 'registered', 0, 'away', 0, NOW(), NOW()),
 (4, 'giulia_brunelli', 'registered', 0, 'away', 0, NOW(), NOW()),
 (4, 'giovanni_neri', 'registered', 0, 'away', 0, NOW(), NOW()),
@@ -367,7 +376,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (5, 'luca_celeste', 'registered', 0, 'home', 1, NOW(), NOW()),
 (5, 'alessandro_indaco', 'registered', 0, 'home', 0, NOW(), NOW()),
 (5, 'daniele_oliva', 'registered', 0, 'home', 1, NOW(), NOW()),
-(5, 'matteo_perla', 'registered', 0, 'home', 1, NOW(), NOW()),
+(5, 'matteo_goga', 'registered', 0, 'home', 1, NOW(), NOW()),
 (5, 'simone_smeraldo', 'registered', 0, 'home', 0, NOW(), NOW()),
 (5, 'davide_topazio', 'registered', 0, 'home', 0, NOW(), NOW()),
 (5, 'federico_rubino', 'registered', 0, 'home', 0, NOW(), NOW()),
@@ -410,7 +419,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 -- Registrations for Match 888 (Future full 10/10, 1 in waitlist, urgent match starting in 2h, no teams assigned)
 (888, 'sofia_corallo', 'registered', 0, NULL, 0, NOW(), NOW()),
 (888, 'mario_rossi', 'registered', 0, NULL, 0, NOW(), NOW()),
-(888, 'tommaso_st', 'registered', 0, NULL, 0, NOW(), NOW()),
+(888, 'tommaso_sardelli', 'registered', 0, NULL, 0, NOW(), NOW()),
 (888, 'michele_marrone', 'registered', 0, NULL, 0, NOW(), NOW()),
 (888, 'giulia_brunelli', 'registered', 0, NULL, 0, NOW(), NOW()),
 (888, 'luigi_verdi', 'registered', 0, NULL, 0, NOW(), NOW()),
@@ -448,7 +457,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (311, 'luca_celeste', 'registered', 0, NULL, 0, NOW(), NOW()),
 (311, 'alessandro_indaco', 'registered', 0, NULL, 0, NOW(), NOW()),
 (311, 'daniele_oliva', 'registered', 0, NULL, 0, NOW(), NOW()),
-(311, 'matteo_perla', 'registered', 0, NULL, 0, NOW(), NOW()),
+(311, 'matteo_goga', 'registered', 0, NULL, 0, NOW(), NOW()),
 
 -- Registrations for Match 15 (Finished 4-8, 10 players, MVP assigned, goals matching score)
 (15, 'luigi_verdi', 'registered', 0, 'home', 0, NOW(), NOW()),
@@ -493,7 +502,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 -- Registrations for Match 18 (Finished 6-7, 10 players, MVP assigned, goals matching score)
 (18, 'lorenzo_zaffiro', 'registered', 0, 'home', 3, NOW(), NOW()),
 (18, 'daniele_oliva', 'registered', 0, 'home', 1, NOW(), NOW()),
-(18, 'matteo_perla', 'registered', 0, 'home', 2, NOW(), NOW()),
+(18, 'matteo_goga', 'registered', 0, 'home', 2, NOW(), NOW()),
 (18, 'simone_smeraldo', 'registered', 0, 'home', 0, NOW(), NOW()),
 (18, 'davide_topazio', 'registered', 0, 'home', 0, NOW(), NOW()),
 (18, 'filippo_onice', 'registered', 0, 'away', 2, NOW(), NOW()),
@@ -537,7 +546,7 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 -- Registrations for Match 999 (Finished 1h ago, hosted by admin_test, full 10/10, no results/MVP set, teams assigned)
 (999, 'admin_test', 'registered', 0, 'home', 0, NOW(), NOW()),
 (999, 'mario_rossi', 'registered', 0, 'home', 0, NOW(), NOW()),
-(999, 'tommaso_st', 'registered', 0, 'home', 0, NOW(), NOW()),
+(999, 'tommaso_sardelli', 'registered', 0, 'home', 0, NOW(), NOW()),
 (999, 'michele_marrone', 'registered', 0, 'home', 0, NOW(), NOW()),
 (999, 'giulia_brunelli', 'registered', 0, 'home', 0, NOW(), NOW()),
 (999, 'luigi_verdi', 'registered', 0, 'away', 0, NOW(), NOW()),
@@ -546,6 +555,34 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 (999, 'andrea_gialli', 'registered', 0, 'away', 0, NOW(), NOW()),
 (999, 'paolo_marroni', 'registered', 0, 'away', 0, NOW(), NOW());
 
+-- Registrations for Match 20
+INSERT INTO registrations (match_id, username, status, has_guest, team, goals_scored, created_at, updated_at) VALUES
+(20, 'luigi_verdi', 'registered', 0, 'home', 20, NOW(), NOW()),
+(20, 'giovanni_neri', 'registered', 0, 'home', 20, NOW(), NOW()),
+(20, 'marco_bianchi', 'registered', 0, 'home', 20, NOW(), NOW()),
+(20, 'andrea_gialli', 'registered', 0, 'home', 20, NOW(), NOW()),
+(20, 'admin_test', 'registered', 0, 'home', 20, NOW(), NOW()),
+(20, 'stefano_viola', 'registered', 0, 'away', 20, NOW(), NOW()),
+(20, 'roberto_arancio', 'registered', 0, 'away', 20, NOW(), NOW()),
+(20, 'luca_celeste', 'registered', 0, 'away', 20, NOW(), NOW()),
+(20, 'alessandro_indaco', 'registered', 0, 'away', 20, NOW(), NOW()),
+(20, 'daniele_oliva', 'registered', 0, 'away', 20, NOW(), NOW());
+
+-- Registrations for Match 21
+INSERT INTO registrations (match_id, username, status, has_guest, team, goals_scored, created_at, updated_at) VALUES
+(21, 'admin_test', 'registered', 0, 'home', 1, NOW(), NOW()),
+(21, 'mario_rossi', 'registered', 0, 'home', 2, NOW(), NOW()),
+(21, 'giulia_brunelli', 'registered', 0, 'home', 1, NOW(), NOW()),
+(21, 'luigi_verdi', 'registered', 0, 'home', 0, NOW(), NOW()),
+(21, 'marco_bianchi', 'registered', 0, 'home', 0, NOW(), NOW()),
+(21, 'tommaso_sardelli', 'registered', 0, 'away', 1, NOW(), NOW()),
+(21, 'michele_marrone', 'registered', 0, 'away', 1, NOW(), NOW()),
+(21, 'giovanni_neri', 'registered', 0, 'away', 0, NOW(), NOW()),
+(21, 'andrea_gialli', 'registered', 0, 'away', 0, NOW(), NOW()),
+(21, 'paolo_marroni', 'registered', 0, 'away', 0, NOW(), NOW());
+
+
+
 
 -- --------------------------------------------------------
 -- FRIENDSHIPS
@@ -553,8 +590,8 @@ INSERT INTO registrations (match_id, username, status, has_guest, team, goals_sc
 
 INSERT INTO friendships (sender_username, recipient_username, status, created_at) VALUES
 ('admin_test', 'mario_rossi', 'accepted', NOW()),
-('tommaso_st', 'mario_rossi', 'pending', NOW()),
-('tommaso_st', 'admin_test', 'pending', NOW()),
+('tommaso_sardelli', 'mario_rossi', 'pending', NOW()),
+('tommaso_sardelli', 'admin_test', 'pending', NOW()),
 ('giulia_brunelli', 'michele_marrone', 'accepted', NOW());
 
 
@@ -580,6 +617,30 @@ INSERT INTO evaluations (evaluator_username, evaluated_username, match_id, skill
 ('federico_rubino', 'giacomo_ambra', 4, 1, 1, DATE_SUB(NOW(), INTERVAL 2 DAY)),
 ('federico_rubino', 'emanuele_giada', 4, 4, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
 ('federico_rubino', 'filippo_onice', 4, 3, 0, DATE_SUB(NOW(), INTERVAL 2 DAY));
+
+-- Evaluations to increase admin_test rating (voto 5)
+INSERT INTO evaluations (evaluator_username, evaluated_username, match_id, skill_vote, thumb_down, created_at) VALUES
+-- Match 3 evaluations (avg 5.0)
+('mario_rossi', 'admin_test', 3, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('giulia_brunelli', 'admin_test', 3, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('luigi_verdi', 'admin_test', 3, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('marco_bianchi', 'admin_test', 3, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('tommaso_sardelli', 'admin_test', 3, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('michele_marrone', 'admin_test', 3, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- Match 4 evaluations (avg 4.5)
+('mario_rossi', 'admin_test', 4, 4, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('luigi_verdi', 'admin_test', 4, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- Match 999 evaluations (avg 5.0)
+('mario_rossi', 'admin_test', 999, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('tommaso_sardelli', 'admin_test', 999, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- Match 20 evaluations (avg 4.0)
+('luigi_verdi', 'admin_test', 20, 4, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('giovanni_neri', 'admin_test', 20, 4, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+-- Match 21 evaluations (avg 5.0)
+('mario_rossi', 'admin_test', 21, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('giulia_brunelli', 'admin_test', 21, 5, 0, DATE_SUB(NOW(), INTERVAL 2 DAY));
+
+
 
 
 -- --------------------------------------------------------
@@ -614,11 +675,11 @@ INSERT INTO reports (reporter_username, reported_username, match_id, reason, des
 -- --------------------------------------------------------
 
 INSERT INTO notifications (user_recipient, type, message, link, is_read, created_at) VALUES
--- Friend request notification for admin_test from tommaso_st
-('admin_test', 'friend_request', 'Tommaso Stella (@tommaso_st) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 1 HOUR)),
+-- Friend request notification for admin_test from tommaso_sardelli
+('admin_test', 'friend_request', 'Tommaso Sardelli (@tommaso_sardelli) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 1 HOUR)),
 
--- Friend request notification for mario_rossi from tommaso_st
-('mario_rossi', 'friend_request', 'Tommaso Stella (@tommaso_st) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 2 HOUR)),
+-- Friend request notification for mario_rossi from tommaso_sardelli
+('mario_rossi', 'friend_request', 'Tommaso Sardelli (@tommaso_sardelli) ti ha inviato una richiesta di amicizia!', '/profile?tab=social', 0, DATE_SUB(NOW(), INTERVAL 2 HOUR)),
 
 -- Friend accept notification for admin_test from mario_rossi
 ('admin_test', 'friend_accept', 'Mario Rossi (@mario_rossi) ha accettato la tua richiesta di amicizia!', '/profile?username=mario_rossi', 0, DATE_SUB(NOW(), INTERVAL 1 DAY)),
@@ -629,4 +690,42 @@ INSERT INTO notifications (user_recipient, type, message, link, is_read, created
 -- Match cancellation notification for mario_rossi for Match 6
 ('mario_rossi', 'match_cancellation', 'La partita a Campo Periferia del 28/06/2026 è stata annullata dall\'organizzatore (Motivo: Meteo avverso).', '/matches/6', 0, DATE_SUB(NOW(), INTERVAL 5 DAY));
 
+
+-- --------------------------------------------------------
+-- STATS RECALCULATION
+-- --------------------------------------------------------
+
+-- Recalculate all user statistics to ensure consistency
+UPDATE users u SET 
+  u.total_goals = (
+    SELECT COALESCE(SUM(r.goals_scored), 0)
+    FROM registrations r
+    JOIN matches m ON r.match_id = m.id
+    WHERE r.username = u.username 
+      AND r.status = 'registered' 
+      AND m.status = 'finished'
+  ),
+  u.matches_played = (
+    SELECT COUNT(*)
+    FROM registrations r
+    JOIN matches m ON r.match_id = m.id
+    WHERE r.username = u.username 
+      AND r.status = 'registered' 
+      AND m.status = 'finished'
+  ),
+  u.skill_rating = (
+    SELECT COALESCE(ROUND(AVG(e.skill_vote), 2), 0.00)
+    FROM evaluations e
+    WHERE e.evaluated_username = u.username
+      AND e.skill_vote IS NOT NULL
+  ),
+  u.mvp_count = (
+    SELECT COUNT(*)
+    FROM matches m
+    WHERE m.mvp_username = u.username
+      AND m.status = 'finished'
+      AND m.mvp_assigned = 1
+  );
+
 SET FOREIGN_KEY_CHECKS = 1;
+
