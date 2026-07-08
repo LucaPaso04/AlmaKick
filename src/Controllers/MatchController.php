@@ -899,6 +899,77 @@ class MatchController extends BaseController {
         $this->redirectToMatch($id);
     }
 
+    public function acceptOffer($id) {
+        $this->validateCsrf();
+        $username = $_SESSION['user']['username'] ?? null;
+        if (!$username) {
+            $_SESSION['error'] = "Devi effettuare l'accesso per accettare l'offerta.";
+            $this->redirect(url('/login'));
+        }
+
+        $db = \App\Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND username = :username AND status = 'waitlist'");
+        $stmt->execute(['match_id' => $id, 'username' => $username]);
+        $reg = $stmt->fetch();
+
+        if (!$reg || empty($reg['offer_expires_at']) || strtotime($reg['offer_expires_at']) <= time()) {
+            $_SESSION['error'] = "L'offerta non è più valida o è scaduta.";
+            $this->redirectToMatch($id);
+        }
+
+        $stmtUpdate = $db->prepare("UPDATE registrations SET status = 'registered', offer_expires_at = NULL, updated_at = NOW() WHERE id = :id");
+        $stmtUpdate->execute(['id' => $reg['id']]);
+
+        // Calculate occupied seats to check if match needs to be set to full
+        $stmtCount = $db->prepare("
+            SELECT COALESCE(SUM(1 + has_guest), 0) 
+            FROM registrations 
+            WHERE match_id = :match_id 
+              AND (status = 'registered' OR (status = 'waitlist' AND offer_expires_at IS NOT NULL AND offer_expires_at > NOW()))
+        ");
+        $stmtCount->execute(['match_id' => $id]);
+        $occupied = (int)$stmtCount->fetchColumn();
+
+        $matchModel = new SoccerMatch();
+        $match = $matchModel->find($id);
+
+        if ($match && $occupied >= (int)$match['max_players']) {
+            $db->prepare("UPDATE matches SET status = 'full', updated_at = NOW() WHERE id = :id")->execute(['id' => $id]);
+        }
+
+        $_SESSION['success'] = "Hai accettato l'offerta! Ora sei iscritto come giocatore attivo.";
+        $this->redirectToMatch($id);
+    }
+
+    public function rejectOffer($id) {
+        $this->validateCsrf();
+        $username = $_SESSION['user']['username'] ?? null;
+        if (!$username) {
+            $_SESSION['error'] = "Devi effettuare l'accesso.";
+            $this->redirect(url('/login'));
+        }
+
+        $db = \App\Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT * FROM registrations WHERE match_id = :match_id AND username = :username AND status = 'waitlist'");
+        $stmt->execute(['match_id' => $id, 'username' => $username]);
+        $reg = $stmt->fetch();
+
+        if (!$reg || empty($reg['offer_expires_at']) || strtotime($reg['offer_expires_at']) <= time()) {
+            $_SESSION['error'] = "L'offerta non è più valida o è scaduta.";
+            $this->redirectToMatch($id);
+        }
+
+        $stmtCancel = $db->prepare("UPDATE registrations SET status = 'cancelled', offer_expires_at = NULL, updated_at = NOW() WHERE id = :id");
+        $stmtCancel->execute(['id' => $reg['id']]);
+
+        // Promote next waitlist player since a seat became free
+        $scheduler = new \App\Services\MatchScheduler();
+        $scheduler->promoteNextWaitlistPlayer($id);
+
+        $_SESSION['success'] = "Hai rifiutato l'offerta e sei stato rimosso dalla lista d'attesa.";
+        $this->redirectToMatch($id);
+    }
+
     private function redirectToMatch($id) {
         $from = $_GET['from'] ?? $_POST['from'] ?? '';
         $redirectUrl = '/matches/' . $id;
